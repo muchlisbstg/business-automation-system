@@ -131,6 +131,38 @@ class ContractValidatorTests(unittest.TestCase):
                     [error.message for error in errors],
                 )
 
+    def test_wf18_rejects_impossible_candidate_observed_at_values(self):
+        root = Path(__file__).resolve().parents[1]
+        schema = json.loads(
+            (root / "workflows/WF-18-technical-debt/schema.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        instance = json.loads(
+            (
+                root
+                / "workflows/WF-18-technical-debt/examples/valid.json"
+            ).read_text(encoding="utf-8")
+        )
+        validator = validator_for_schema(schema)
+
+        for observed_at in (
+            "2026-02-31T02:00:00Z",
+            "2026-10-05T25:61:61Z",
+            "2026-10-05T04:28:47+99:99",
+            "2026-10-05T02:00:60Z",
+        ):
+            with self.subTest(observed_at=observed_at):
+                instance["observed_at"] = observed_at
+                errors = list(validator.iter_errors(instance))
+                self.assertTrue(
+                    any(
+                        list(error.absolute_path) == ["observed_at"]
+                        for error in errors
+                    ),
+                    [error.message for error in errors],
+                )
+
 
 if __name__ == "__main__":
     unittest.main()
