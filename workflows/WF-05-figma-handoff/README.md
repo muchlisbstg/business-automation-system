@@ -6,7 +6,7 @@
 
 Capture a traceable handoff that points selected WF-03 plan tasks at specific nodes in a Figma design and records proposed acceptance criteria for those task/design pairs. The event refers to an existing WF-02 request and WF-03 plan; it carries references, not a copy of the design file.
 
-The proposal is deliberately limited to a `CREATE_HANDOFF` input envelope. It specifies neither an HTTP/API surface nor a runtime response, storage model, authentication integration, or Figma API behavior. The schema checks payload shape only. Checking the source chain, plan membership, and node-reference relationships requires semantic validation in a future implementation.
+The proposal is deliberately limited to a `CREATE_HANDOFF` input envelope. It specifies neither an HTTP/API surface nor a runtime response, storage model, authentication integration, or Figma API behavior. The schema checks payload shape only. CI now exercises the deterministic cross-field rule that every task-mapped node must appear in `design_reference.node_ids`; checking the source chain and plan membership requires source records and remains future semantic/runtime work.
 
 ## Proposed input contract
 
@@ -20,7 +20,7 @@ The JSON Schema defines one event with these required fields:
 
 The schema rejects undeclared fields. It cannot prove that the request and plan exist or belong together, that each task belongs to the plan, or that each mapped node belongs to the design reference. Those relationships are semantic checks, not JSON Schema constraints.
 
-Example payloads are in [`examples/`](examples/); the schema is [`schema.json`](schema.json). The proposed scenarios are in [`tests/wf-05-figma-handoff.md`](../../tests/wf-05-figma-handoff.md).
+Example payloads are in [`examples/`](examples/); the schema is [`schema.json`](schema.json). The proposed scenarios are in [`tests/wf-05-figma-handoff.md`](../../tests/wf-05-figma-handoff.md). `semantic-invalid-unreferenced-task-node.json` is intentionally schema-valid and is rejected by the CI fixture validator for violating only the declared-node relationship.
 
 ## Safety boundaries
 
