@@ -1,0 +1,17 @@
+{
+  "action": "REPORT_ENGINEERING_METRICS_CANDIDATE",
+  "request_id": "synthetic-request-invalid-002",
+  "candidate_id": "synthetic-candidate-invalid-002",
+  "source": "synthetic-source",
+  "period_label": "sample-day (synthetic)",
+  "metrics": [
+    {
+      "metric_key": "builds_completed",
+      "value": 2,
+      "unit": "count"
+    }
+  ],
+  "person_dimensions": [
+    {"person_id": "synthetic-person-id"}
+  ]
+}

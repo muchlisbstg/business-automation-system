@@ -29,3 +29,5 @@ The [WF-20 Knowledge Base proposal scenarios](wf-20-knowledge-base.md) distingui
 The [WF-21/22 Daily brief and reporting proposal scenarios](wf-21-22-reporting.md) distinguish schema-checked candidate shape from data access, scheduling, calculation, report generation, publication, persistence, and notification decisions that remain open.
 
 The [WF-23 Learning loop proposal scenarios](wf-23-learning.md) distinguish candidate-envelope shape from source access, outcome analysis, lesson validation, model or process changes, persistence, and notification decisions that remain open.
+
+The [WF-24 Daily engineering metrics proposal scenarios](wf-24-engineering-metrics.md) distinguish schema-checked aggregate-shaped candidate claims from source access, metric calculation, validation, reporting, persistence, CI or operational decisions, and notification behavior that remain out of scope.

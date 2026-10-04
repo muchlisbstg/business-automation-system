@@ -1,0 +1,19 @@
+{
+  "action": "REPORT_ENGINEERING_METRICS_CANDIDATE",
+  "request_id": "synthetic-request-002",
+  "candidate_id": "synthetic-candidate-002",
+  "source": "synthetic-review-aggregate",
+  "period_label": "sample-day-02 (synthetic)",
+  "metrics": [
+    {
+      "metric_key": "review_cycle_time",
+      "value": 42.5,
+      "unit": "minutes"
+    },
+    {
+      "metric_key": "pull_requests_merged",
+      "value": 5,
+      "unit": "count"
+    }
+  ]
+}
