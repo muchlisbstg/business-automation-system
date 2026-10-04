@@ -13,7 +13,7 @@ The automation platform is organized as deterministic, auditable workflows.
 | WF-07 | [API quality assurance (contract proposal)](../workflows/WF-07-api-qa/README.md) |
 | WF-08 | [Database quality assurance (contract proposal)](../workflows/WF-08-database-qa/README.md) |
 | WF-09 | [Mobile quality assurance (contract proposal)](../workflows/WF-09-mobile-qa/README.md) |
-| WF-10/11 | GitHub integration and AI review |
+| WF-10/11 | [GitHub integration and AI review (contract proposal)](../workflows/WF-10-11-github-ai-review/README.md) |
 | WF-12 | Tests and coverage |
 | WF-13 | Security findings |
 | WF-14/15 | Deployment gates and deployment |

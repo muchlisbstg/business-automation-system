@@ -1,0 +1,13 @@
+{
+  "action": "REQUEST_GITHUB_AI_REVIEW",
+  "request_id": "req-review-2026-001",
+  "plan_id": "plan-review-2026-001",
+  "review_run_id": "review-run-001",
+  "repository": {
+    "owner": "ExampleOrg",
+    "name": "service-api"
+  },
+  "pull_request_number": 42,
+  "head_sha": "0123456789abcdef0123456789abcdef01234567",
+  "review_focus": ["CORRECTNESS", "TEST_COVERAGE"]
+}

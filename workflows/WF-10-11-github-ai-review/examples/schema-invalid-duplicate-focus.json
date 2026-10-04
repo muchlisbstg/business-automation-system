@@ -1,0 +1,13 @@
+{
+  "action": "REQUEST_GITHUB_AI_REVIEW",
+  "request_id": "req-review-invalid-004",
+  "plan_id": "plan-review-004",
+  "review_run_id": "review-run-004",
+  "repository": {
+    "owner": "ExampleOrg",
+    "name": "service-api"
+  },
+  "pull_request_number": 42,
+  "head_sha": "0123456789abcdef0123456789abcdef01234567",
+  "review_focus": ["SECURITY", "SECURITY"]
+}
