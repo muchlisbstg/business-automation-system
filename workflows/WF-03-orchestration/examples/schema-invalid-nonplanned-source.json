@@ -1,10 +1,10 @@
 {
-  "request_id": "REQ-NEG-0002",
-  "plan_id": "PLAN-NEG-0002",
+  "request_id": "REQ-NEG-nonplanned-source",
+  "plan_id": "PLAN-NEG-nonplanned-source",
   "source": {
     "workflow": "WF-02",
-    "request_id": "REQ-NEG-0002",
-    "planning_state": "PLANNED"
+    "request_id": "REQ-NEG-nonplanned-source",
+    "planning_state": "INVALID_TASK"
   },
   "review_signal": {
     "human_review_required": false,
@@ -15,9 +15,8 @@
   "tasks": [
     {
       "task_id": "T-NEG-001",
-      "requirement_ids": [
-        "R-001"
-      ]
+      "title": "Implement scoped feature",
+      "requirement_ids": ["R-001"]
     }
   ]
 }

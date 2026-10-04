@@ -1,14 +1,27 @@
 {
-  "request_id":"REQ-0010",
-  "plan_id":"PLAN-0010",
-  "tasks":[
+  "request_id": "REQ-0010",
+  "plan_id": "PLAN-0010",
+  "source": {
+    "workflow": "WF-02",
+    "request_id": "REQ-0010",
+    "planning_state": "PLANNED"
+  },
+  "review_signal": {
+    "human_review_required": false,
+    "approval_status": "not_required",
+    "reason_codes": [],
+    "review_requirement_ids": []
+  },
+  "tasks": [
     {
-      "task_id":"T-001",
-      "title":"Deploy release to production",
-      "requirement_ids":["R-001"],
-      "risk":"critical",
-      "environment":"prod",
-      "action":"deploy"
+      "task_id": "T-001",
+      "title": "Deploy release to production",
+      "requirement_ids": [
+        "R-001"
+      ],
+      "risk": "critical",
+      "environment": "prod",
+      "action": "deploy"
     }
   ]
 }

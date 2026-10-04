@@ -27,9 +27,24 @@ export interface OrchestrationTask {
   action?: string;
 }
 
+export interface OrchestrationSource {
+  workflow: "WF-02";
+  request_id: string;
+  planning_state: "PLANNED";
+}
+
+export interface UpstreamReviewSignal {
+  human_review_required: boolean;
+  approval_status: "not_required" | "pending_human_review";
+  reason_codes: string[];
+  review_requirement_ids: string[];
+}
+
 export interface OrchestrationInput {
   request_id: string;
   plan_id: string;
+  source: OrchestrationSource;
+  review_signal: UpstreamReviewSignal;
   tasks: OrchestrationTask[];
 }
 

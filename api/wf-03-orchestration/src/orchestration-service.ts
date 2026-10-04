@@ -224,10 +224,28 @@ function analyze(input: OrchestrationInput): OrchestrationDecision {
     };
   }
 
+  const taskRequirementIds = new Set(input.tasks.flatMap((task) => task.requirement_ids));
+  const unlinkedReviewRequirements = input.review_signal.review_requirement_ids
+    .filter((requirementId) => !taskRequirementIds.has(requirementId));
+  if (unlinkedReviewRequirements.length > 0) {
+    return {
+      state: "REJECTED",
+      execution_order: [],
+      blocked_task_ids: uniqueTaskIds,
+      reason_codes: ["UNLINKED_REVIEW_REQUIREMENT"],
+      validation_errors: unlinkedReviewRequirements.map((requirementId) => ({
+        path: "/review_signal/review_requirement_ids",
+        message: `review requirement_id is not linked to any task: ${requirementId}`,
+      })),
+    };
+  }
+
   const taskById = new Map(input.tasks.map((task) => [task.task_id, task]));
-  const blocked = new Set(
-    input.tasks.filter(hasHighImpactIntent).map((task) => task.task_id),
-  );
+  const reviewedRequirementIds = new Set(input.review_signal.review_requirement_ids);
+  const blocked = new Set(input.tasks
+    .filter((task) => hasHighImpactIntent(task) ||
+      task.requirement_ids.some((requirementId) => reviewedRequirementIds.has(requirementId)))
+    .map((task) => task.task_id));
 
   // A dependent cannot become ready while a gated prerequisite remains uncompleted.
   for (const taskId of order) {
@@ -335,6 +353,24 @@ export class OrchestrationService {
     }
 
     const canonicalPayload = normalized as unknown as OrchestrationInput;
+    if (canonicalPayload.source.request_id !== canonicalPayload.request_id) {
+      return responseBase(
+        correlationId,
+        canonicalPayload.request_id,
+        canonicalPayload.plan_id,
+        "REJECTED",
+        ["WF02_SOURCE_REQUEST_MISMATCH"],
+        responseTime,
+        {
+          blocked_task_ids: sortedUnique(canonicalPayload.tasks.map((task) => task.task_id)),
+          validation_errors: [{
+            path: "/source/request_id",
+            message: "source.request_id must match request_id",
+          }],
+        },
+      );
+    }
+
     const decision = analyze(canonicalPayload);
     const payloadHash = createHash("sha256")
       .update(stableStringify(canonicalPayload), "utf8")

@@ -6,7 +6,7 @@ The automation platform is organized as deterministic, auditable workflows.
 |---|---|
 | WF-01 | Intake and validation |
 | WF-02 | Planning, PRD, and task validation |
-| WF-02→WF-03 | [Human-review signal bridge (contract proposal)](../workflows/WF-02-03-review-signal/README.md) |
+| WF-02→WF-03 | [Requirement-level human-review signal bridge](../workflows/WF-02-03-review-signal/README.md) |
 | WF-03 | Orchestration |
 | WF-04 | ADR generation and review |
 | WF-05 | [Figma to development handoff (contract proposal)](../workflows/WF-05-figma-handoff/README.md) |

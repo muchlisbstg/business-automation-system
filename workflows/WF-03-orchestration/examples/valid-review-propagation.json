@@ -1,9 +1,9 @@
 {
-  "request_id": "REQ-SYNTH-2042",
-  "plan_id": "PLAN-SYNTH-2042",
+  "request_id": "REQ-review-propagation",
+  "plan_id": "PLAN-review-propagation",
   "source": {
     "workflow": "WF-02",
-    "request_id": "REQ-SYNTH-2042",
+    "request_id": "REQ-review-propagation",
     "planning_state": "PLANNED"
   },
   "review_signal": {
@@ -13,32 +13,32 @@
       "HIGH_IMPACT_REVIEW_REQUIRED"
     ],
     "review_requirement_ids": [
-      "R-01"
+      "R-RISK"
     ]
   },
   "tasks": [
     {
-      "task_id": "T-101",
-      "title": "Prepare release checklist",
+      "task_id": "T-001",
+      "title": "Prepare high-impact change",
       "requirement_ids": [
-        "R-01"
+        "R-RISK"
       ]
     },
     {
-      "task_id": "T-102",
-      "title": "Update operator handoff notes",
+      "task_id": "T-002",
+      "title": "Verify change",
       "requirement_ids": [
-        "R-02"
+        "R-OTHER"
       ],
       "depends_on": [
-        "T-101"
+        "T-001"
       ]
     },
     {
-      "task_id": "T-103",
-      "title": "Document unrelated reporting fields",
+      "task_id": "T-003",
+      "title": "Update unrelated documentation",
       "requirement_ids": [
-        "R-03"
+        "R-UNRELATED"
       ]
     }
   ]

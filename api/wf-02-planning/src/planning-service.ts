@@ -63,9 +63,11 @@ function responseBase(
     correlation_id: correlationId,
     request_id: requestId,
     state,
+    planning_state: null,
     reason_codes: reasonCodes,
     created_at: createdAt,
     human_review_required: false,
+    review_requirement_ids: [],
     approval_status: "not_required",
     execution_permitted: false,
     ...details,
@@ -115,16 +117,7 @@ function isNegatedAction(segment: string, actionIndex: number): boolean {
   return NEGATION_AT_END.test(precedingText.slice(clauseStart));
 }
 
-function hasHighImpactIntent(input: PlanningInput & { tasks: PlanningTask[] }): boolean {
-  const textFields = [
-    input.title,
-    ...input.requirements.flatMap((requirement) => [
-      requirement.description,
-      ...(requirement.acceptance_criteria ?? []),
-    ]),
-    ...input.tasks.map((task) => task.title),
-  ];
-
+function hasHighImpactIntent(textFields: string[]): boolean {
   for (const text of textFields) {
     for (const segment of text.split(/[.!?\n]+/)) {
       PROMOTION_PATTERN.lastIndex = 0;
@@ -147,6 +140,35 @@ function hasHighImpactIntent(input: PlanningInput & { tasks: PlanningTask[] }): 
   return false;
 }
 
+function reviewRequirementIds(input: PlanningInput & { tasks: PlanningTask[] }): string[] {
+  const reviewed = new Set<string>();
+
+  // A high-impact request title describes the whole plan, so conservatively
+  // associate it with every requirement rather than silently narrowing scope.
+  if (hasHighImpactIntent([input.title])) {
+    input.requirements.forEach((requirement) => reviewed.add(requirement.requirement_id));
+  }
+
+  for (const requirement of input.requirements) {
+    if (hasHighImpactIntent([
+      requirement.description,
+      ...(requirement.acceptance_criteria ?? []),
+    ])) {
+      reviewed.add(requirement.requirement_id);
+    }
+  }
+
+  // Task-local high-impact intent is attributed through WF-02's validated
+  // requirement links. WF-02 does not infer dependency relationships.
+  for (const task of input.tasks) {
+    if (hasHighImpactIntent([task.title])) {
+      task.requirement_ids.forEach((requirementId) => reviewed.add(requirementId));
+    }
+  }
+
+  return [...reviewed].sort();
+}
+
 function recordResponse(
   record: PersistedPlanning,
   correlationId: string,
@@ -156,11 +178,13 @@ function recordResponse(
     correlation_id: correlationId,
     request_id: record.request_id,
     state,
+    planning_state: record.state,
     reason_codes: state === "DUPLICATE"
       ? ["IDEMPOTENT_REPLAY", ...record.reason_codes]
       : record.reason_codes,
     created_at: record.created_at,
     human_review_required: record.human_review_required,
+    review_requirement_ids: [...record.review_requirement_ids],
     approval_status: record.approval_status,
     execution_permitted: false,
     validation_errors: record.validation_errors,
@@ -275,7 +299,8 @@ export class PlanningService {
     const unmappedRequirements = canonicalPayload.requirements.filter(
       (requirement) => !mappedRequirementIds.has(requirement.requirement_id),
     );
-    const humanReviewRequired = hasHighImpactIntent(canonicalPayload);
+    const reviewIds = reviewRequirementIds(canonicalPayload);
+    const humanReviewRequired = reviewIds.length > 0;
     const approvalStatus: ApprovalStatus = humanReviewRequired
       ? "pending_human_review"
       : "not_required";
@@ -300,6 +325,7 @@ export class PlanningService {
       validation_errors: taskViolations,
       unmapped_requirements: unmappedRequirements,
       human_review_required: humanReviewRequired,
+      review_requirement_ids: reviewIds,
       approval_status: approvalStatus,
     };
 
@@ -319,6 +345,7 @@ export class PlanningService {
       result.record.created_at,
       {
         human_review_required: humanReviewRequired,
+        review_requirement_ids: reviewIds,
         approval_status: approvalStatus,
         requirements: canonicalPayload.requirements,
         tasks: canonicalPayload.tasks,

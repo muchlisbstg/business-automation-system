@@ -15,6 +15,13 @@ for (const risk of ["high", "critical"] as const) {
     const input: OrchestrationInput = {
       request_id: `REQ-risk-${risk}`,
       plan_id: `WF03-risk-${risk}`,
+      source: { workflow: "WF-02", request_id: `REQ-risk-${risk}`, planning_state: "PLANNED" },
+      review_signal: {
+        human_review_required: false,
+        approval_status: "not_required",
+        reason_codes: [],
+        review_requirement_ids: [],
+      },
       tasks: [task],
     };
     const service = new OrchestrationService(new MemoryOrchestrationRepository());

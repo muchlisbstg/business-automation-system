@@ -6,12 +6,6 @@
     "request_id": "REQ-0007",
     "planning_state": "PLANNED"
   },
-  "review_signal": {
-    "human_review_required": false,
-    "approval_status": "not_required",
-    "reason_codes": [],
-    "review_requirement_ids": []
-  },
   "tasks": [
     {
       "task_id": "T-001",

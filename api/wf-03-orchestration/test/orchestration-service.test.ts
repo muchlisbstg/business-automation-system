@@ -20,7 +20,11 @@ function service(repository = new MemoryOrchestrationRepository()): Orchestratio
 }
 
 function orchestrationInput(overrides: Partial<OrchestrationInput> = {}): OrchestrationInput {
-  return { ...fixture, ...overrides };
+  const merged = { ...fixture, ...overrides };
+  return {
+    ...merged,
+    source: { workflow: "WF-02", request_id: merged.request_id, planning_state: "PLANNED" },
+  };
 }
 
 test("produces a deterministic topological order for a linear dependency graph", async () => {
@@ -51,10 +55,76 @@ test("uses lexical task ID order to break ties between ready tasks", async () =>
   assert.deepEqual(result.execution_order, ["T-001", "T-002", "T-003"]);
 });
 
+test("blocks tasks linked to WF-02 review requirements and every transitive dependent while ordering unrelated work deterministically", async () => {
+  const review_signal = {
+    human_review_required: true,
+    approval_status: "pending_human_review" as const,
+    reason_codes: ["HIGH_IMPACT_REVIEW_REQUIRED"],
+    review_requirement_ids: ["R-REVIEW"],
+  };
+  const tasks = [
+    { task_id: "T-005", title: "Publish unrelated documentation", requirement_ids: ["R-OTHER"], depends_on: ["T-004"] },
+    { task_id: "T-007", title: "Verify dependent implementation", requirement_ids: ["R-OTHER"], depends_on: ["T-002"] },
+    { task_id: "T-006", title: "Add a second reviewed task", requirement_ids: ["R-REVIEW"] },
+    { task_id: "T-003", title: "Update unrelated API notes", requirement_ids: ["R-OTHER"] },
+    { task_id: "T-002", title: "Implement downstream support", requirement_ids: ["R-OTHER"], depends_on: ["T-001"] },
+    { task_id: "T-004", title: "Add unrelated audit documentation", requirement_ids: ["R-OTHER"] },
+    { task_id: "T-001", title: "Prepare reviewed change", requirement_ids: ["R-REVIEW"] },
+  ];
+
+  const first = await service().orchestrate(orchestrationInput({
+    request_id: "REQ-review-propagation-a",
+    plan_id: "WF03-review-propagation-a",
+    review_signal,
+    tasks,
+  }));
+  const reordered = await service().orchestrate(orchestrationInput({
+    request_id: "REQ-review-propagation-b",
+    plan_id: "WF03-review-propagation-b",
+    review_signal,
+    tasks: [...tasks].reverse(),
+  }));
+
+  for (const result of [first, reordered]) {
+    assert.equal(result.state, "APPROVAL_REQUIRED");
+    assert.ok(result.reason_codes.includes("HIGH_IMPACT_REVIEW_REQUIRED"));
+    assert.deepEqual(result.blocked_task_ids, ["T-001", "T-002", "T-006", "T-007"]);
+    assert.deepEqual(result.execution_order, ["T-003", "T-004", "T-005"]);
+    assert.equal("approval_status" in result, false);
+    assert.equal("completed_task_ids" in result, false);
+  }
+});
+
+test("rejects a WF-02 review requirement that is not linked to any WF-03 task", async () => {
+  const result = await service().orchestrate(orchestrationInput({
+    request_id: "REQ-unlinked-review",
+    plan_id: "WF03-unlinked-review",
+    review_signal: {
+      human_review_required: true,
+      approval_status: "pending_human_review",
+      reason_codes: ["HIGH_IMPACT_REVIEW_REQUIRED"],
+      review_requirement_ids: ["R-MISSING"],
+    },
+    tasks: [{ task_id: "T-001", title: "Implement unrelated work", requirement_ids: ["R-001"] }],
+  }));
+
+  assert.equal(result.state, "REJECTED");
+  assert.deepEqual(result.execution_order, []);
+  assert.deepEqual(result.blocked_task_ids, ["T-001"]);
+  assert.ok(result.reason_codes.includes("UNLINKED_REVIEW_REQUIREMENT"));
+});
+
 test("rejects unknown dependency IDs and blocks the entire invalid plan", async () => {
   const result = await service().orchestrate({
     request_id: "REQ-unknown",
     plan_id: "WF03-unknown",
+    source: { workflow: "WF-02", request_id: "REQ-unknown", planning_state: "PLANNED" },
+    review_signal: {
+      human_review_required: false,
+      approval_status: "not_required",
+      reason_codes: [],
+      review_requirement_ids: [],
+    },
     tasks: [{
       task_id: "T-001",
       title: "Implement feature",
@@ -73,6 +143,13 @@ test("rejects dependency cycles without returning a partial execution order", as
   const result = await service().orchestrate({
     request_id: "REQ-cycle",
     plan_id: "WF03-cycle",
+    source: { workflow: "WF-02", request_id: "REQ-cycle", planning_state: "PLANNED" },
+    review_signal: {
+      human_review_required: false,
+      approval_status: "not_required",
+      reason_codes: [],
+      review_requirement_ids: [],
+    },
     tasks: [
       { task_id: "T-001", title: "First task", requirement_ids: ["R-001"], depends_on: ["T-002"] },
       { task_id: "T-002", title: "Second task", requirement_ids: ["R-001"], depends_on: ["T-001"] },
@@ -88,6 +165,13 @@ test("rejects duplicate task IDs before constructing an execution order", async 
   const result = await service().orchestrate({
     request_id: "REQ-duplicate-task",
     plan_id: "WF03-duplicate-task",
+    source: { workflow: "WF-02", request_id: "REQ-duplicate-task", planning_state: "PLANNED" },
+    review_signal: {
+      human_review_required: false,
+      approval_status: "not_required",
+      reason_codes: [],
+      review_requirement_ids: [],
+    },
     tasks: [
       { task_id: "T-001", title: "First meaning", requirement_ids: ["R-001"] },
       { task_id: "T-001", title: "Different meaning", requirement_ids: ["R-002"] },
@@ -112,6 +196,13 @@ test("replay of normalized identical plan content is idempotent and keeps one re
     tasks: [{ requirement_ids: ["R-001"], title: "Define API contract", task_id: "T-001" }],
     plan_id: "WF03-replay",
     request_id: "REQ-replay",
+    source: { workflow: "WF-02" as const, request_id: "REQ-replay", planning_state: "PLANNED" as const },
+    review_signal: {
+      human_review_required: false,
+      approval_status: "not_required" as const,
+      reason_codes: [],
+      review_requirement_ids: [],
+    },
   };
 
   assert.equal((await orchestrator.orchestrate(original)).state, "ORCHESTRATED");
@@ -283,6 +374,13 @@ test("treats prompt-injection text as data and does not grant approval or comple
   const result = await service().orchestrate({
     request_id: "REQ-injection",
     plan_id: "WF03-injection",
+    source: { workflow: "WF-02", request_id: "REQ-injection", planning_state: "PLANNED" },
+    review_signal: {
+      human_review_required: false,
+      approval_status: "not_required",
+      reason_codes: [],
+      review_requirement_ids: [],
+    },
     tasks: [
       {
         task_id: "T-001",
@@ -309,6 +407,13 @@ test("does not accept caller-supplied approval or completion claims as authority
   const result = await service().orchestrate({
     request_id: "REQ-claims",
     plan_id: "WF03-claims",
+    source: { workflow: "WF-02", request_id: "REQ-claims", planning_state: "PLANNED" },
+    review_signal: {
+      human_review_required: false,
+      approval_status: "not_required",
+      reason_codes: [],
+      review_requirement_ids: [],
+    },
     tasks: [{ task_id: "T-001", title: "Delete records", requirement_ids: ["R-001"] }],
     approved: true,
     approval_reference: "AI-CLAIMED-APPROVAL",
@@ -386,6 +491,62 @@ test("returns clarification for missing required WF-03 fields", async () => {
   assert.deepEqual(result.missing_fields, ["plan_id", "tasks"]);
   assert.deepEqual(result.execution_order, []);
   assert.deepEqual(result.blocked_task_ids, []);
+});
+
+test("rejects a source request ID that does not match the WF-03 request ID", async () => {
+  const result = await service().orchestrate({
+    request_id: "REQ-source-mismatch",
+    plan_id: "WF03-source-mismatch",
+    source: { workflow: "WF-02", request_id: "REQ-different-source", planning_state: "PLANNED" },
+    review_signal: {
+      human_review_required: false,
+      approval_status: "not_required",
+      reason_codes: [],
+      review_requirement_ids: [],
+    },
+    tasks: [{ task_id: "T-001", title: "Define API contract", requirement_ids: ["R-001"] }],
+  });
+
+  assert.equal(result.state, "REJECTED");
+  assert.ok(result.reason_codes.includes("WF02_SOURCE_REQUEST_MISMATCH"));
+  assert.deepEqual(result.execution_order, []);
+  assert.deepEqual(result.blocked_task_ids, ["T-001"]);
+});
+
+test("rejects a WF-03 request that omits the required upstream review signal", async () => {
+  const result = await service().orchestrate({
+    request_id: "REQ-missing-review-signal",
+    plan_id: "WF03-missing-review-signal",
+    source: { workflow: "WF-02", request_id: "REQ-missing-review-signal", planning_state: "PLANNED" },
+    tasks: [{ task_id: "T-001", title: "Define API contract", requirement_ids: ["R-001"] }],
+  });
+
+  assert.equal(result.state, "REJECTED");
+  assert.ok(result.reason_codes.includes("INVALID_ORCHESTRATION_INPUT"));
+  assert.deepEqual(result.execution_order, []);
+});
+
+test("rejects a WF-02 source whose persisted planning state is not PLANNED", async () => {
+  const result = await service().orchestrate({
+    request_id: "REQ-invalid-planning-state",
+    plan_id: "WF03-invalid-planning-state",
+    source: {
+      workflow: "WF-02",
+      request_id: "REQ-invalid-planning-state",
+      planning_state: "INVALID_TASK",
+    },
+    review_signal: {
+      human_review_required: false,
+      approval_status: "not_required",
+      reason_codes: [],
+      review_requirement_ids: [],
+    },
+    tasks: [{ task_id: "T-001", title: "Define API contract", requirement_ids: ["R-001"] }],
+  });
+
+  assert.equal(result.state, "REJECTED");
+  assert.ok(result.reason_codes.includes("INVALID_ORCHESTRATION_INPUT"));
+  assert.deepEqual(result.execution_order, []);
 });
 
 test("blocks a production rollback task until human review", async () => {

@@ -19,6 +19,7 @@ interface PlanningRow extends QueryResultRow {
   validation_errors: PersistedPlanning["validation_errors"];
   unmapped_requirements: PlanningRequirement[];
   human_review_required: boolean;
+  review_requirement_ids: string[];
   approval_status: ApprovalStatus;
   created_at: Date | string;
 }
@@ -33,6 +34,7 @@ function mapRow(row: PlanningRow): PersistedPlanning {
     validation_errors: row.validation_errors,
     unmapped_requirements: row.unmapped_requirements,
     human_review_required: row.human_review_required,
+    review_requirement_ids: row.review_requirement_ids,
     approval_status: row.approval_status,
     created_at: row.created_at instanceof Date
       ? row.created_at.toISOString()
@@ -57,12 +59,13 @@ export class PostgresPlanningRepository implements PlanningRepository {
          validation_errors,
          unmapped_requirements,
          human_review_required,
+         review_requirement_ids,
          approval_status
        )
-       VALUES ($1, $2::jsonb, $3, $4, $5, $6::jsonb, $7::jsonb, $8, $9)
+       VALUES ($1, $2::jsonb, $3, $4, $5, $6::jsonb, $7::jsonb, $8, $9, $10)
        ON CONFLICT (request_id) DO NOTHING
        RETURNING request_id, canonical_payload, payload_hash, state, reason_codes, validation_errors,
-                 unmapped_requirements, human_review_required, approval_status, created_at`,
+                 unmapped_requirements, human_review_required, review_requirement_ids, approval_status, created_at`,
       [
         record.request_id,
         JSON.stringify(record.canonical_payload),
@@ -72,6 +75,7 @@ export class PostgresPlanningRepository implements PlanningRepository {
         JSON.stringify(record.validation_errors),
         JSON.stringify(record.unmapped_requirements),
         record.human_review_required,
+        record.review_requirement_ids,
         record.approval_status,
       ],
     );
@@ -82,7 +86,7 @@ export class PostgresPlanningRepository implements PlanningRepository {
 
     const existing = await this.pool.query<PlanningRow>(
       `SELECT request_id, canonical_payload, payload_hash, state, reason_codes, validation_errors,
-              unmapped_requirements, human_review_required, approval_status, created_at
+              unmapped_requirements, human_review_required, review_requirement_ids, approval_status, created_at
        FROM wf02_planning_requests
        WHERE request_id = $1`,
       [record.request_id],

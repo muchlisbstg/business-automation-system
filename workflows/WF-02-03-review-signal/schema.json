@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://business-automation-system.local/schemas/wf-02-03-human-review-signal.json",
-  "title": "WF-02 to WF-03 Human-Review Signal Bridge (Proposal)",
+  "title": "WF-02 to WF-03 Human-Review Signal Bridge",
   "type": "object",
   "additionalProperties": false,
   "required": ["request_id", "plan_id", "source", "review_signal", "tasks"],
@@ -11,16 +11,17 @@
     "source": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["workflow", "request_id"],
+      "required": ["workflow", "request_id", "planning_state"],
       "properties": {
         "workflow": {"const": "WF-02"},
-        "request_id": {"type": "string", "minLength": 1, "maxLength": 100}
+        "request_id": {"type": "string", "minLength": 1, "maxLength": 100},
+        "planning_state": {"const": "PLANNED"}
       }
     },
     "review_signal": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["human_review_required", "approval_status", "reason_codes"],
+      "required": ["human_review_required", "approval_status", "reason_codes", "review_requirement_ids"],
       "properties": {
         "human_review_required": {"type": "boolean"},
         "approval_status": {"type": "string", "enum": ["not_required", "pending_human_review"]},
@@ -28,6 +29,11 @@
           "type": "array",
           "uniqueItems": true,
           "items": {"type": "string", "enum": ["HIGH_IMPACT_REVIEW_REQUIRED"]}
+        },
+        "review_requirement_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1, "maxLength": 100}
         }
       },
       "allOf": [
@@ -42,7 +48,8 @@
               "reason_codes": {
                 "minItems": 1,
                 "contains": {"const": "HIGH_IMPACT_REVIEW_REQUIRED"}
-              }
+              },
+              "review_requirement_ids": {"minItems": 1}
             }
           }
         },
@@ -54,7 +61,8 @@
           "then": {
             "properties": {
               "approval_status": {"const": "not_required"},
-              "reason_codes": {"maxItems": 0}
+              "reason_codes": {"maxItems": 0},
+              "review_requirement_ids": {"maxItems": 0}
             }
           }
         }

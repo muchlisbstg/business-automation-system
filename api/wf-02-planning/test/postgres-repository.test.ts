@@ -14,7 +14,7 @@ postgresTest("PostgreSQL persists one row under concurrent replay and reports co
   const service = new PlanningService(new PostgresPlanningRepository(pool));
   const payload: PlanningInput = {
     request_id: requestId,
-    title: "Protect the production customer records",
+    title: "Delete customer records in production",
     requirements: [{
       requirement_id: "R-001",
       description: "Authorization applies to every protected endpoint.",
@@ -30,6 +30,9 @@ postgresTest("PostgreSQL persists one row under concurrent replay and reports co
     const results = await Promise.all([service.plan(payload), service.plan(payload)]);
     assert.deepEqual(results.map((result) => result.state).sort(), ["DUPLICATE", "PLANNED"]);
     assert.equal(results[0]?.created_at, results[1]?.created_at);
+    assert.deepEqual(results[0]?.review_requirement_ids, ["R-001"]);
+    assert.deepEqual(results[1]?.review_requirement_ids, ["R-001"]);
+    assert.deepEqual(results.map((result) => result.planning_state).sort(), ["PLANNED", "PLANNED"]);
 
     const conflict = await service.plan({ ...payload, title: "Changed planning content" });
     assert.equal(conflict.state, "CONFLICT");

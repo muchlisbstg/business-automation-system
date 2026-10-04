@@ -1,8 +1,31 @@
 {
-  "request_id":"REQ-0008",
-  "plan_id":"PLAN-0008",
-  "tasks":[
-    {"task_id":"T-020","title":"Second independent task","requirement_ids":["R-002"]},
-    {"task_id":"T-010","title":"First independent task","requirement_ids":["R-001"]}
+  "request_id": "REQ-0008",
+  "plan_id": "PLAN-0008",
+  "source": {
+    "workflow": "WF-02",
+    "request_id": "REQ-0008",
+    "planning_state": "PLANNED"
+  },
+  "review_signal": {
+    "human_review_required": false,
+    "approval_status": "not_required",
+    "reason_codes": [],
+    "review_requirement_ids": []
+  },
+  "tasks": [
+    {
+      "task_id": "T-020",
+      "title": "Second independent task",
+      "requirement_ids": [
+        "R-002"
+      ]
+    },
+    {
+      "task_id": "T-010",
+      "title": "First independent task",
+      "requirement_ids": [
+        "R-001"
+      ]
+    }
   ]
 }
