@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://business-automation-system.local/schemas/wf-13-security-findings.json",
+  "title": "WF-13 Security Findings Report (Proposal)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["action", "request_id", "plan_id", "security_run_id", "target", "findings"],
+  "properties": {
+    "action": {"const": "REPORT_SECURITY_FINDINGS"},
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "plan_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "security_run_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "commit_sha"],
+      "properties": {
+        "repository": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["owner", "name"],
+          "properties": {
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$"
+            }
+          }
+        },
+        "commit_sha": {
+          "type": "string",
+          "pattern": "^(?:[a-fA-F0-9]{40}|[a-fA-F0-9]{64})$"
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["finding_id", "source", "rule_id", "severity", "summary"],
+        "properties": {
+          "finding_id": {"type": "string", "minLength": 1, "maxLength": 100},
+          "source": {"type": "string", "minLength": 1, "maxLength": 100},
+          "rule_id": {"type": "string", "minLength": 1, "maxLength": 200},
+          "severity": {
+            "type": "string",
+            "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO", "UNKNOWN"]
+          },
+          "summary": {"type": "string", "minLength": 1, "maxLength": 500}
+        }
+      }
+    }
+  }
+}

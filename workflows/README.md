@@ -8,3 +8,6 @@ The proposal-only [WF-10/11 GitHub integration and AI review contract](WF-10-11-
 
 
 The proposal-only [WF-12 Tests and coverage contract](WF-12-tests/README.md) defines a candidate test-request shape only; it does not resolve source code, execute tests, collect coverage, persist results, or gate CI.
+
+
+The proposal-only [WF-13 Security findings contract](WF-13-security-findings/README.md) defines a candidate finding-report shape only; it does not run scanners, verify reports, persist findings, or gate CI.

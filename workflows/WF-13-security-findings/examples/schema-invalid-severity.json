@@ -1,0 +1,22 @@
+{
+  "action": "REPORT_SECURITY_FINDINGS",
+  "request_id": "req-security-003",
+  "plan_id": "plan-042",
+  "security_run_id": "security-run-003",
+  "target": {
+    "repository": {
+      "owner": "example-org",
+      "name": "sample-service"
+    },
+    "commit_sha": "0123456789abcdef0123456789abcdef01234567"
+  },
+  "findings": [
+    {
+      "finding_id": "example-finding-003",
+      "source": "example-scanner",
+      "rule_id": "EXAMPLE.SEC.003",
+      "severity": "SEVERE",
+      "summary": "Synthetic invalid severity fixture."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "action": "REPORT_SECURITY_FINDINGS",
+  "request_id": "req-security-empty-001",
+  "plan_id": "plan-042",
+  "security_run_id": "security-run-empty-001",
+  "target": {
+    "repository": {
+      "owner": "example-org",
+      "name": "sample-service"
+    },
+    "commit_sha": "abcdef0123456789abcdef0123456789abcdef01"
+  },
+  "findings": []
+}

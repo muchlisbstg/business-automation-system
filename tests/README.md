@@ -10,3 +10,6 @@ The [WF-05 Figma handoff proposal scenarios](wf-05-figma-handoff.md), [WF-06 fro
 
 
 The [WF-12 Tests and coverage proposal scenarios](wf-12-tests.md) distinguish schema-checked request shape from test execution, coverage semantics, result handling, and gating decisions that remain open.
+
+
+The [WF-13 Security findings proposal scenarios](wf-13-security-findings.md) distinguish schema-checked report shape from scanner execution, report verification, finding lifecycle, and CI-gating decisions that remain open.
