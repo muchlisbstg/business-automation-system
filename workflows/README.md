@@ -22,3 +22,6 @@ The proposal-only [WF-18 Technical debt contract](WF-18-technical-debt/README.md
 The proposal-only [WF-19 Documentation as code contract](WF-19-docs-as-code/README.md) defines a candidate request shape only; it does not read or validate documentation, modify or publish files, create CI results or gates, persist records, or send notifications.
 
 The proposal-only [WF-20 Knowledge Base contract](WF-20-knowledge-base/README.md) defines a candidate-submission shape only; it does not verify, ingest, curate, store, index, retrieve, update, publish, or notify.
+
+
+The proposal-only [WF-21/22 Daily brief and reporting contract](WF-21-22-reporting/README.md) defines a candidate-envelope shape only; it does not schedule, read or aggregate data, generate, persist, publish, or deliver reports, or send notifications. Slack and all other notifications are out of scope.

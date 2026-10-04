@@ -1,0 +1,9 @@
+{
+  "action": "REPORT_DAILY_BRIEF_CANDIDATE",
+  "request_id": "synthetic-request-006",
+  "candidate_id": "synthetic-daily-brief-006",
+  "source": "synthetic://workflow-summary",
+  "title": "Synthetic daily brief",
+  "summary": "Synthetic metadata only.",
+  "schedule": "daily"
+}

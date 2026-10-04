@@ -1,0 +1,7 @@
+{
+  "action": "REPORT_DAILY_BRIEF_CANDIDATE",
+  "candidate_id": "synthetic-daily-brief-003",
+  "source": "synthetic://workflow-summary",
+  "title": "Synthetic daily brief",
+  "summary": "This fixture omits the required request_id."
+}

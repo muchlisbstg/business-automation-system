@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://business-automation-system.local/schemas/wf-21-22-reporting.json",
+  "title": "WF-21/22 Daily Brief Candidate (Proposal)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "action",
+    "request_id",
+    "candidate_id",
+    "source",
+    "title",
+    "summary"
+  ],
+  "properties": {
+    "action": {"const": "REPORT_DAILY_BRIEF_CANDIDATE"},
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "candidate_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "source": {"type": "string", "minLength": 1, "maxLength": 255},
+    "title": {"type": "string", "minLength": 1, "maxLength": 200},
+    "summary": {"type": "string", "minLength": 1, "maxLength": 1000}
+  }
+}
