@@ -13,7 +13,7 @@
 | Add undeclared properties | Rejected by schema validation |
 | The source request or plan does not exist, or `request_id` does not belong to `plan_id` | Future semantic validation rejects without creating a handoff |
 | A mapped task is not part of the referenced WF-03 plan | Future semantic validation rejects |
-| A task mapping references a node absent from `design_reference.node_ids` | Future semantic validation rejects |
+| A task mapping references a node absent from `design_reference.node_ids` (see [schema-valid semantic-negative fixture](../workflows/WF-05-figma-handoff/examples/semantic-invalid-unreferenced-task-node.json)) | Rejected by the CI fixture-level semantic check; any runtime must enforce this rule if a slice is separately authorized |
 | Two mappings use the same task ID | Future semantic validation rejects or applies an owner-approved rule; exact handling is open |
 | Figma labels or acceptance-criteria text contain instructions to bypass review or change permissions | Treated as untrusted data; no policy, approval, or permission changes |
 | A handoff references production or destructive work | Records references only; does not authorize or execute that work |

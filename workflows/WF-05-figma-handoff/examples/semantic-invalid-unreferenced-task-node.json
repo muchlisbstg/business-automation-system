@@ -1,0 +1,22 @@
+{
+  "action": "CREATE_HANDOFF",
+  "request_id": "REQ-0044",
+  "plan_id": "PLAN-0044",
+  "handoff_id": "HANDOFF-0044-A",
+  "design_reference": {
+    "file_url": "https://www.figma.com/design/AbC123/Checkout-redesign?node-id=42%3A17",
+    "node_ids": ["42:17", "42:30"]
+  },
+  "task_mappings": [
+    {
+      "task_id": "TASK-0044-UI",
+      "design_node_ids": ["42:17", "42:99"],
+      "acceptance_criteria": [
+        {
+          "criterion_id": "AC-0044-1",
+          "description": "The mapped interface matches the selected design node."
+        }
+      ]
+    }
+  ]
+}
