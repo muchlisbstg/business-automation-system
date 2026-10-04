@@ -1,0 +1,8 @@
+{
+  "action": "REPORT_LEARNING_CANDIDATE",
+  "request_id": "synthetic-request-002",
+  "candidate_id": "synthetic-learning-002",
+  "source": "synthetic://quality-review",
+  "title": "Alternate synthetic candidate",
+  "summary": "A different caller-supplied label is shape-valid but does not establish provenance."
+}

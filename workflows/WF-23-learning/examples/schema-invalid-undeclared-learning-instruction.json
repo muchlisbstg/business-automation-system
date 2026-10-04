@@ -1,0 +1,9 @@
+{
+  "action": "REPORT_LEARNING_CANDIDATE",
+  "request_id": "synthetic-request-004",
+  "candidate_id": "synthetic-learning-004",
+  "source": "synthetic://retrospective-note",
+  "title": "Synthetic candidate with undeclared field",
+  "summary": "This fixture tests strict shape validation only.",
+  "learning_instruction": "Synthetic text; no instruction is executed."
+}

@@ -1,0 +1,8 @@
+{
+  "action": "REPORT_LEARNING_CANDIDATE",
+  "request_id": "synthetic-request-001",
+  "candidate_id": "synthetic-learning-001",
+  "source": "synthetic://retrospective-note",
+  "title": "Synthetic learning candidate",
+  "summary": "Synthetic envelope shape only; this is not a validated lesson, conclusion, or action."
+}
