@@ -1,0 +1,17 @@
+{
+  "action": "REQUEST_DEPLOYMENT",
+  "request_id": "request-example-004",
+  "plan_id": "plan-example-004",
+  "deployment_id": "deployment-example-004",
+  "source": {
+    "repository": {
+      "owner": "example-org",
+      "name": "example-service"
+    }
+  },
+  "artifact_ref": "artifact-ref-example-004",
+  "target": {
+    "service_id": "example-service",
+    "environment": "dev"
+  }
+}

@@ -16,7 +16,7 @@ The automation platform is organized as deterministic, auditable workflows.
 | WF-10/11 | [GitHub integration and AI review (contract proposal)](../workflows/WF-10-11-github-ai-review/README.md) |
 | WF-12 | [Tests and coverage (contract proposal)](../workflows/WF-12-tests/README.md) |
 | WF-13 | [Security findings (contract proposal)](../workflows/WF-13-security-findings/README.md) |
-| WF-14/15 | Deployment gates and deployment |
+| WF-14/15 | [Deployment gates and deployment (contract proposal)](../workflows/WF-14-15-deployment/README.md) |
 | WF-16/17 | Incident detection and response |
 | WF-18 | Technical debt |
 | WF-19 | Documentation as code |

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://business-automation-system.local/schemas/wf-14-15-deployment.json",
+  "title": "WF-14/15 Deployment Request (Proposal)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "action",
+    "request_id",
+    "plan_id",
+    "deployment_id",
+    "source",
+    "artifact_ref",
+    "target"
+  ],
+  "properties": {
+    "action": {"const": "REQUEST_DEPLOYMENT"},
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "plan_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "deployment_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "commit_sha"],
+      "properties": {
+        "repository": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["owner", "name"],
+          "properties": {
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$"
+            }
+          }
+        },
+        "commit_sha": {
+          "type": "string",
+          "pattern": "^(?:[a-fA-F0-9]{40}|[a-fA-F0-9]{64})$"
+        }
+      }
+    },
+    "artifact_ref": {"type": "string", "minLength": 1, "maxLength": 500},
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["service_id", "environment"],
+      "properties": {
+        "service_id": {"type": "string", "minLength": 1, "maxLength": 200},
+        "environment": {"type": "string", "enum": ["dev", "staging", "prod"]}
+      }
+    }
+  }
+}
