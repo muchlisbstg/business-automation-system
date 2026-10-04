@@ -192,6 +192,19 @@ test("does not flag an explicitly negated production promotion", async () => {
   assert.equal(result.approval_status, "not_required");
 });
 
+test("flags a positive production deployment after a different negated action", async () => {
+  const result = await service().submit(request({
+    request_id: "WF01-negation-scope",
+    title: "Do not update docs but deploy to production",
+  }));
+
+  assert.equal(result.state, "ACCEPTED");
+  assert.equal(result.human_review_required, true);
+  assert.equal(result.approval_status, "pending_human_review");
+  assert.ok(result.reason_codes.includes("HIGH_IMPACT_REVIEW_REQUIRED"));
+  assert.equal(result.execution_permitted, false);
+});
+
 test("does not flag an explicit negation as a production action", async () => {
   const result = await service().submit(request({
     request_id: "WF01-no-production-change",
