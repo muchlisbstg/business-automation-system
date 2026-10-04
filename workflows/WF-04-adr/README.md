@@ -43,7 +43,7 @@ The proposed state values are `DRAFT`, `PENDING_REVIEW`, `ACCEPTED`, `REJECTED`,
 
 ## Acceptance tests
 
-See [`tests/wf-04-adr.md`](../../tests/wf-04-adr.md). The JSON examples exercise the event-envelope schema; source-chain matching, idempotency, lifecycle, audit immutability, and safety boundaries require behavioral tests when a runtime slice is authorized.
+See [`tests/wf-04-adr.md`](../../tests/wf-04-adr.md). The JSON examples exercise the event-envelope schema. Two examples intentionally pass schema validation while omitting one required source ID from `source_references`; those cases must fail semantic traceability checks before an ADR is created or changed. Since the reference syntax remains open, the schema does not invent a source-reference format. Source-chain matching, idempotency, lifecycle, audit immutability, and safety boundaries require behavioral tests when a runtime slice is authorized.
 
 ## Assumptions and open decisions for review
 
