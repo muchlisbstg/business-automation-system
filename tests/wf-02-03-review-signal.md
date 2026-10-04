@@ -11,6 +11,7 @@
 | WF-03 source declares a non-`PLANNED` WF-02 result | Schema validation rejects the handoff. |
 | WF-03 review signal is missing or internally inconsistent | Schema validation rejects the request; no execution order is returned. |
 | WF-03 source request ID differs from root `request_id` | WF-03 rejects the request and blocks all listed tasks. |
+| WF-01 request ID is 128 characters | WF-02 planning and both WF-03 source/root fields accept and preserve the ID. |
 | A review requirement ID is not linked to any WF-03 task | WF-03 rejects the request and blocks all listed tasks rather than dropping the signal. |
 | A task links to a review-required requirement | WF-03 includes that task in `blocked_task_ids`. |
 | A task transitively depends on a blocked task | WF-03 includes the dependent task in `blocked_task_ids`, even if it also has unrelated requirement links. |

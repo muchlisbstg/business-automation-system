@@ -21,6 +21,7 @@ The active input contract is [`WF-03 schema`](../WF-03-orchestration/schema.json
 - `review_signal: { human_review_required, approval_status, reason_codes, review_requirement_ids }`.
 
 Only a persisted WF-02 `PLANNED` result may be handed off; WF-02 exposes this as `planning_state` even when an API replay's top-level state is `DUPLICATE`. The source request ID must equal the root request ID. A positive signal must be consistent (`pending_human_review`, `HIGH_IMPACT_REVIEW_REQUIRED`, and at least one review requirement ID); a negative signal must be `not_required` with empty reason and requirement-ID arrays. Every review requirement ID must be linked by at least one WF-03 task, or WF-03 rejects the request without an execution order and lists the tasks as blocked. The schema rejects a missing or internally inconsistent signal.
+The root and source request IDs preserve the full 128-character range accepted by WF-01.
 
 ## Trust and safety boundary
 

@@ -12,6 +12,7 @@ Required:
 - `tasks`
 
 The signal is required even when review is not required: use `human_review_required: false`, `approval_status: not_required`, and empty `reason_codes` and `review_requirement_ids`. A true signal requires `pending_human_review`, `HIGH_IMPACT_REVIEW_REQUIRED`, and at least one review requirement ID. Every review requirement ID must occur in at least one task's `requirement_ids`; otherwise WF-03 rejects the request and blocks all listed tasks. The caller remains trusted to forward the actual WF-02 result; WF-03 does not add authentication or an independent upstream-record lookup.
+The root and source `request_id` fields MUST support the full 128-character range accepted by WF-01 and MUST match exactly.
 
 Each task MUST contain:
 - `task_id`

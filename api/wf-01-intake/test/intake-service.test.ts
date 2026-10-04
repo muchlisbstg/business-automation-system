@@ -36,6 +36,14 @@ test("accepts a valid fixture once and persists one intake record", async () => 
   assert.equal(repository.records.size, 1);
 });
 
+test("accepts a request ID at the full 128-character contract limit", async () => {
+  const requestId = "R".repeat(128);
+  const result = await service().submit(request({ request_id: requestId }));
+
+  assert.equal(result.state, "ACCEPTED");
+  assert.equal(result.request_id, requestId);
+});
+
 test("returns concrete missing field names for incomplete requests", async () => {
   const result = await service().submit({
     request_id: "WF01-missing",

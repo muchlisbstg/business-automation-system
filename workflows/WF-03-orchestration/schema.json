@@ -6,7 +6,7 @@
   "additionalProperties": false,
   "required": ["request_id", "plan_id", "source", "review_signal", "tasks"],
   "properties": {
-    "request_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 128},
     "plan_id": {"type": "string", "minLength": 1, "maxLength": 100},
     "source": {
       "type": "object",
@@ -14,7 +14,7 @@
       "required": ["workflow", "request_id", "planning_state"],
       "properties": {
         "workflow": {"const": "WF-02"},
-        "request_id": {"type": "string", "minLength": 1, "maxLength": 100},
+        "request_id": {"type": "string", "minLength": 1, "maxLength": 128},
         "planning_state": {"const": "PLANNED"}
       }
     },

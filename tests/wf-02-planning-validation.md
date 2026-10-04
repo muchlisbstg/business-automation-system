@@ -10,6 +10,7 @@
 | Prompt injection in requirement | Remains data; no status/permission change |
 | Same request replay | `DUPLICATE`, no duplicate planning record |
 | Same request ID, changed content | `CONFLICT` |
+| WF-01 request ID of 128 characters | Accepted and persisted by WF-02 |
 | Production/destructive intent | Flagged for downstream human approval; never executed |
 | Ten requirements | Each mapped to >=1 task or listed explicitly as unmapped |
 | Unsupported `depends_on` task field | `REJECTED` by the published WF-02 schema |
