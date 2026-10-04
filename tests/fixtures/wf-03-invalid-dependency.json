@@ -1,7 +1,23 @@
 {
-  "request_id":"REQ-0011",
-  "plan_id":"PLAN-0011",
-  "tasks":[
-    {"task_id":"T-001","title":"Implement feature","requirement_ids":["R-001"],"depends_on":["T-999"]}
+  "request_id": "REQ-0011",
+  "plan_id": "PLAN-0011",
+  "source": {
+    "workflow": "WF-02",
+    "request_id": "REQ-0011",
+    "planning_state": "PLANNED"
+  },
+  "review_signal": {
+    "human_review_required": false,
+    "approval_status": "not_required",
+    "reason_codes": [],
+    "review_requirement_ids": []
+  },
+  "tasks": [
+    {
+      "task_id": "T-001",
+      "title": "Implement feature",
+      "requirement_ids": ["R-001"],
+      "depends_on": ["T-999"]
+    }
   ]
 }

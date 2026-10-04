@@ -1,7 +1,7 @@
 # WF-03 — Orchestration
 
 ## Purpose
-Transform an approved planning record into a deterministic execution plan. WF-03 coordinates downstream work but does not itself build, test, deploy, mutate production data, or approve high-impact actions.
+Consume a PLANNED WF-02 planning result, including its `review_signal`, to produce a deterministic execution plan. WF-03 coordinates downstream work but does not itself build, test, deploy, mutate production data, or approve high-impact actions.
 
 ## Input
 Required:
