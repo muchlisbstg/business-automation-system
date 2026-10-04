@@ -22,3 +22,5 @@ The [WF-18 Technical debt proposal scenarios](wf-18-technical-debt.md) distingui
 
 
 The [WF-19 Documentation as code proposal scenarios](wf-19-docs-as-code.md) distinguish candidate request-shape validation from path/source verification, documentation checks, CI gates, and file changes that remain undecided.
+
+The [WF-20 Knowledge Base proposal scenarios](wf-20-knowledge-base.md) distinguish candidate metadata shape from source verification, content policy, curation, storage, retrieval, access control, lifecycle, and notification decisions that remain open.

@@ -1,0 +1,7 @@
+{
+  "action": "REPORT_KNOWLEDGE_CANDIDATE",
+  "candidate_id": "cand-demo-wf20-invalid-001",
+  "source": "synthetic-source",
+  "title": "Synthetic candidate",
+  "summary": "Synthetic summary for a deliberately invalid fixture."
+}

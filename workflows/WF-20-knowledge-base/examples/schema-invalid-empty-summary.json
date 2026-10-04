@@ -1,0 +1,8 @@
+{
+  "action": "REPORT_KNOWLEDGE_CANDIDATE",
+  "request_id": "req-demo-wf20-invalid-003",
+  "candidate_id": "cand-demo-wf20-invalid-003",
+  "source": "synthetic-source",
+  "title": "Synthetic candidate",
+  "summary": ""
+}
