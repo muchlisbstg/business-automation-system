@@ -8,6 +8,8 @@ A failed gate must produce an auditable result and must not be silently overridd
 
 The [WF-05 Figma handoff proposal scenarios](wf-05-figma-handoff.md), [WF-06 frontend QA proposal scenarios](wf-06-frontend-qa.md), [WF-07 API QA proposal scenarios](wf-07-api-qa.md), [WF-08 Database QA proposal scenarios](wf-08-database-qa.md), [WF-09 Mobile QA proposal scenarios](wf-09-mobile-qa.md), and [WF-10/11 GitHub integration and AI review proposal scenarios](wf-10-11-github-ai-review.md) distinguish schema-checked examples from semantic behavior and decisions that remain open.
 
+The [WF-02→WF-03 human-review signal proposal scenarios](wf-02-03-review-signal.md) distinguish candidate shape validation from source authority, policy selection, task attribution, dependent blocking, approval, and output behavior that remain unresolved.
+
 
 The [WF-12 Tests and coverage proposal scenarios](wf-12-tests.md) distinguish schema-checked request shape from test execution, coverage semantics, result handling, and gating decisions that remain open.
 

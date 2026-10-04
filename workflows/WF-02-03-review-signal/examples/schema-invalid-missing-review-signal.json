@@ -1,0 +1,15 @@
+{
+  "request_id": "REQ-SYNTH-2044",
+  "plan_id": "PLAN-SYNTH-2044",
+  "source": {
+    "workflow": "WF-02",
+    "request_id": "REQ-SYNTH-2044"
+  },
+  "tasks": [
+    {
+      "task_id": "T-301",
+      "title": "Prepare a test summary",
+      "requirement_ids": ["R-01"]
+    }
+  ]
+}

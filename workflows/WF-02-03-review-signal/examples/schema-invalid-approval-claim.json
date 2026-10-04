@@ -1,0 +1,21 @@
+{
+  "request_id": "REQ-SYNTH-2046",
+  "plan_id": "PLAN-SYNTH-2046",
+  "source": {
+    "workflow": "WF-02",
+    "request_id": "REQ-SYNTH-2046"
+  },
+  "review_signal": {
+    "human_review_required": true,
+    "approval_status": "pending_human_review",
+    "reason_codes": ["HIGH_IMPACT_REVIEW_REQUIRED"],
+    "approval_reference": "SELF-ASSERTED-APPROVAL"
+  },
+  "tasks": [
+    {
+      "task_id": "T-501",
+      "title": "Prepare a runbook",
+      "requirement_ids": ["R-01"]
+    }
+  ]
+}
