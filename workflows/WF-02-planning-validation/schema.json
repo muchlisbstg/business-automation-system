@@ -1,34 +1,76 @@
 {
-  "$schema":"https://json-schema.org/draft/2020-12/schema",
-  "$id":"https://business-automation-system.local/schemas/wf-02-planning-validation.json",
-  "title":"WF-02 Planning Validation Input",
-  "type":"object",
-  "additionalProperties":false,
-  "required":["request_id","title","requirements"],
-  "properties":{
-    "request_id":{"type":"string","minLength":1,"maxLength":128},
-    "title":{"type":"string","minLength":1,"maxLength":200},
-    "requirements":{
-      "type":"array","minItems":1,
-      "items":{
-        "type":"object","additionalProperties":false,
-        "required":["requirement_id","description"],
-        "properties":{
-          "requirement_id":{"type":"string","minLength":1,"maxLength":100},
-          "description":{"type":"string","minLength":1,"maxLength":2000},
-          "acceptance_criteria":{"type":"array","items":{"type":"string","minLength":1,"maxLength":500}}
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://business-automation-system.local/schemas/wf-02-planning-validation.json",
+  "title": "WF-02 Planning Validation Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "source", "intake_review_signal", "title", "requirements"],
+  "properties": {
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 128},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["workflow", "request_id", "intake_state"],
+      "properties": {
+        "workflow": {"const": "WF-01"},
+        "request_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "intake_state": {"type": "string", "enum": ["ACCEPTED", "DUPLICATE"]}
+      }
+    },
+    "intake_review_signal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["human_review_required", "approval_status"],
+      "properties": {
+        "human_review_required": {"type": "boolean"},
+        "approval_status": {"type": "string", "enum": ["not_required", "pending_human_review"]}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"human_review_required": {"const": true}},
+            "required": ["human_review_required"]
+          },
+          "then": {
+            "properties": {"approval_status": {"const": "pending_human_review"}}
+          }
+        },
+        {
+          "if": {
+            "properties": {"human_review_required": {"const": false}},
+            "required": ["human_review_required"]
+          },
+          "then": {
+            "properties": {"approval_status": {"const": "not_required"}}
+          }
+        }
+      ]
+    },
+    "title": {"type": "string", "minLength": 1, "maxLength": 200},
+    "requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["requirement_id", "description"],
+        "properties": {
+          "requirement_id": {"type": "string", "minLength": 1, "maxLength": 100},
+          "description": {"type": "string", "minLength": 1, "maxLength": 2000},
+          "acceptance_criteria": {"type": "array", "items": {"type": "string", "minLength": 1, "maxLength": 500}}
         }
       }
     },
-    "tasks":{
-      "type":"array",
-      "items":{
-        "type":"object","additionalProperties":false,
-        "required":["task_id","title","requirement_ids"],
-        "properties":{
-          "task_id":{"type":"string","minLength":1,"maxLength":100},
-          "title":{"type":"string","minLength":1,"maxLength":300},
-          "requirement_ids":{"type":"array","minItems":1,"items":{"type":"string","minLength":1,"maxLength":100}}
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["task_id", "title", "requirement_ids"],
+        "properties": {
+          "task_id": {"type": "string", "minLength": 1, "maxLength": 100},
+          "title": {"type": "string", "minLength": 1, "maxLength": 300},
+          "requirement_ids": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1, "maxLength": 100}}
         }
       }
     }

@@ -2,6 +2,11 @@
 
 | Case | Expected behavior |
 |---|---|
+| WF-02 source or intake review signal is missing | WF-02 returns `CLARIFICATION_REQUIRED` instead of silently assuming review is not required. |
+| WF-02 source request ID differs from the planning request | WF-02 rejects the handoff and does not persist a plan. |
+| WF-01 reports pending review while planning text is benign | WF-02 maps the intake gate to every requirement; WF-03 blocks linked tasks and their dependents. |
+| WF-01 replay returns `DUPLICATE` with pending review | WF-02 accepts the duplicate source state and preserves the original review gate. |
+| WF-01 state changes from `ACCEPTED` to `DUPLICATE` for identical WF-02 content | WF-02 treats the upstream state as replay metadata and returns `DUPLICATE`, not `CONFLICT`. |
 | Request title contains high-impact intent | WF-02 marks every requirement for review and returns a sorted `review_requirement_ids` list. |
 | A requirement description or acceptance criterion contains high-impact intent | WF-02 marks only that requirement for review. |
 | A task title contains high-impact intent | WF-02 attributes review to that task's validated `requirement_ids`. |

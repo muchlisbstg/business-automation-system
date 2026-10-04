@@ -1,12 +1,29 @@
 {
-  "request_id":"REQ-0004",
-  "title":"Add API authorization",
-  "requirements":[
-    {"requirement_id":"R-001","description":"Every protected endpoint requires authorization.","acceptance_criteria":["Unauthorized requests return 401 or 403."]},
-    {"requirement_id":"R-002","description":"Authorization failures are auditable.","acceptance_criteria":["Audit record contains correlation_id and request_id."]}
+  "request_id": "REQ-0004",
+  "source": {
+    "workflow": "WF-01",
+    "request_id": "REQ-0004",
+    "intake_state": "ACCEPTED"
+  },
+  "intake_review_signal": {
+    "human_review_required": false,
+    "approval_status": "not_required"
+  },
+  "title": "Add API authorization",
+  "requirements": [
+    {
+      "requirement_id": "R-001",
+      "description": "Every protected endpoint requires authorization.",
+      "acceptance_criteria": ["Unauthorized requests return 401 or 403."]
+    },
+    {
+      "requirement_id": "R-002",
+      "description": "Authorization failures are auditable.",
+      "acceptance_criteria": ["Audit record contains correlation_id and request_id."]
+    }
   ],
-  "tasks":[
-    {"task_id":"T-001","title":"Add authorization middleware and tests","requirement_ids":["R-001"]},
-    {"task_id":"T-002","title":"Add authorization audit event and tests","requirement_ids":["R-002"]}
+  "tasks": [
+    {"task_id": "T-001", "title": "Add authorization middleware and tests", "requirement_ids": ["R-001"]},
+    {"task_id": "T-002", "title": "Add authorization audit event and tests", "requirement_ids": ["R-002"]}
   ]
 }

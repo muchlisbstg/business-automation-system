@@ -2,6 +2,10 @@
 
 | Case | Expected |
 |---|---|
+| Missing WF-01 source or review signal | `CLARIFICATION_REQUIRED` |
+| WF-01 source request ID differs from planning request ID | `REJECTED`; no planning record is created |
+| WF-01 review signal is true and consistent | All requirements receive review IDs, even when planning text is benign |
+| WF-01 returns `DUPLICATE` with a pending review signal | Review signal remains required and is propagated |
 | Missing requirements | `CLARIFICATION_REQUIRED` |
 | Requirement without task mapping | `UNMAPPED_REQUIREMENTS` |
 | Generic title "Perbaiki performa" even when acceptance criteria are detailed | `INVALID_TASK` |

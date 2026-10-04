@@ -20,7 +20,11 @@ function service(repository = new MemoryPlanningRepository()): PlanningService {
 }
 
 function planningInput(overrides: Partial<PlanningInput> = {}): PlanningInput {
-  return { ...fixture, ...overrides };
+  const merged = { ...fixture, ...overrides };
+  return {
+    ...merged,
+    source: overrides.source ?? { ...merged.source, request_id: merged.request_id },
+  };
 }
 
 test("accepts a valid WF-02 fixture and returns traceable tasks without execution permission", async () => {
@@ -35,6 +39,103 @@ test("accepts a valid WF-02 fixture and returns traceable tasks without executio
   assert.equal(result.human_review_required, false);
   assert.deepEqual(result.review_requirement_ids, []);
   assert.equal(repository.records.size, 1);
+});
+
+test("requires an explicit WF-01 source and review signal", async () => {
+  for (const field of ["source", "intake_review_signal"] as const) {
+    const result = await service().plan({
+      ...planningInput({ request_id: `WF02-missing-${field}` }),
+      [field]: undefined,
+    });
+
+    assert.equal(result.state, "CLARIFICATION_REQUIRED", `${field} must be required`);
+    assert.deepEqual(result.missing_fields, [field]);
+  }
+});
+
+test("rejects an internally inconsistent WF-01 review signal", async () => {
+  const result = await service().plan(planningInput({
+    request_id: "WF02-inconsistent-intake-review",
+    intake_review_signal: {
+      human_review_required: true,
+      approval_status: "not_required",
+    },
+  }));
+
+  assert.equal(result.state, "REJECTED");
+  assert.ok(result.reason_codes.includes("INVALID_PLANNING_INPUT"));
+  assert.equal(result.execution_permitted, false);
+});
+
+test("carries a positive WF-01 intake review to every requirement, including duplicate intake replays", async () => {
+  const result = await service().plan(planningInput({
+    request_id: "WF02-inherited-intake-review",
+    source: {
+      workflow: "WF-01",
+      request_id: "WF02-inherited-intake-review",
+      intake_state: "DUPLICATE",
+    },
+    intake_review_signal: {
+      human_review_required: true,
+      approval_status: "pending_human_review",
+    },
+    title: "Account retention support",
+    requirements: [
+      { requirement_id: "R-002", description: "Record a retention audit event." },
+      { requirement_id: "R-001", description: "Monitor the retention workflow." },
+    ],
+    tasks: [
+      { task_id: "T-001", title: "Add retention monitoring", requirement_ids: ["R-001"] },
+      { task_id: "T-002", title: "Add retention audit event", requirement_ids: ["R-002"] },
+    ],
+  }));
+
+  assert.equal(result.state, "PLANNED");
+  assert.equal(result.human_review_required, true);
+  assert.equal(result.approval_status, "pending_human_review");
+  assert.deepEqual(result.review_requirement_ids, ["R-001", "R-002"]);
+  assert.ok(result.reason_codes.includes("HIGH_IMPACT_REVIEW_REQUIRED"));
+});
+
+test("treats WF-01 ACCEPTED and DUPLICATE source states as the same planning replay", async () => {
+  const repository = new MemoryPlanningRepository();
+  const planner = service(repository);
+  const acceptedInput = planningInput({
+    request_id: "WF02-upstream-replay-state",
+    intake_review_signal: {
+      human_review_required: true,
+      approval_status: "pending_human_review",
+    },
+  });
+  const replayInput = planningInput({
+    ...acceptedInput,
+    source: { ...acceptedInput.source, intake_state: "DUPLICATE" },
+  });
+
+  const first = await planner.plan(acceptedInput);
+  const replay = await planner.plan(replayInput);
+
+  assert.equal(first.state, "PLANNED");
+  assert.equal(replay.state, "DUPLICATE");
+  assert.equal(replay.planning_state, "PLANNED");
+  assert.deepEqual(replay.review_requirement_ids, ["R-001", "R-002"]);
+  assert.equal(repository.records.size, 1);
+});
+
+test("rejects a WF-01 source whose request ID differs from the planning request", async () => {
+  const result = await service().plan(planningInput({
+    request_id: "WF02-source-mismatch",
+    source: {
+      workflow: "WF-01",
+      request_id: "WF01-different-request",
+      intake_state: "ACCEPTED",
+    },
+  }));
+
+  assert.equal(result.state, "REJECTED");
+  assert.ok(result.reason_codes.includes("WF01_SOURCE_REQUEST_MISMATCH"));
+  assert.ok(result.validation_errors?.some((error) => error.path === "/source/request_id"));
+  assert.equal(result.execution_permitted, false);
 });
 
 test("identifies only requirements whose own content requires human review", async () => {
@@ -93,6 +194,15 @@ test("attributes task-local high-impact intent through validated requirement lin
 test("returns clarification for a blank requirement description", async () => {
   const result = await service().plan({
     request_id: "WF02-missing-description",
+    source: {
+      workflow: "WF-01",
+      request_id: "WF02-missing-description",
+      intake_state: "ACCEPTED",
+    },
+    intake_review_signal: {
+      human_review_required: false,
+      approval_status: "not_required",
+    },
     title: "Checkout planning",
     requirements: [{ requirement_id: "R-001", description: "   " }],
   });
@@ -179,7 +289,9 @@ test("canonicalizes Unicode, whitespace, and object-key order for idempotent rep
       { title: "Add authorization middleware and tests", requirement_ids: ["R-001"], task_id: "T-001" },
       { requirement_ids: ["R-002"], task_id: "T-002", title: "Add audit event and tests" },
     ],
+    intake_review_signal: original.intake_review_signal,
     requirements: original.requirements,
+    source: original.source,
     title: "Café export",
     request_id: "WF02-replay",
   };
@@ -244,7 +356,11 @@ test("treats prompt injection as requirement data and never marks tasks done or 
     new URL("../../../workflows/WF-02-planning-validation/examples/prompt-injection.json", import.meta.url),
   );
   const injection = JSON.parse(readFileSync(injectionPath, "utf8")) as PlanningInput;
-  const result = await service().plan({ ...injection, request_id: "WF02-injection" });
+  const result = await service().plan({
+    ...injection,
+    request_id: "WF02-injection",
+    source: { ...injection.source, request_id: "WF02-injection" },
+  });
 
   assert.equal(result.state, "PLANNED");
   assert.equal(result.tasks?.[0]?.title, "Validate requirement as untrusted input");

@@ -1,5 +1,14 @@
 {
   "request_id": "REQ-NEG-0001",
+  "source": {
+    "workflow": "WF-01",
+    "request_id": "REQ-NEG-0001",
+    "intake_state": "ACCEPTED"
+  },
+  "intake_review_signal": {
+    "human_review_required": false,
+    "approval_status": "not_required"
+  },
   "title": "Missing requirement identifier",
   "requirements": [
     {"description": "A requirement without its stable identifier."}
