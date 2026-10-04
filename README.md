@@ -64,7 +64,7 @@ Production n8n is intended for queue mode with main and worker processes. Postgr
 
 ## Workflow roadmap
 
-WF-01 Intake → WF-02 Planning → WF-03 Orchestration → WF-04 ADRs → WF-05 Figma handoff → WF-06 Frontend QA → WF-07 API QA → WF-08 Database QA → WF-09 Mobile QA → WF-10/11 GitHub + AI review → WF-12 Tests → WF-13 Security → WF-14/15 Deployment → WF-16/17 Incidents → WF-18 Technical Debt → WF-19 Docs-as-code → WF-20 Knowledge Base → WF-21/22 Reporting → WF-23 Learning → WF-24 Metrics.
+WF-01 Intake → WF-02 Planning → WF-03 Orchestration → WF-04 ADRs → [WF-05 Figma handoff (contract proposal)](workflows/WF-05-figma-handoff/README.md) → WF-06 Frontend QA → WF-07 API QA → WF-08 Database QA → WF-09 Mobile QA → WF-10/11 GitHub + AI review → WF-12 Tests → WF-13 Security → WF-14/15 Deployment → WF-16/17 Incidents → WF-18 Technical Debt → WF-19 Docs-as-code → WF-20 Knowledge Base → WF-21/22 Reporting → WF-23 Learning → WF-24 Metrics.
 
 ## Quality and governance
 

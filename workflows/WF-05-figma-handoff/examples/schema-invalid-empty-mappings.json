@@ -1,0 +1,11 @@
+{
+  "action": "CREATE_HANDOFF",
+  "request_id": "REQ-0042",
+  "plan_id": "PLAN-0042",
+  "handoff_id": "HANDOFF-0042-A",
+  "design_reference": {
+    "file_url": "https://www.figma.com/design/AbC123/Checkout-redesign",
+    "node_ids": ["42:17"]
+  },
+  "task_mappings": []
+}

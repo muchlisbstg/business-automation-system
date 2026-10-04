@@ -1,0 +1,18 @@
+{
+  "action": "CREATE_HANDOFF",
+  "request_id": "REQ-0042",
+  "handoff_id": "HANDOFF-0042-A",
+  "design_reference": {
+    "file_url": "https://www.figma.com/design/AbC123/Checkout-redesign",
+    "node_ids": ["42:17"]
+  },
+  "task_mappings": [
+    {
+      "task_id": "TASK-0042-UI",
+      "design_node_ids": ["42:17"],
+      "acceptance_criteria": [
+        {"criterion_id": "AC-0042-1", "description": "The summary is visible."}
+      ]
+    }
+  ]
+}
