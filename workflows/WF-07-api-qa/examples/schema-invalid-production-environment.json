@@ -1,0 +1,12 @@
+{
+  "action": "REQUEST_API_QA",
+  "request_id": "req-api-2026-005",
+  "plan_id": "plan-api-2026-005",
+  "qa_run_id": "api-qa-run-005",
+  "target": {
+    "commit_sha": "0123456789abcdef0123456789abcdef01234567",
+    "base_url": "https://api.example.test/v1",
+    "environment": "PRODUCTION"
+  },
+  "checks": ["AUTHORIZATION"]
+}
