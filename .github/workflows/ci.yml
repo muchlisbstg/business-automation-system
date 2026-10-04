@@ -46,7 +46,7 @@ jobs:
       - name: Validate contract structure
         run: python scripts/validate_contracts.py
 
-      - name: Validate positive and negative fixtures against JSON Schema
+      - name: Validate positive and negative fixtures against JSON Schema and declared formats
         run: python scripts/validate_schema_fixtures.py
 
       - name: Test contract validator regressions

@@ -12,12 +12,12 @@ The candidate signal contains:
 
 - `action`: candidate vocabulary only; it is not an instruction to run a detector or take action.
 - `request_id` and `signal_id`: opaque caller-supplied identifiers. Their issuer, uniqueness, source-chain relationship, replay behavior, and retry semantics are not checked.
-- `observed_at`: a candidate timestamp string constrained to an RFC 3339-like shape. The schema does not validate calendar correctness, clock trust, freshness, ordering, or clock skew.
+- `observed_at`: a candidate, bounded RFC 3339-style date-time string. The schema declares `format: date-time`; repository fixture CI asserts calendar, clock-field, and offset validity using the standard library after the pattern check. The candidate profile rejects leap seconds. This does not establish clock trust, freshness, ordering, or acceptable skew.
 - `source`: a claimed detector or observer label. It is neither authenticated nor checked against an allow-list or registry.
 - `severity`: one of a small set of candidate labels. No mapping, threshold, impact model, or response policy is implied.
 - `summary`: bounded free text, not verified or sanitized evidence.
 
-The schema rejects undeclared fields, including credentials and response commands. It cannot detect secrets, personal or sensitive data, or instruction-like text embedded in an allowed string. Fixtures use synthetic data only.
+The schema rejects undeclared fields, including credentials and response commands. It cannot detect secrets, personal or sensitive data, or instruction-like text embedded in an allowed string. Fixtures use synthetic data only. CI's date-time assertion checks candidate syntax/calendar validity only; it does not make the signal trustworthy or authorize any workflow behavior.
 
 ## Safety boundaries
 
@@ -42,7 +42,7 @@ These are reviewable assumptions, not current repository behavior:
 3. Decide who issues `request_id` and `signal_id`, their uniqueness scope, trust chain, deduplication, replay/conflict behavior, idempotency, and retries.
 4. Decide supported detection sources, source authentication and integrity, service/environment identifiers, evidence requirements, allow-lists, and how stale, missing, partial, or conflicting observations are handled.
 5. Decide the severity vocabulary and mapping, confidence, impact/urgency model, threshold ownership, and whether any label is advisory or can affect a deterministic gate. No severity in this proposal authorizes response.
-6. Decide timestamp format and authoritative clock, allowed skew, freshness, ordering, and handling of future or invalid observations. The fixture schema checks only timestamp shape.
+6. Review whether the candidate timestamp profile is acceptable: a bounded RFC 3339-style date-time with calendar/time/offset validation and no leap-second representation. Decide the authoritative clock, allowed skew, freshness, ordering, and handling of future or invalid observations; none is inferred from this profile.
 7. Decide what summaries and evidence may contain, including paths, logs, user/customer data, redaction, access, retention, and storage. A valid string is not safe or sanitized by virtue of schema validation.
 8. Decide incident identity, grouping/correlation, duplicate detection, lifecycle/state machine, ownership, triage, acknowledgement, closure, and append-only audit requirements.
 9. Decide response action catalogue, least-privilege identities, target authorization, preconditions, blast-radius controls, human-approval policy, separation of duties, and which actions are prohibited. Production and destructive operations retain the repository's human-approval requirement.
