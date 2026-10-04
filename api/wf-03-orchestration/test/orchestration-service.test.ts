@@ -10,6 +10,12 @@ const fixturePath = fileURLToPath(
   new URL("../../../workflows/WF-03-orchestration/examples/valid.json", import.meta.url),
 );
 const fixture = JSON.parse(readFileSync(fixturePath, "utf8")) as OrchestrationInput;
+const invalidDependencyFixturePath = fileURLToPath(
+  new URL("../../../tests/fixtures/wf-03-invalid-dependency.json", import.meta.url),
+);
+const invalidDependencyFixture = JSON.parse(
+  readFileSync(invalidDependencyFixturePath, "utf8"),
+) as OrchestrationInput;
 const fixedClock = () => new Date("2026-06-01T12:00:00.000Z");
 
 function service(repository = new MemoryOrchestrationRepository()): OrchestrationService {
@@ -115,23 +121,7 @@ test("rejects a WF-02 review requirement that is not linked to any WF-03 task", 
 });
 
 test("rejects unknown dependency IDs and blocks the entire invalid plan", async () => {
-  const result = await service().orchestrate({
-    request_id: "REQ-unknown",
-    plan_id: "WF03-unknown",
-    source: { workflow: "WF-02", request_id: "REQ-unknown", planning_state: "PLANNED" },
-    review_signal: {
-      human_review_required: false,
-      approval_status: "not_required",
-      reason_codes: [],
-      review_requirement_ids: [],
-    },
-    tasks: [{
-      task_id: "T-001",
-      title: "Implement feature",
-      requirement_ids: ["R-001"],
-      depends_on: ["T-999"],
-    }],
-  });
+  const result = await service().orchestrate(invalidDependencyFixture);
 
   assert.equal(result.state, "INVALID_DEPENDENCY");
   assert.deepEqual(result.execution_order, []);
