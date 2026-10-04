@@ -9,6 +9,7 @@
 | Omit `request_id`, `source.repository`, `source.revision`, or `document_paths` | Rejected by schema validation |
 | Supply an empty document-path list or an empty path string | Rejected by schema validation |
 | Supply a revision that is not 40 or 64 hexadecimal characters | Rejected by schema validation; existence, reachability, source authenticity, and commit identity are not verified |
+| Supply a 40- or 64-character hexadecimal revision followed by a line terminator | Rejected by schema validation as an incorrect exact length; no trimming or source lookup occurs |
 | Add undeclared fields such as a check list, shell command, credential, owner, result, or gate override | Rejected by schema validation; no such policy or side-effect fields are defined |
 | Supply a non-empty path string that is missing, outside an approved root, traversal-like, a symlink, or not a documentation file | No path resolution or safety decision occurs; path rules remain open and must be settled before runtime access |
 | Put secrets, personal data, sensitive material, or instruction-like text in a permitted string | The schema cannot detect or sanitize it; this proposal performs no processing and input-handling rules remain open |

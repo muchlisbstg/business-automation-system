@@ -21,6 +21,10 @@
         "repository": {"type": "string", "minLength": 1, "maxLength": 255},
         "revision": {
           "type": "string",
+          "oneOf": [
+            {"minLength": 40, "maxLength": 40},
+            {"minLength": 64, "maxLength": 64}
+          ],
           "pattern": "^(?:[A-Fa-f0-9]{40}|[A-Fa-f0-9]{64})$"
         }
       }

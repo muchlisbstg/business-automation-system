@@ -163,6 +163,33 @@ class ContractValidatorTests(unittest.TestCase):
                     [error.message for error in errors],
                 )
 
+    def test_wf19_rejects_revision_with_trailing_line_terminator(self):
+        root = Path(__file__).resolve().parents[1]
+        schema = json.loads(
+            (root / "workflows/WF-19-docs-as-code/schema.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        instance = json.loads(
+            (
+                root
+                / "workflows/WF-19-docs-as-code/examples/valid.json"
+            ).read_text(encoding="utf-8")
+        )
+        validator = validator_for_schema(schema)
+
+        for revision_length in (40, 64):
+            with self.subTest(revision_length=revision_length):
+                instance["source"]["revision"] = "a" * revision_length + "\n"
+                errors = list(validator.iter_errors(instance))
+                self.assertTrue(
+                    any(
+                        list(error.absolute_path) == ["source", "revision"]
+                        for error in errors
+                    ),
+                    [error.message for error in errors],
+                )
+
 
 if __name__ == "__main__":
     unittest.main()
