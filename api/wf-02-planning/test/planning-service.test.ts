@@ -193,6 +193,18 @@ test("flags production/destructive intent for human review without approval or e
   assert.equal(result.execution_permitted, false);
 });
 
+test("flags the plural destructive verb 'deletes' for downstream human review", async () => {
+  const result = await service().plan(planningInput({
+    request_id: "WF02-deletes-production-data",
+    title: "Deletes customer records in production",
+  }));
+
+  assert.equal(result.state, "PLANNED");
+  assert.equal(result.human_review_required, true);
+  assert.equal(result.approval_status, "pending_human_review");
+  assert.equal(result.execution_permitted, false);
+});
+
 test("flags a production promotion for downstream human review", async () => {
   const result = await service().plan(planningInput({
     request_id: "WF02-production-promotion",
