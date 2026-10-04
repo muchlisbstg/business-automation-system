@@ -7,7 +7,7 @@
 | Submit a candidate request for a declared repository commit, artifact reference, service, and `staging` environment | Schema-valid shape only; no artifact verification, gate evaluation, or deployment is implied |
 | Submit a candidate request with `prod` as the environment | Schema-valid shape only; this is not human approval, gate evidence, permission, or authorization to deploy |
 | Use `dev`, `staging`, or `prod` as the environment | Accepted by the candidate schema; environment access and eligibility are not checked |
-| Omit `action`, a trace ID, `source`, `artifact_ref`, or `target` | Rejected by schema validation |
+| Omit `action`, `request_id` (see [negative request-ID fixture](../workflows/WF-14-15-deployment/examples/schema-invalid-missing-request-id.json)), `source`, `artifact_ref`, or `target` | Rejected by schema validation |
 | Omit `repository`, `owner`, `name`, `commit_sha`, `service_id`, or `environment` | Rejected by schema validation |
 | Supply an empty/malformed repository identifier, malformed commit SHA, empty artifact reference, or unsupported environment | Rejected by schema validation |
 | Add an undeclared field such as a token, password, command, runner override, or approval claim | Rejected by schema validation |
