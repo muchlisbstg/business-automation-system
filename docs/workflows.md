@@ -25,6 +25,7 @@ The automation platform is organized as deterministic, auditable workflows.
 | WF-21/22 | [Daily brief and reporting (contract proposal)](../workflows/WF-21-22-reporting/README.md) |
 | WF-23 | [Learning loop (contract proposal)](../workflows/WF-23-learning/README.md) |
 | WF-24 | [Daily engineering metrics (contract proposal)](../workflows/WF-24-engineering-metrics/README.md) |
+| WF-25 | [Human approval decision records (proposal; revised candidate)](../workflows/WF-25-human-approval-decision-records/README.md) |
 
 ## Governance
 
