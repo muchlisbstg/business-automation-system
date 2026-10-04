@@ -3,18 +3,22 @@
   "plan_id": "PLAN-SYNTH-2043",
   "source": {
     "workflow": "WF-02",
-    "request_id": "REQ-SYNTH-2043"
+    "request_id": "REQ-SYNTH-2043",
+    "planning_state": "PLANNED"
   },
   "review_signal": {
     "human_review_required": false,
     "approval_status": "not_required",
-    "reason_codes": []
+    "reason_codes": [],
+    "review_requirement_ids": []
   },
   "tasks": [
     {
       "task_id": "T-201",
       "title": "Document the reporting endpoint",
-      "requirement_ids": ["R-01"]
+      "requirement_ids": [
+        "R-01"
+      ]
     }
   ]
 }

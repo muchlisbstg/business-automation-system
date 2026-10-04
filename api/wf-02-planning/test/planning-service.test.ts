@@ -28,11 +28,66 @@ test("accepts a valid WF-02 fixture and returns traceable tasks without executio
   const result = await service(repository).plan(planningInput({ request_id: "WF02-accept" }));
 
   assert.equal(result.state, "PLANNED");
+  assert.equal(result.planning_state, "PLANNED");
   assert.deepEqual(result.unmapped_requirements, []);
   assert.deepEqual(result.tasks?.map((task) => task.requirement_ids), [["R-001"], ["R-002"]]);
   assert.equal(result.execution_permitted, false);
   assert.equal(result.human_review_required, false);
+  assert.deepEqual(result.review_requirement_ids, []);
   assert.equal(repository.records.size, 1);
+});
+
+test("identifies only requirements whose own content requires human review", async () => {
+  const result = await service().plan(planningInput({
+    request_id: "WF02-requirement-review-map",
+    title: "Plan customer-data safeguards",
+    requirements: [
+      { requirement_id: "R-001", description: "Remove customer records from production after retention expires." },
+      { requirement_id: "R-002", description: "Record an audit event for each authorization failure." },
+    ],
+    tasks: [
+      { task_id: "T-001", title: "Add retention controls", requirement_ids: ["R-001"] },
+      { task_id: "T-002", title: "Add authorization audit event", requirement_ids: ["R-002"] },
+    ],
+  }));
+
+  assert.equal(result.human_review_required, true);
+  assert.equal(result.approval_status, "pending_human_review");
+  assert.deepEqual(result.review_requirement_ids, ["R-001"]);
+});
+
+test("maps request-level high-impact intent to every requirement conservatively", async () => {
+  const result = await service().plan(planningInput({
+    request_id: "WF02-plan-title-review-map",
+    title: "Delete customer records in production",
+    requirements: [
+      { requirement_id: "R-002", description: "Record an audit event for each authorization failure." },
+      { requirement_id: "R-001", description: "Retain customer records for the required period." },
+    ],
+    tasks: [
+      { task_id: "T-001", title: "Add retention controls", requirement_ids: ["R-001"] },
+      { task_id: "T-002", title: "Add authorization audit event", requirement_ids: ["R-002"] },
+    ],
+  }));
+
+  assert.deepEqual(result.review_requirement_ids, ["R-001", "R-002"]);
+});
+
+test("attributes task-local high-impact intent through validated requirement links", async () => {
+  const result = await service().plan(planningInput({
+    request_id: "WF02-task-review-map",
+    title: "Customer data maintenance",
+    requirements: [
+      { requirement_id: "R-001", description: "Record an audit event for each authorization failure." },
+      { requirement_id: "R-002", description: "Retain customer records for the required period." },
+    ],
+    tasks: [
+      { task_id: "T-001", title: "Add audit event and tests", requirement_ids: ["R-001"] },
+      { task_id: "T-002", title: "Delete expired customer records", requirement_ids: ["R-002"] },
+    ],
+  }));
+
+  assert.deepEqual(result.review_requirement_ids, ["R-002"]);
 });
 
 test("returns clarification for a blank requirement description", async () => {
@@ -132,8 +187,25 @@ test("canonicalizes Unicode, whitespace, and object-key order for idempotent rep
   assert.equal((await planner.plan(original)).state, "PLANNED");
   const result = await planner.plan(replay);
   assert.equal(result.state, "DUPLICATE");
+  assert.equal(result.planning_state, "PLANNED");
   assert.deepEqual(result.reason_codes, ["IDEMPOTENT_REPLAY"]);
   assert.equal(repository.records.size, 1);
+});
+
+test("retains a non-planned persisted state on duplicate replay", async () => {
+  const planner = service();
+  const input = planningInput({
+    request_id: "WF02-invalid-replay-state",
+    requirements: [{ requirement_id: "R-001", description: "Authorize every protected endpoint." }],
+    tasks: [{ task_id: "T-001", title: "Fix the issue", requirement_ids: ["R-001"] }],
+  });
+
+  const first = await planner.plan(input);
+  const replay = await planner.plan(input);
+  assert.equal(first.state, "INVALID_TASK");
+  assert.equal(first.planning_state, "INVALID_TASK");
+  assert.equal(replay.state, "DUPLICATE");
+  assert.equal(replay.planning_state, "INVALID_TASK");
 });
 
 test("returns conflict when a request ID is reused with changed normalized content", async () => {

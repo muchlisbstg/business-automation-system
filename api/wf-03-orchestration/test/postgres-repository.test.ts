@@ -11,10 +11,18 @@ const postgresTest = process.env.DATABASE_URL ? test : test.skip;
 postgresTest("PostgreSQL persists one row under concurrent replay and reports plan content conflict", async () => {
   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
   const planId = `WF03-IT-${randomUUID()}`;
+  const requestId = `REQ-${randomUUID()}`;
   const service = new OrchestrationService(new PostgresOrchestrationRepository(pool));
   const payload: OrchestrationInput = {
-    request_id: `REQ-${randomUUID()}`,
+    request_id: requestId,
     plan_id: planId,
+    source: { workflow: "WF-02", request_id: requestId, planning_state: "PLANNED" },
+    review_signal: {
+      human_review_required: false,
+      approval_status: "not_required",
+      reason_codes: [],
+      review_requirement_ids: [],
+    },
     tasks: [{ task_id: "T-001", title: "Define API contract", requirement_ids: ["R-001"] }],
   };
 

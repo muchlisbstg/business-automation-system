@@ -48,6 +48,7 @@ export interface PersistedPlanning {
   validation_errors: FieldViolation[];
   unmapped_requirements: PlanningRequirement[];
   human_review_required: boolean;
+  review_requirement_ids: string[];
   approval_status: ApprovalStatus;
   created_at: string;
 }
@@ -65,9 +66,11 @@ export interface PlanningResponse {
   correlation_id: string;
   request_id: string | null;
   state: PlanningState;
+  planning_state: PersistedPlanningState | null;
   reason_codes: string[];
   created_at: string;
   human_review_required: boolean;
+  review_requirement_ids: string[];
   approval_status: ApprovalStatus;
   execution_permitted: false;
   requirements?: PlanningRequirement[];

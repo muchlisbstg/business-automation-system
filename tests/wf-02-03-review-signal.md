@@ -1,21 +1,21 @@
-# WF-02→WF-03 Human-Review Signal Proposal Acceptance Scenarios
+# WF-02→WF-03 Human-Review Signal Acceptance Tests
 
-> These scenarios describe a candidate contract only. JSON fixtures validate shape and status consistency; they do not verify source records, choose a blocking policy, approve work, or run tasks.
-
-| Case | Expected candidate-contract result |
+| Case | Expected behavior |
 |---|---|
-| `valid-review-required.json` carries `human_review_required: true`, `pending_human_review`, and the high-impact reason | Schema-valid shape only. The synthetic tasks deliberately lack task-local risk markers; no downstream blocking behavior is implied. |
-| `valid-review-not-required.json` carries `false`, `not_required`, and no review reason | Schema-valid shape only. No source lookup or trust decision is performed. |
-| Review signal is omitted | Schema-invalid; a future runtime's rejection or hold behavior is not defined here. |
-| Review flag, approval status, and reason code contradict one another | Schema-invalid. Schema consistency does not establish that the upstream values are authoritative. |
-| Payload adds an `approval_reference` or other undeclared approval claim | Schema-invalid. The review-required signal is not a human approval. |
-| Root `request_id` differs from `source.request_id`, or the `plan_id` belongs to another source chain | JSON Schema cannot establish equality or chain membership; a future semantic traceability check is required. |
-| A WF-02 flag comes from a title or requirement while no WF-03 task itself looks high-risk | Candidate shape retains the plan-level signal. Under option 1, affected tasks cannot be identified without requirement/task attribution; under option 2, the whole plan would be held. Neither behavior is selected. |
-| A reviewed task has multiple transitive dependents and an independent task exists | If option 1 is selected, a future behavioral test must verify the chosen transitive dependent closure and independent-task treatment. If option 2 is selected, a future test must verify that every task is held. No result is asserted by these fixtures. |
-| The upstream signal is missing, stale, unverifiable, or from a non-planned WF-02 record | Source validation and fail-closed behavior remain undecided; schema validity is insufficient. |
-| WF-03 independently detects high impact in a task | The existing WF-03 task-level gate is separate. This proposal neither removes nor changes that behavior. |
-| A reviewer later decides to approve or reject | No approval record, identity, permission check, lifecycle, or state transition is defined by this proposal. |
-| WF-03 returns a result after a future policy is selected | The output state, `execution_order`, `blocked_task_ids`, provenance, and distinction between review-required and approved remain to be designed. |
-| A request could trigger CI, an action, Slack, or another external notification | This proposal adds no CI gate, approval, execution, or notification behavior. |
-
-Review the policy alternatives and unresolved authority, traceability, propagation, dependent-blocking, and result-schema decisions in [`workflows/WF-02-03-review-signal/README.md`](../workflows/WF-02-03-review-signal/README.md) before any runtime implementation.
+| Request title contains high-impact intent | WF-02 marks every requirement for review and returns a sorted `review_requirement_ids` list. |
+| A requirement description or acceptance criterion contains high-impact intent | WF-02 marks only that requirement for review. |
+| A task title contains high-impact intent | WF-02 attributes review to that task's validated `requirement_ids`. |
+| No WF-02 high-impact intent is detected | WF-02 returns `human_review_required: false`, `approval_status: not_required`, and an empty ID list. |
+| WF-02 planning result is replayed | The persisted review requirement IDs are returned unchanged. |
+| WF-02 planning result is replayed after an invalid or unmapped result | `planning_state` retains the persisted non-`PLANNED` state; WF-03 rejects that source. |
+| WF-03 source declares a non-`PLANNED` WF-02 result | Schema validation rejects the handoff. |
+| WF-03 review signal is missing or internally inconsistent | Schema validation rejects the request; no execution order is returned. |
+| WF-03 source request ID differs from root `request_id` | WF-03 rejects the request and blocks all listed tasks. |
+| A review requirement ID is not linked to any WF-03 task | WF-03 rejects the request and blocks all listed tasks rather than dropping the signal. |
+| A task links to a review-required requirement | WF-03 includes that task in `blocked_task_ids`. |
+| A task transitively depends on a blocked task | WF-03 includes the dependent task in `blocked_task_ids`, even if it also has unrelated requirement links. |
+| An unrelated task has no dependency path from blocked work | It remains in `execution_order`; the order is deterministic under task-array reordering. |
+| WF-03 independently detects a high-impact task | The existing local gate still blocks that task and its transitive dependents. |
+| Review remains pending | WF-03 returns `APPROVAL_REQUIRED`; it does not claim approval, execute work, or mark tasks complete. |
+| Review signal changes for a previously used `plan_id` | The changed canonical payload returns `CONFLICT`; the original record is not overwritten. |
+| A signal is absent, false, or true | WF-03 does not send Slack or other external notifications. |

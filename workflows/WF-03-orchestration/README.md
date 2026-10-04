@@ -7,7 +7,11 @@ Transform an approved planning record into a deterministic execution plan. WF-03
 Required:
 - `request_id`
 - `plan_id`
+- `source` (`workflow: WF-02`, `planning_state: PLANNED`, matching `request_id`)
+- `review_signal` (`human_review_required`, `approval_status`, `reason_codes`, `review_requirement_ids`)
 - `tasks`
+
+The signal is required even when review is not required: use `human_review_required: false`, `approval_status: not_required`, and empty `reason_codes` and `review_requirement_ids`. A true signal requires `pending_human_review`, `HIGH_IMPACT_REVIEW_REQUIRED`, and at least one review requirement ID. Every review requirement ID must occur in at least one task's `requirement_ids`; otherwise WF-03 rejects the request and blocks all listed tasks. The caller remains trusted to forward the actual WF-02 result; WF-03 does not add authentication or an independent upstream-record lookup.
 
 Each task MUST contain:
 - `task_id`
@@ -30,13 +34,14 @@ Optional task fields:
 - Replaying an identical plan is idempotent and returns the existing orchestration record.
 - Reusing a `plan_id` with changed normalized content returns `CONFLICT`.
 - Task ordering MUST be deterministic: topological order with lexical `task_id` tie-breaking.
+- Tasks linked to a WF-02 review-required requirement and every transitive dependent MUST appear in `blocked_task_ids`; unrelated tasks remain in the deterministic `execution_order`.
 
 ## Safety boundaries
 - AI output is advisory data and cannot create approval, bypass a gate, or mark work complete.
 - `production`, `destructive`, `delete`, `drop`, and equivalent high-impact intent MUST be flagged.
-- High-impact tasks require an explicit human approval reference before downstream execution.
+- A pending WF-02 review signal or local high-impact task gate requires human review; it is not evidence of approval.
 - WF-03 MUST NOT create or infer an approval.
-- WF-03 MUST NOT execute production or destructive actions.
+- WF-03 MUST NOT execute any task or production/destructive action; `execution_order` is a plan only.
 - n8n is the orchestrator; build/test/deploy remain in GitHub Actions or cloud systems.
 
 ## States
