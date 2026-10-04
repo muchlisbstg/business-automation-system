@@ -30,8 +30,33 @@ def check_example(path):
     if not isinstance(data, dict):
         errors.append(f"{path}: fixture root must be an object")
 
+def check_schema_mirror(reference_path, mirror_path):
+    reference = load_json(reference_path)
+    mirror = load_json(mirror_path)
+    if reference is None or mirror is None:
+        return
+
+    identity_metadata = {"$id", "title"}
+    reference_contract = {
+        key: value for key, value in reference.items() if key not in identity_metadata
+    }
+    mirror_contract = {
+        key: value for key, value in mirror.items() if key not in identity_metadata
+    }
+    if reference_contract != mirror_contract:
+        errors.append(
+            f"{mirror_path}: schema contract must mirror {reference_path} "
+            "except for $id and title metadata"
+        )
+
 schemas = sorted(ROOT.glob("workflows/*/schema.json"))
 fixtures = sorted(ROOT.glob("workflows/*/examples/*.json"))
+schema_mirrors = [
+    (
+        ROOT / "workflows/WF-03-orchestration/schema.json",
+        ROOT / "workflows/WF-02-03-review-signal/schema.json",
+    )
+]
 
 if not schemas:
     errors.append("No workflow schemas found")
@@ -42,6 +67,8 @@ for path in schemas:
     check_schema(path)
 for path in fixtures:
     check_example(path)
+for reference_path, mirror_path in schema_mirrors:
+    check_schema_mirror(reference_path, mirror_path)
 
 if errors:
     print("Contract validation failed:")
