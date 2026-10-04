@@ -1,0 +1,8 @@
+{
+  "action": "REPORT_KNOWLEDGE_CANDIDATE",
+  "request_id": "req-demo-wf20-001",
+  "candidate_id": "cand-demo-wf20-001",
+  "source": "synthetic-manual-note",
+  "title": "Synthetic build-retention note",
+  "summary": "Synthetic candidate summary for contract-shape testing only; it is not verified or accepted knowledge."
+}

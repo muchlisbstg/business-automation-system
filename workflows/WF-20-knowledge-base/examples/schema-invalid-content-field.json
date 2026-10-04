@@ -1,0 +1,9 @@
+{
+  "action": "REPORT_KNOWLEDGE_CANDIDATE",
+  "request_id": "req-demo-wf20-invalid-004",
+  "candidate_id": "cand-demo-wf20-invalid-004",
+  "source": "synthetic-source",
+  "title": "Synthetic candidate",
+  "summary": "Synthetic summary for a deliberately invalid fixture.",
+  "content": "Synthetic text; content payloads are not part of this proposal."
+}

@@ -1,0 +1,8 @@
+{
+  "action": "REPORT_KNOWLEDGE_CANDIDATE",
+  "request_id": "req-demo-wf20-002",
+  "candidate_id": "cand-demo-wf20-002",
+  "source": "synthetic-ci-observation",
+  "title": "Synthetic API contract note",
+  "summary": "Synthetic candidate metadata showing a separate label; no CI observation is fetched or authenticated."
+}
