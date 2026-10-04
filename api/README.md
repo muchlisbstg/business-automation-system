@@ -12,6 +12,6 @@ The API layer owns external HTTP contracts, authentication, authorization, valid
 
 ## Workflow services
 
-- [WF-01 Intake](wf-01-intake/README.md) validates and persists accepted intake requests.
+- [WF-01 Intake](../workflows/WF-01-intake/README.md) validates and persists accepted intake requests.
 - [WF-02 Planning](wf-02-planning/README.md) validates planning inputs, maintains requirement-to-task traceability, and persists idempotent planning outcomes.
 - [WF-03 Orchestration](wf-03-orchestration/README.md) validates dependency graphs, persists deterministic topological plans, and gates high-impact tasks for human review without executing them.
