@@ -18,7 +18,8 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM pg_constraint
-        WHERE conname = 'wf02_planning_review_requirement_ids_consistent'
+        WHERE conrelid = 'wf02_planning_requests'::regclass
+          AND conname = 'wf02_planning_review_requirement_ids_consistent'
     ) THEN
         ALTER TABLE wf02_planning_requests
             ADD CONSTRAINT wf02_planning_review_requirement_ids_consistent
