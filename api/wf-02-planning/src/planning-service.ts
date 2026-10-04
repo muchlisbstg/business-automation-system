@@ -21,6 +21,7 @@ const REVIEW_REASON = "HIGH_IMPACT_REVIEW_REQUIRED";
 const ACTION_PATTERN = /\b(deploy(?:s|ed|ing|ment)?|release(?:s|d)?|roll(?:s|ed|ing)\s?out|migrat(?:e|es|ed|ing|ion)|restart(?:s|ed|ing)?|shutdown|scale(?:s|d|ing)?|modif(?:y|ies|ied|ying)|chang(?:e|es|ed|ing)|mutat(?:e|es|ed|ing|ion)|updat(?:e|es|ed|ing)|delet(?:e|s|ed|ing|ion)|drop(?:s|ped|ping)?|truncat(?:e|es|ed|ing)|eras(?:e|s|es|ed|ing|ure)|wip(?:e|es|ed|ing)|destroy(?:s|ed|ing)|purge(?:s|d|ing)|overwrit(?:e|es|ing|ten)|destructive)\b/gi;
 const DESTRUCTIVE_PATTERN = /^(?:delet(?:e|s|ed|ing|ion)|drop(?:s|ped|ping)?|truncat(?:e|es|ed|ing)|eras(?:e|s|ed|ing|ure)|wip(?:e|es|ed|ing)|destroy(?:s|ed|ing)|purge(?:s|d|ing)|destructive)$/i;
 const PRODUCTION_PATTERN = /\b(?:prod|production)\b/i;
+const PROMOTION_PATTERN = /\bpromot(?:e|es|ed|ing)\b/gi;
 const NEGATION_AT_END = /\b(?:no|not|never|without|avoid|prevent|prohibit|forbid|do\s+not|don't|mustn't|must\s+not|shouldn't|should\s+not|cannot|can't|will\s+not|won't)\b(?:\s+\w+){0,3}\s*$/i;
 
 // Conservative high-confidence generic forms. A scoped target (for example,
@@ -120,6 +121,12 @@ function hasHighImpactIntent(input: PlanningInput & { tasks: PlanningTask[] }): 
 
   for (const text of textFields) {
     for (const segment of text.split(/[.!?\n]+/)) {
+      PROMOTION_PATTERN.lastIndex = 0;
+      for (const match of segment.matchAll(PROMOTION_PATTERN)) {
+        const index = match.index ?? 0;
+        if (!isNegatedAction(segment, index) && PRODUCTION_PATTERN.test(segment)) return true;
+      }
+
       ACTION_PATTERN.lastIndex = 0;
       for (const match of segment.matchAll(ACTION_PATTERN)) {
         const action = match[0];

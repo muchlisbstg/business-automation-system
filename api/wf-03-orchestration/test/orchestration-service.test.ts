@@ -197,6 +197,40 @@ test("blocks destructive actions, including delete intent, until human review", 
   assert.deepEqual(result.blocked_task_ids, ["T-001"]);
 });
 
+test("requires review for a production promotion and blocks dependent work", async () => {
+  const result = await service().orchestrate(orchestrationInput({
+    request_id: "REQ-production-promotion",
+    plan_id: "WF03-production-promotion",
+    tasks: [
+      { task_id: "T-003", title: "Verify promoted service", requirement_ids: ["R-001"], depends_on: ["T-002"] },
+      { task_id: "T-002", title: "Promote the service", requirement_ids: ["R-001"], action: "Promote the service to production" },
+      { task_id: "T-001", title: "Prepare change plan", requirement_ids: ["R-001"] },
+    ],
+  }));
+
+  assert.equal(result.state, "APPROVAL_REQUIRED");
+  assert.ok(result.reason_codes.includes("HIGH_IMPACT_REVIEW_REQUIRED"));
+  assert.deepEqual(result.execution_order, ["T-001"]);
+  assert.deepEqual(result.blocked_task_ids, ["T-002", "T-003"]);
+});
+
+test("does not gate an explicitly negated production promotion", async () => {
+  const result = await service().orchestrate(orchestrationInput({
+    request_id: "REQ-no-production-promotion",
+    plan_id: "WF03-no-production-promotion",
+    tasks: [{
+      task_id: "T-001",
+      title: "Do not promote the service to production",
+      requirement_ids: ["R-001"],
+      action: "Do not promote the service to production",
+    }],
+  }));
+
+  assert.equal(result.state, "ORCHESTRATED");
+  assert.deepEqual(result.execution_order, ["T-001"]);
+  assert.deepEqual(result.blocked_task_ids, []);
+});
+
 test("treats prompt-injection text as data and does not grant approval or completion", async () => {
   const result = await service().orchestrate({
     request_id: "REQ-injection",

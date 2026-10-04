@@ -193,6 +193,29 @@ test("flags production/destructive intent for human review without approval or e
   assert.equal(result.execution_permitted, false);
 });
 
+test("flags a production promotion for downstream human review", async () => {
+  const result = await service().plan(planningInput({
+    request_id: "WF02-production-promotion",
+    title: "Promote the service to production",
+  }));
+
+  assert.equal(result.state, "PLANNED");
+  assert.equal(result.human_review_required, true);
+  assert.equal(result.approval_status, "pending_human_review");
+  assert.equal(result.execution_permitted, false);
+});
+
+test("does not flag an explicitly negated production promotion", async () => {
+  const result = await service().plan(planningInput({
+    request_id: "WF02-no-production-promotion",
+    title: "Do not promote the service to production",
+  }));
+
+  assert.equal(result.state, "PLANNED");
+  assert.equal(result.human_review_required, false);
+  assert.equal(result.approval_status, "not_required");
+});
+
 test("rejects tasks that reference unknown requirements and preserves the actual unmapped requirement", async () => {
   const result = await service().plan(planningInput({
     request_id: "WF02-unknown-reference",
