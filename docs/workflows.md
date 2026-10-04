@@ -19,7 +19,7 @@ The automation platform is organized as deterministic, auditable workflows.
 | WF-14/15 | [Deployment gates and deployment (contract proposal)](../workflows/WF-14-15-deployment/README.md) |
 | WF-16/17 | [Incident detection and response (contract proposal)](../workflows/WF-16-17-incidents/README.md) |
 | WF-18 | [Technical debt (contract proposal)](../workflows/WF-18-technical-debt/README.md) |
-| WF-19 | Documentation as code |
+| WF-19 | [Documentation as code (contract proposal)](../workflows/WF-19-docs-as-code/README.md) |
 | WF-20 | Knowledge base |
 | WF-21/22 | Daily brief and reporting |
 | WF-23 | Learning loop |

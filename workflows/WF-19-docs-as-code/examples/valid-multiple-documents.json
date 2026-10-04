@@ -1,0 +1,12 @@
+{
+  "action": "REQUEST_DOCUMENTATION_VALIDATION",
+  "request_id": "docs-check-example-002",
+  "source": {
+    "repository": "synthetic/repository",
+    "revision": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+  },
+  "document_paths": [
+    "docs/architecture.md",
+    "docs/operations/runbook.md"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "action": "REQUEST_DOCUMENTATION_VALIDATION",
+  "request_id": "docs-check-example-001",
+  "source": {
+    "repository": "example/project",
+    "revision": "0123456789abcdef0123456789abcdef01234567"
+  },
+  "document_paths": ["docs/README.md"]
+}

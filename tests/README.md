@@ -19,3 +19,6 @@ The [WF-14/15 Deployment gates and deployment proposal scenarios](wf-14-15-deplo
 The [WF-16/17 Incident detection and response proposal scenarios](wf-16-17-incidents.md) distinguish schema-checked signal shape from incident confirmation, source verification, response authority, lifecycle, recovery, and notification decisions that remain open.
 
 The [WF-18 Technical debt proposal scenarios](wf-18-technical-debt.md) distinguish candidate shape validation from technical-debt assessment, prioritization, lifecycle, and remediation decisions that remain open.
+
+
+The [WF-19 Documentation as code proposal scenarios](wf-19-docs-as-code.md) distinguish candidate request-shape validation from path/source verification, documentation checks, CI gates, and file changes that remain undecided.

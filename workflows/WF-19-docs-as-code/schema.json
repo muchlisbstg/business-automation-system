@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://business-automation-system.local/schemas/wf-19-docs-as-code.json",
+  "title": "WF-19 Documentation Validation Request (Proposal)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "action",
+    "request_id",
+    "source",
+    "document_paths"
+  ],
+  "properties": {
+    "action": {"const": "REQUEST_DOCUMENTATION_VALIDATION"},
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "revision"],
+      "properties": {
+        "repository": {"type": "string", "minLength": 1, "maxLength": 255},
+        "revision": {
+          "type": "string",
+          "pattern": "^(?:[A-Fa-f0-9]{40}|[A-Fa-f0-9]{64})$"
+        }
+      }
+    },
+    "document_paths": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": {"type": "string", "minLength": 1, "maxLength": 500}
+    }
+  }
+}
