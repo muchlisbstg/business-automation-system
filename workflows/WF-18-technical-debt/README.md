@@ -12,12 +12,12 @@ The candidate envelope contains:
 
 - `action`: candidate vocabulary only; it does not request a scan, ranking, issue creation, or code change.
 - `request_id` and `candidate_id`: opaque caller-supplied strings. The schema does not verify their issuer, uniqueness, relationship, replay behavior, or retry semantics.
-- `observed_at`: a candidate timestamp string constrained to an RFC 3339-like shape. Calendar validity, clock trust, freshness, and ordering are not checked.
+- `observed_at`: a bounded RFC 3339-style candidate date-time. The schema declares `format: date-time`, and repository fixture CI checks calendar, clock-field, and offset validity after the spelling pattern; leap seconds are rejected. This does not establish clock trust, freshness, ordering, or acceptable skew.
 - `source`: a claimed origin label, not an authenticated identity or verified detector.
 - `category`: an optional caller-supplied label with no controlled vocabulary or defined meaning.
 - `summary`: bounded free text, not verified, sanitized, or treated as evidence.
 
-The schema rejects undeclared fields, including priority, estimates, owner, status, and remediation commands. It cannot detect secrets, personal or sensitive data, or instruction-like text embedded in an allowed string. Fixtures use synthetic data only.
+The schema rejects undeclared fields, including priority, estimates, owner, status, and remediation commands. CI's date-time assertion checks candidate syntax and calendar validity only; it does not establish provenance or authorize workflow behavior. The schema cannot detect secrets, personal or sensitive data, or instruction-like text embedded in an allowed string. Fixtures use synthetic data only.
 
 ## Safety boundaries
 

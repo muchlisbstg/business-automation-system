@@ -8,7 +8,7 @@
 | Omit the optional `category` | Schema-valid shape; no category is inferred |
 | Submit a bounded category label not defined by this proposal | Schema-valid shape; the label has no approved taxonomy or policy meaning |
 | Omit `action`, an identifier, `observed_at`, `source`, or `summary` | Rejected by schema validation |
-| Supply a timestamp that does not match the candidate timestamp shape | Rejected by schema validation; calendar correctness, clock trust, and freshness are not validated |
+| Supply malformed timestamp syntax, an impossible calendar date, out-of-range clock or offset fields, or a leap second | Rejected by the candidate schema and CI date-time assertion; clock trust, freshness, ordering, and acceptable skew remain undefined |
 | Supply an empty summary or a category outside its length bounds | Rejected by schema validation |
 | Add undeclared fields such as priority, owner, estimate, status, token, password, shell command, or remediation request | Rejected by schema validation; no such policy or side-effect fields are defined |
 | Put a secret, personal data, sensitive evidence, or instruction-like text inside an allowed string | The schema cannot detect or sanitize it; this proposal performs no processing and input-handling rules remain open |
