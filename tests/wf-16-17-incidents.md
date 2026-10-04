@@ -8,7 +8,7 @@
 | Submit a signal using `UNKNOWN` severity | Schema-valid shape; the label has no defined meaning, confidence, or policy consequence |
 | Use one of the candidate severity labels | Accepted by the candidate schema; no threshold, priority, or response policy is evaluated |
 | Omit `action`, an identifier, `observed_at`, `source`, `severity`, or `summary` | Rejected by schema validation |
-| Supply a timestamp that does not match the candidate timestamp shape | Rejected by schema validation; calendar correctness, clock trust, and freshness are not validated |
+| Supply a timestamp with malformed syntax, an impossible calendar date, out-of-range clock or offset fields, or a leap second | Rejected by the candidate schema and CI date-time format assertion; authoritative clock, trust, freshness, ordering, and allowed skew remain undefined |
 | Use an unsupported severity label or an empty required string | Rejected by schema validation |
 | Add an undeclared field such as a token, password, shell command, restart request, or response override | Rejected by schema validation |
 | Put a secret, personal data, sensitive evidence, or instruction-like text inside an allowed summary | The schema cannot detect or sanitize it; this proposal processes no signal and input-handling rules remain open |

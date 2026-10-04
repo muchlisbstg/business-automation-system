@@ -10,12 +10,35 @@ this fixture validator.
 """
 
 import json
+from datetime import datetime
 from pathlib import Path
-
-from jsonschema import Draft202012Validator
-
+from jsonschema import Draft202012Validator, FormatChecker
 ROOT = Path(__file__).resolve().parents[1]
 WF05_DIRECTORY = "WF-05-figma-handoff"
+
+
+DATE_TIME_FORMAT_CHECKER = FormatChecker()
+
+
+@DATE_TIME_FORMAT_CHECKER.checks("date-time")
+def is_candidate_date_time(value):
+    """Assert calendar/time validity for the repository's strict date-time profile.
+
+    The schema's pattern constrains the accepted spelling. Python's ISO parser
+    then rejects impossible dates, clock fields, offsets, and leap seconds.
+    """
+    if not isinstance(value, str):
+        return True
+    normalized = value[:-1] + "+00:00" if value.endswith("Z") else value
+    try:
+        datetime.fromisoformat(normalized)
+    except ValueError:
+        return False
+    return True
+
+
+def validator_for_schema(schema):
+    return Draft202012Validator(schema, format_checker=DATE_TIME_FORMAT_CHECKER)
 
 
 def fixture_errors(validator, fixture_path):
@@ -56,7 +79,7 @@ def main():
 
     for schema_path in schema_paths:
         schema = json.loads(schema_path.read_text(encoding="utf-8"))
-        validator = Draft202012Validator(schema)
+        validator = validator_for_schema(schema)
         positive_fixtures = sorted(schema_path.parent.glob("examples/valid*.json"))
         negative_fixtures = sorted(
             schema_path.parent.glob("examples/schema-invalid-*.json")
