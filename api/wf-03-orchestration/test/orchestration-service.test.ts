@@ -238,6 +238,49 @@ test("does not accept caller-supplied approval or completion claims as authority
   assert.deepEqual(result.blocked_task_ids, []);
 });
 
+test("includes every required result field for success, approval, and clarification outcomes", async () => {
+  const success = await service().orchestrate(orchestrationInput({
+    request_id: "REQ-contract-success",
+    plan_id: "WF03-contract-success",
+    tasks: [{ task_id: "T-001", title: "Define API contract", requirement_ids: ["R-001"] }],
+  }));
+  const approvalRequired = await service().orchestrate(orchestrationInput({
+    request_id: "REQ-contract-approval",
+    plan_id: "WF03-contract-approval",
+    tasks: [{ task_id: "T-001", title: "Review API contract", requirement_ids: ["R-001"], risk: "high" }],
+  }));
+  const clarification = await service().orchestrate({ request_id: "REQ-contract-missing" });
+
+  const cases = [
+    { response: success, state: "ORCHESTRATED", request_id: "REQ-contract-success", plan_id: "WF03-contract-success" },
+    { response: approvalRequired, state: "APPROVAL_REQUIRED", request_id: "REQ-contract-approval", plan_id: "WF03-contract-approval" },
+    { response: clarification, state: "CLARIFICATION_REQUIRED", request_id: "REQ-contract-missing", plan_id: null },
+  ];
+  const requiredFields = [
+    "correlation_id",
+    "request_id",
+    "plan_id",
+    "state",
+    "execution_order",
+    "blocked_task_ids",
+    "reason_codes",
+  ];
+
+  for (const { response, state, request_id, plan_id } of cases) {
+    for (const field of requiredFields) {
+      assert.ok(Object.prototype.hasOwnProperty.call(response, field), `${response.state} result is missing ${field}`);
+    }
+    assert.equal(response.correlation_id, "00000000-0000-4000-8000-000000000003");
+    assert.equal(response.request_id, request_id);
+    assert.equal(response.plan_id, plan_id);
+    assert.equal(response.state, state);
+    assert.ok(Array.isArray(response.execution_order));
+    assert.ok(Array.isArray(response.blocked_task_ids));
+    assert.ok(Array.isArray(response.reason_codes));
+    assert.ok(Number.isFinite(Date.parse(response.created_at)));
+  }
+});
+
 test("returns clarification for missing required WF-03 fields", async () => {
   const result = await service().orchestrate({ request_id: "REQ-missing" });
 
