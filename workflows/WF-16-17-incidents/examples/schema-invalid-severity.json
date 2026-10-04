@@ -1,0 +1,9 @@
+{
+  "action": "REPORT_INCIDENT_SIGNAL",
+  "request_id": "request-example-004",
+  "signal_id": "signal-example-004",
+  "observed_at": "2026-10-04T02:02:00Z",
+  "source": "synthetic-monitor",
+  "severity": "SEV-0",
+  "summary": "Synthetic observation with unreviewed severity vocabulary."
+}
