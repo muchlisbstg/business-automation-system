@@ -8,6 +8,7 @@
 | Provide a different bounded source label | Schema-valid shape only; the label does not authenticate a provider, identify a real source, or prove provenance |
 | Omit `action`, `request_id`, `candidate_id`, `source`, `title`, or `summary` | Rejected by schema validation |
 | Supply an empty required text field or a value beyond its candidate bound | Rejected by schema validation |
+| Supply whitespace-only `request_id`, `candidate_id`, `source`, `title`, or `summary` | Rejected by schema validation; values are not trimmed or normalized |
 | Add undeclared metric, period, timezone, schedule, recipient, delivery, channel, or command fields | Rejected by schema validation; none of these semantics is defined |
 | Include a `delivery` field naming Slack | Rejected by schema validation; Slack and all other notifications are out of scope |
 | Reuse an identifier, name an unknown source, or submit conflicting candidates | No lookup, authentication, deduplication, replay, or conflict resolution occurs; those semantics remain open |
