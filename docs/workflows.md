@@ -11,7 +11,7 @@ The automation platform is organized as deterministic, auditable workflows.
 | WF-05 | [Figma to development handoff (contract proposal)](../workflows/WF-05-figma-handoff/README.md) |
 | WF-06 | [Frontend quality assurance (contract proposal)](../workflows/WF-06-frontend-qa/README.md) |
 | WF-07 | [API quality assurance (contract proposal)](../workflows/WF-07-api-qa/README.md) |
-| WF-08 | Database quality assurance |
+| WF-08 | [Database quality assurance (contract proposal)](../workflows/WF-08-database-qa/README.md) |
 | WF-09 | Mobile quality assurance |
 | WF-10/11 | GitHub integration and AI review |
 | WF-12 | Tests and coverage |

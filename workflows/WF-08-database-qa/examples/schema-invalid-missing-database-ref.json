@@ -1,0 +1,11 @@
+{
+  "action": "REQUEST_DATABASE_QA",
+  "request_id": "req-wf08-007",
+  "plan_id": "plan-wf08-007",
+  "qa_run_id": "dbqa-run-007",
+  "target": {
+    "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "environment": "DEVELOPMENT"
+  },
+  "checks": ["SCHEMA_CONSISTENCY"]
+}

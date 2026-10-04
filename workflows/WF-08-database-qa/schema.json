@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://business-automation-system.local/schemas/wf-08-database-qa.json",
+  "title": "WF-08 Database QA Request (Proposal)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["action", "request_id", "plan_id", "qa_run_id", "target", "checks"],
+  "properties": {
+    "action": {"const": "REQUEST_DATABASE_QA"},
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "plan_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "qa_run_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commit_sha", "database_ref", "environment"],
+      "properties": {
+        "commit_sha": {
+          "type": "string",
+          "pattern": "^(?:[a-fA-F0-9]{40}|[a-fA-F0-9]{64})$"
+        },
+        "database_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$"
+        },
+        "environment": {
+          "type": "string",
+          "enum": ["DEVELOPMENT", "STAGING"]
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "MIGRATION_SAFETY",
+          "SCHEMA_CONSISTENCY",
+          "QUERY_PLAN_REVIEW",
+          "INDEX_REVIEW",
+          "N_PLUS_ONE_REVIEW",
+          "ROW_LEVEL_SECURITY"
+        ]
+      }
+    }
+  }
+}

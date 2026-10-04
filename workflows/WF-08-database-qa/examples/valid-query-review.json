@@ -1,0 +1,12 @@
+{
+  "action": "REQUEST_DATABASE_QA",
+  "request_id": "req-wf08-002",
+  "plan_id": "plan-wf08-002",
+  "qa_run_id": "dbqa-run-002",
+  "target": {
+    "commit_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "database_ref": "staging-orders",
+    "environment": "STAGING"
+  },
+  "checks": ["QUERY_PLAN_REVIEW", "INDEX_REVIEW", "ROW_LEVEL_SECURITY"]
+}

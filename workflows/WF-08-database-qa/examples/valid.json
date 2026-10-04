@@ -1,0 +1,12 @@
+{
+  "action": "REQUEST_DATABASE_QA",
+  "request_id": "req-wf08-001",
+  "plan_id": "plan-wf08-001",
+  "qa_run_id": "dbqa-run-001",
+  "target": {
+    "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "database_ref": "development-primary",
+    "environment": "DEVELOPMENT"
+  },
+  "checks": ["MIGRATION_SAFETY", "SCHEMA_CONSISTENCY"]
+}
