@@ -1,0 +1,13 @@
+{
+  "action": "REQUEST_MOBILE_QA",
+  "request_id": "req-mobile-invalid-102",
+  "plan_id": "plan-mobile-204",
+  "qa_run_id": "qa-mobile-304",
+  "target": {
+    "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "app_ref": "shop-ios-production",
+    "platform": "IOS",
+    "environment": "PRODUCTION"
+  },
+  "checks": ["INSTALL_LAUNCH"]
+}
