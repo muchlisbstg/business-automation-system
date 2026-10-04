@@ -49,6 +49,23 @@ test("returns concrete missing field names for incomplete requests", async () =>
   assert.equal(result.execution_permitted, false);
 });
 
+test("treats explicit nulls in required fields as missing and requests clarification", async () => {
+  const repository = new MemoryIntakeRepository();
+  const intake = service(repository);
+
+  for (const field of ["request_id", "title", "requester", "description"] as const) {
+    const result = await intake.submit({
+      ...request({ request_id: `WF01-null-${field}` }),
+      [field]: null,
+    });
+
+    assert.equal(result.state, "CLARIFICATION_REQUIRED", `${field} should request clarification`);
+    assert.deepEqual(result.missing_fields, [field]);
+    assert.equal(result.execution_permitted, false);
+    assert.equal(repository.records.size, 0);
+  }
+});
+
 test("treats trimmed, Unicode-normalized replay content as an idempotent duplicate", async () => {
   const repository = new MemoryIntakeRepository();
   const intake = service(repository);
