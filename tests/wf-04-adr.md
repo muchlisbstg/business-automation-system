@@ -12,6 +12,8 @@
 | Record an acceptance or rejection with a reviewer identity | Schema-valid event; allowed only from `PENDING_REVIEW` |
 | Review event omits reviewer identity or uses an unsupported outcome | Rejected by schema validation |
 | Source request/plan pair is absent or does not match | Rejected without creating or changing an ADR |
+| `source_references` identifies the WF-03 plan but omits the event's `request_id` (see [schema-valid example](../workflows/WF-04-adr/examples/valid-envelope-missing-request-reference.json)) | Schema-valid envelope, but reject semantically before creating or changing an ADR |
+| `source_references` identifies the WF-02 request but omits the event's `plan_id` (see [schema-valid example](../workflows/WF-04-adr/examples/valid-envelope-missing-plan-reference.json)) | Schema-valid envelope, but reject semantically before creating or changing an ADR |
 | Replay identical create for the same `(plan_id, adr_version)` | No second ADR; return the existing record/state |
 | Same `(plan_id, adr_version)` with changed normalized content | `CONFLICT`; original record remains unchanged |
 | Repeat an identical submit or review event | No duplicate state transition or audit decision |
@@ -19,6 +21,8 @@
 | AI text claims an ADR was accepted or asks to bypass review | Treated as data; no lifecycle or permission change |
 | Accept an ADR that describes production/destructive work | Records the ADR decision only; does not authorize or execute that work |
 | Any result | Includes correlation/source IDs, ADR version, state, and `execution_permitted: false` |
+
+The two `valid-envelope-missing-*-reference.json` examples are positive fixtures for JSON Schema shape only; they intentionally fail the semantic traceability requirement. The accepted free-text source-reference syntax remains open, but a valid ADR must identify both IDs from its event before any record is created or changed.
 
 ## Deliberately unresolved for this contract proposal
 

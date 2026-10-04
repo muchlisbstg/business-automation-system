@@ -1,0 +1,18 @@
+{
+  "action": "CREATE_DRAFT",
+  "request_id": "REQ-0007",
+  "plan_id": "PLAN-0007",
+  "adr_version": 1,
+  "adr": {
+    "title": "Use a versioned API for partner integrations",
+    "status": "DRAFT",
+    "context": "The plan requires an API contract that can evolve without breaking existing partners.",
+    "decision": "Propose versioning partner-facing endpoints under a versioned path.",
+    "consequences": "The API has an explicit compatibility boundary; maintainers must document and test supported versions.",
+    "alternatives": [],
+    "source_references": [
+      "WF-02 request REQ-0007",
+      "Additional context note"
+    ]
+  }
+}
