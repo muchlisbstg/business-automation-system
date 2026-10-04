@@ -8,7 +8,7 @@ The automation platform is organized as deterministic, auditable workflows.
 | WF-02 | Planning, PRD, and task validation |
 | WF-03 | Orchestration |
 | WF-04 | ADR generation and review |
-| WF-05 | Figma to development handoff |
+| WF-05 | [Figma to development handoff (contract proposal)](../workflows/WF-05-figma-handoff/README.md) |
 | WF-06 | Frontend quality assurance |
 | WF-07 | API quality assurance |
 | WF-08 | Database quality assurance |

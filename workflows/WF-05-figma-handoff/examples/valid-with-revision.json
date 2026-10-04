@@ -1,0 +1,23 @@
+{
+  "action": "CREATE_HANDOFF",
+  "request_id": "REQ-0043",
+  "plan_id": "PLAN-0043",
+  "handoff_id": "HANDOFF-0043-A",
+  "design_reference": {
+    "file_url": "https://www.figma.com/file/DeF456/Account-settings?node-id=8%3A12",
+    "node_ids": ["8:12"],
+    "revision_id": "opaque-revision-r7"
+  },
+  "task_mappings": [
+    {
+      "task_id": "TASK-0043-PREFERENCES",
+      "design_node_ids": ["8:12"],
+      "acceptance_criteria": [
+        {
+          "criterion_id": "AC-0043-1",
+          "description": "The saved preference is represented by the control state in the referenced design."
+        }
+      ]
+    }
+  ]
+}
