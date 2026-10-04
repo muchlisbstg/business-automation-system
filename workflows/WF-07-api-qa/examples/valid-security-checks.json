@@ -1,0 +1,12 @@
+{
+  "action": "REQUEST_API_QA",
+  "request_id": "req-api-2026-002",
+  "plan_id": "plan-api-2026-002",
+  "qa_run_id": "api-qa-run-002",
+  "target": {
+    "commit_sha": "abcdef0123456789abcdef0123456789abcdef01",
+    "base_url": "https://api-development.example.test",
+    "environment": "DEVELOPMENT"
+  },
+  "checks": ["SECRET_REDACTION", "RATE_LIMITING"]
+}
