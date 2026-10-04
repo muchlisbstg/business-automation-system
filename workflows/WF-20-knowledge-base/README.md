@@ -14,6 +14,7 @@ The candidate envelope contains:
 - `request_id` and `candidate_id`: opaque caller-supplied identifiers. Issuance, uniqueness, canonical identity, replay, deduplication, and retry behavior are undefined.
 - `source`: a bounded caller-supplied source label, not an authenticated provider, verified URL, citation, or proof of provenance.
 - `title` and `summary`: bounded text fields for synthetic candidate metadata, not trusted facts or a complete document. No full-content, storage, visibility, access-control, or retrieval fields are proposed.
+- Each required string must contain at least one non-whitespace character. This is shape validation only; values are not trimmed or normalized.
 
 The schema rejects undeclared fields, including content payloads, permissions, storage instructions, embeddings, and commands. It cannot detect or sanitize secrets, personal or sensitive data, copyrighted material, false claims, or instruction-like text inside an allowed string. Fixtures contain synthetic data only.
 
