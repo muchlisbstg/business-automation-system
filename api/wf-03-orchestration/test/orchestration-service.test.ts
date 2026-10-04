@@ -162,6 +162,24 @@ test("blocks production-environment tasks and their dependent tasks for human re
   assert.deepEqual(result.blocked_task_ids, ["T-002", "T-003"]);
 });
 
+test("transitively blocks every dependent downstream of a high-impact prerequisite", async () => {
+  const result = await service().orchestrate(orchestrationInput({
+    request_id: "REQ-production-chain",
+    plan_id: "WF03-production-chain",
+    tasks: [
+      { task_id: "T-004", title: "Verify rollout result", requirement_ids: ["R-001"], depends_on: ["T-003"] },
+      { task_id: "T-003", title: "Run post-change checks", requirement_ids: ["R-001"], depends_on: ["T-002"] },
+      { task_id: "T-002", title: "Apply controlled change", requirement_ids: ["R-001"], environment: "prod" },
+      { task_id: "T-001", title: "Prepare change plan", requirement_ids: ["R-001"] },
+      { task_id: "T-005", title: "Update documentation", requirement_ids: ["R-002"] },
+    ],
+  }));
+
+  assert.equal(result.state, "APPROVAL_REQUIRED");
+  assert.deepEqual(result.execution_order, ["T-001", "T-005"]);
+  assert.deepEqual(result.blocked_task_ids, ["T-002", "T-003", "T-004"]);
+});
+
 test("blocks destructive actions, including delete intent, until human review", async () => {
   const result = await service().orchestrate(orchestrationInput({
     request_id: "REQ-destructive",
