@@ -9,6 +9,8 @@
 | Omit `action`, `request_id`, `plan_id`, `test_run_id`, `target`, or `requested_checks` | Rejected by schema validation |
 | Omit `repository`, `owner`, `name`, or `commit_sha` from the target | Rejected by schema validation |
 | Supply an empty or malformed repository identifier or malformed commit SHA | Rejected by schema validation |
+| Use a repository owner beginning with `-` while all other fields are valid (see [negative owner fixture](../workflows/WF-12-tests/examples/schema-invalid-repository-owner.json)) | Rejected by schema validation |
+| Use a repository name beginning with `-` while all other fields are valid (see [negative repository-name fixture](../workflows/WF-12-tests/examples/schema-invalid-repository-name.json)) | Rejected by schema validation |
 | Supply an empty requested-check list, unsupported category, or duplicate category | Rejected by schema validation |
 | Add an undeclared property such as an access token, password, arbitrary command, or runner override | Rejected by schema validation |
 | Target repository or commit does not exist, is inaccessible, or no longer represents the intended source | No lookup occurs; source resolution, authorization, and stale-target handling remain undecided |
