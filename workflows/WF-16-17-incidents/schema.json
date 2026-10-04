@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://business-automation-system.local/schemas/wf-16-17-incidents.json",
+  "title": "WF-16/17 Incident Signal (Proposal)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "action",
+    "request_id",
+    "signal_id",
+    "observed_at",
+    "source",
+    "severity",
+    "summary"
+  ],
+  "properties": {
+    "action": {"const": "REPORT_INCIDENT_SIGNAL"},
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "signal_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "observed_at": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 35,
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "source": {"type": "string", "minLength": 1, "maxLength": 100},
+    "severity": {
+      "type": "string",
+      "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW", "UNKNOWN"]
+    },
+    "summary": {"type": "string", "minLength": 1, "maxLength": 500}
+  }
+}

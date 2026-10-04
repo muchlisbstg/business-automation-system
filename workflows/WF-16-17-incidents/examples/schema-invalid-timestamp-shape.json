@@ -1,0 +1,9 @@
+{
+  "action": "REPORT_INCIDENT_SIGNAL",
+  "request_id": "request-example-003",
+  "signal_id": "signal-example-003",
+  "observed_at": "not-a-timestamp",
+  "source": "synthetic-monitor",
+  "severity": "HIGH",
+  "summary": "Synthetic observation with malformed timestamp shape."
+}

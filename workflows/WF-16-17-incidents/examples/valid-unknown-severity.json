@@ -1,0 +1,9 @@
+{
+  "action": "REPORT_INCIDENT_SIGNAL",
+  "request_id": "request-example-002",
+  "signal_id": "signal-example-002",
+  "observed_at": "2026-10-04T02:01:00+00:00",
+  "source": "synthetic-manual-observer",
+  "severity": "UNKNOWN",
+  "summary": "Synthetic unclassified observation."
+}

@@ -17,7 +17,7 @@ The automation platform is organized as deterministic, auditable workflows.
 | WF-12 | [Tests and coverage (contract proposal)](../workflows/WF-12-tests/README.md) |
 | WF-13 | [Security findings (contract proposal)](../workflows/WF-13-security-findings/README.md) |
 | WF-14/15 | [Deployment gates and deployment (contract proposal)](../workflows/WF-14-15-deployment/README.md) |
-| WF-16/17 | Incident detection and response |
+| WF-16/17 | [Incident detection and response (contract proposal)](../workflows/WF-16-17-incidents/README.md) |
 | WF-18 | Technical debt |
 | WF-19 | Documentation as code |
 | WF-20 | Knowledge base |

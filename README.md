@@ -64,12 +64,10 @@ Production n8n is intended for queue mode with main and worker processes. Postgr
 
 ## Workflow roadmap
 
-WF-01 Intake → WF-02 Planning → WF-03 Orchestration → WF-04 ADRs → [WF-05 Figma handoff (contract proposal)](workflows/WF-05-figma-handoff/README.md) → [WF-06 Frontend QA (contract proposal)](workflows/WF-06-frontend-qa/README.md) → [WF-07 API QA (contract proposal)](workflows/WF-07-api-qa/README.md) → [WF-08 Database QA (contract proposal)](workflows/WF-08-database-qa/README.md) → [WF-09 Mobile QA (contract proposal)](workflows/WF-09-mobile-qa/README.md) → [WF-10/11 GitHub + AI review (contract proposal)](workflows/WF-10-11-github-ai-review/README.md) → [WF-12 Tests and coverage (contract proposal)](workflows/WF-12-tests/README.md) → [WF-13 Security findings (contract proposal)](workflows/WF-13-security-findings/README.md) → [WF-14/15 Deployment gates and deployment (contract proposal)](workflows/WF-14-15-deployment/README.md) → WF-16/17 Incidents → WF-18 Technical Debt → WF-19 Docs-as-code → WF-20 Knowledge Base → WF-21/22 Reporting → WF-23 Learning → WF-24 Metrics.
+WF-01 Intake → WF-02 Planning → WF-03 Orchestration → WF-04 ADRs → [WF-05 Figma handoff (contract proposal)](workflows/WF-05-figma-handoff/README.md) → [WF-06 Frontend QA (contract proposal)](workflows/WF-06-frontend-qa/README.md) → [WF-07 API QA (contract proposal)](workflows/WF-07-api-qa/README.md) → [WF-08 Database QA (contract proposal)](workflows/WF-08-database-qa/README.md) → [WF-09 Mobile QA (contract proposal)](workflows/WF-09-mobile-qa/README.md) → [WF-10/11 GitHub + AI review (contract proposal)](workflows/WF-10-11-github-ai-review/README.md) → [WF-12 Tests and coverage (contract proposal)](workflows/WF-12-tests/README.md) → [WF-13 Security findings (contract proposal)](workflows/WF-13-security-findings/README.md) → [WF-14/15 Deployment gates and deployment (contract proposal)](workflows/WF-14-15-deployment/README.md) → [WF-16/17 Incident detection and response (contract proposal)](workflows/WF-16-17-incidents/README.md) → WF-18 Technical Debt → WF-19 Docs-as-code → WF-20 Knowledge Base → WF-21/22 Reporting → WF-23 Learning → WF-24 Metrics.
 
 ## Quality and governance
 
 CI validates the repository baseline. Future gates should cover tests, coverage, API contracts, authorization, database safety, accessibility/performance, mobile behavior, security findings, deployment health, and auditability. AI-generated recommendations cannot bypass deterministic gates or human approval requirements.
-
-See `docs/architecture.md`, `docs/security.md`, and `docs/workflows.md` for the engineering baseline.
 
 See `docs/architecture.md`, `docs/security.md`, and `docs/workflows.md` for the engineering baseline.

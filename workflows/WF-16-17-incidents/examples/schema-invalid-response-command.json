@@ -1,0 +1,10 @@
+{
+  "action": "REPORT_INCIDENT_SIGNAL",
+  "request_id": "request-example-005",
+  "signal_id": "signal-example-005",
+  "observed_at": "2026-10-04T02:03:00Z",
+  "source": "synthetic-monitor",
+  "severity": "CRITICAL",
+  "summary": "Synthetic observation only.",
+  "response_command": "restart-production-service"
+}
