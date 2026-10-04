@@ -1,0 +1,13 @@
+{
+  "action": "REPORT_SECURITY_FINDINGS",
+  "request_id": "req-security-002",
+  "plan_id": "plan-042",
+  "security_run_id": "security-run-002",
+  "target": {
+    "repository": {
+      "owner": "example-org",
+      "name": "sample-service"
+    }
+  },
+  "findings": []
+}

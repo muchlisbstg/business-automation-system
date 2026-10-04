@@ -1,0 +1,22 @@
+{
+  "action": "REPORT_SECURITY_FINDINGS",
+  "request_id": "req-security-001",
+  "plan_id": "plan-042",
+  "security_run_id": "security-run-001",
+  "target": {
+    "repository": {
+      "owner": "example-org",
+      "name": "sample-service"
+    },
+    "commit_sha": "0123456789abcdef0123456789abcdef01234567"
+  },
+  "findings": [
+    {
+      "finding_id": "example-finding-001",
+      "source": "example-scanner",
+      "rule_id": "EXAMPLE.SEC.001",
+      "severity": "HIGH",
+      "summary": "Credential-like literal detected in a tracked source file; no value or source excerpt is included."
+    }
+  ]
+}

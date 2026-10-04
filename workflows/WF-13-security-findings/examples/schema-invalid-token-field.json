@@ -1,0 +1,15 @@
+{
+  "action": "REPORT_SECURITY_FINDINGS",
+  "request_id": "req-security-004",
+  "plan_id": "plan-042",
+  "security_run_id": "security-run-004",
+  "target": {
+    "repository": {
+      "owner": "example-org",
+      "name": "sample-service"
+    },
+    "commit_sha": "0123456789abcdef0123456789abcdef01234567"
+  },
+  "findings": [],
+  "access_token": "not-a-real-token"
+}
