@@ -14,7 +14,12 @@ postgresTest("PostgreSQL persists one row under concurrent replay and reports co
   const service = new PlanningService(new PostgresPlanningRepository(pool));
   const payload: PlanningInput = {
     request_id: requestId,
-    title: "Delete customer records in production",
+    source: { workflow: "WF-01", request_id: requestId, intake_state: "ACCEPTED" },
+    intake_review_signal: {
+      human_review_required: true,
+      approval_status: "pending_human_review",
+    },
+    title: "Customer retention planning",
     requirements: [{
       requirement_id: "R-001",
       description: "Authorization applies to every protected endpoint.",

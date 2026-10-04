@@ -27,10 +27,23 @@ export interface PlanningTask {
   requirement_ids: string[];
 }
 
+export interface PlanningSource {
+  workflow: "WF-01";
+  request_id: string;
+  intake_state: "ACCEPTED" | "DUPLICATE";
+}
+
+export interface IntakeReviewSignal {
+  human_review_required: boolean;
+  approval_status: ApprovalStatus;
+}
+
 export interface PlanningInput {
   request_id: string;
   title: string;
   requirements: PlanningRequirement[];
+  source: PlanningSource;
+  intake_review_signal: IntakeReviewSignal;
   tasks?: PlanningTask[];
 }
 

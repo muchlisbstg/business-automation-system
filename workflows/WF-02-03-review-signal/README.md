@@ -4,8 +4,9 @@ The WF-02 planning response includes `review_requirement_ids`, a sorted list of 
 
 ## Attribution in WF-02
 
-WF-02 derives the requirement IDs from the same conservative high-impact detector that sets `human_review_required` and `approval_status`:
+WF-02 requires the matching WF-01 source and its consistent `human_review_required` / `approval_status` pair. A positive WF-01 signal is request-wide and is conservatively associated with every requirement; the trusted caller must forward the actual WF-01 result because WF-02 does not independently retrieve or authenticate it. WF-02 then adds any requirement-level IDs found by its own conservative high-impact detector:
 
+- A positive WF-01 intake signal marks every requirement for review.
 - High-impact intent in the overall request title is plan-wide and is attributed to every requirement.
 - High-impact intent in a requirement description or acceptance criterion is attributed only to that requirement.
 - High-impact intent in a task title is attributed through that task's validated `requirement_ids`.
@@ -34,5 +35,6 @@ Slack and other external notifications are out of scope.
 ## Validation coverage
 
 - WF-02 unit tests cover requirement-only, request-title-wide, task-linked attribution, and replay persistence.
+- WF-02 tests cover required WF-01 provenance, mismatch rejection, and conservative carry-forward of a positive intake signal.
 - WF-03 unit tests cover the linked-task seed set, transitive dependent closure, unrelated-task ordering, invalid source IDs, missing/malformed signals, and existing local risk gates.
 - WF-03 positive and negative examples are checked against the published schema by the repository contract validators.

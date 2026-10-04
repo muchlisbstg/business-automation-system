@@ -16,7 +16,13 @@ import type {
   PlanningTask,
 } from "./types.js";
 
-const REQUIRED_FIELDS = ["request_id", "title", "requirements"] as const;
+const REQUIRED_FIELDS = [
+  "request_id",
+  "source",
+  "intake_review_signal",
+  "title",
+  "requirements",
+] as const;
 const REVIEW_REASON = "HIGH_IMPACT_REVIEW_REQUIRED";
 const ACTION_PATTERN = /\b(deploy(?:s|ed|ing|ment)?|release(?:s|d)?|roll(?:s|ed|ing)\s?out|rollback(?:s|ed|ing)?|roll(?:s|ed|ing)?[\s-]+back|migrat(?:e|es|ed|ing|ion)|restart(?:s|ed|ing)?|shut(?:[ -]+)?down|scale(?:s|d|ing)?|modif(?:y|ies|ied|ying)|chang(?:e|es|ed|ing)|mutat(?:e|es|ed|ing|ion)|updat(?:e|es|ed|ing)|delet(?:e|es|ed|ing|ion)|remov(?:e|es|ed|ing|al)|drop(?:s|ped|ping)?|truncat(?:e|es|ed|ing)|eras(?:e|es|ed|ing|ure)|wip(?:e|es|ed|ing)|destroy(?:s|ed|ing)|purge(?:s|d|ing)|overwrit(?:e|es|ing|ten)|destructive)\b/gi;
 const DESTRUCTIVE_PATTERN = /^(?:delet(?:e|es|ed|ing|ion)|remov(?:e|es|ed|ing|al)|drop(?:s|ped|ping)?|truncat(?:e|es|ed|ing)|eras(?:e|es|ed|ing|ure)|wip(?:e|es|ed|ing)|destroy(?:s|ed|ing)|purge(?:s|d|ing)|destructive)$/i;
@@ -78,6 +84,7 @@ function missingRequiredFields(input: Record<string, unknown>): string[] {
   const missing: string[] = REQUIRED_FIELDS.filter((field) =>
     !(field in input) ||
     input[field] === null ||
+    input[field] === undefined ||
     (typeof input[field] === "string" && input[field].length === 0) ||
     (field === "requirements" && Array.isArray(input[field]) && input[field].length === 0),
   );
@@ -142,6 +149,12 @@ function hasHighImpactIntent(textFields: string[]): boolean {
 
 function reviewRequirementIds(input: PlanningInput & { tasks: PlanningTask[] }): string[] {
   const reviewed = new Set<string>();
+
+  // WF-01 review is request-wide and has no requirement-level attribution.
+  // Conservatively carry it to every requirement so WF-03 cannot lose the gate.
+  if (input.intake_review_signal.human_review_required) {
+    input.requirements.forEach((requirement) => reviewed.add(requirement.requirement_id));
+  }
 
   // A high-impact request title describes the whole plan, so conservatively
   // associate it with every requirement rather than silently narrowing scope.
@@ -245,8 +258,29 @@ export class PlanningService {
 
     const canonicalPayload = {
       ...(normalized as unknown as PlanningInput),
+      source: {
+        ...((normalized as unknown as PlanningInput).source),
+        // WF-01 DUPLICATE is the same persisted accepted intake, not new plan content.
+        intake_state: "ACCEPTED" as const,
+      },
       tasks: ((normalized as unknown as PlanningInput).tasks ?? []) as PlanningTask[],
     };
+    if (canonicalPayload.source.request_id !== canonicalPayload.request_id) {
+      return responseBase(
+        correlationId,
+        canonicalPayload.request_id,
+        "REJECTED",
+        ["WF01_SOURCE_REQUEST_MISMATCH"],
+        responseTime,
+        {
+          validation_errors: [{
+            path: "/source/request_id",
+            message: "source.request_id must match request_id",
+          }],
+        },
+      );
+    }
+
     const duplicateRequirementIds = duplicateValues(
       canonicalPayload.requirements.map((requirement) => requirement.requirement_id),
     );
