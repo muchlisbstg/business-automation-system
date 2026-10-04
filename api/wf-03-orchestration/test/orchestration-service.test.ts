@@ -214,6 +214,38 @@ test("requires review for a production promotion and blocks dependent work", asy
   assert.deepEqual(result.blocked_task_ids, ["T-002", "T-003"]);
 });
 
+test("blocks a destructive removal task for human review", async () => {
+  const result = await service().orchestrate(orchestrationInput({
+    request_id: "REQ-remove-production-data",
+    plan_id: "WF03-remove-production-data",
+    tasks: [{
+      task_id: "T-001",
+      title: "Remove customer rows from production",
+      requirement_ids: ["R-001"],
+    }],
+  }));
+
+  assert.equal(result.state, "APPROVAL_REQUIRED");
+  assert.deepEqual(result.execution_order, []);
+  assert.deepEqual(result.blocked_task_ids, ["T-001"]);
+});
+
+test("does not gate an explicitly negated removal action", async () => {
+  const result = await service().orchestrate(orchestrationInput({
+    request_id: "REQ-no-remove-production-data",
+    plan_id: "WF03-no-remove-production-data",
+    tasks: [{
+      task_id: "T-001",
+      title: "Do not remove customer rows from production",
+      requirement_ids: ["R-001"],
+    }],
+  }));
+
+  assert.equal(result.state, "ORCHESTRATED");
+  assert.deepEqual(result.execution_order, ["T-001"]);
+  assert.deepEqual(result.blocked_task_ids, []);
+});
+
 test("does not gate an explicitly negated production promotion", async () => {
   const result = await service().orchestrate(orchestrationInput({
     request_id: "REQ-no-production-promotion",

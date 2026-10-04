@@ -158,6 +158,29 @@ test("flags a production promotion for human review", async () => {
   assert.equal(result.execution_permitted, false);
 });
 
+test("flags a destructive removal request for human review", async () => {
+  const result = await service().submit(request({
+    request_id: "WF01-remove-production-data",
+    title: "Remove customer rows from production",
+    description: "Remove customer rows from production.",
+  }));
+
+  assert.equal(result.state, "ACCEPTED");
+  assert.equal(result.human_review_required, true);
+  assert.equal(result.approval_status, "pending_human_review");
+  assert.equal(result.execution_permitted, false);
+});
+
+test("does not flag an explicitly negated removal action", async () => {
+  const result = await service().submit(request({
+    request_id: "WF01-no-remove-production-data",
+    title: "Do not remove customer rows from production",
+  }));
+
+  assert.equal(result.human_review_required, false);
+  assert.equal(result.approval_status, "not_required");
+});
+
 test("does not flag an explicitly negated production promotion", async () => {
   const result = await service().submit(request({
     request_id: "WF01-no-production-promotion",
