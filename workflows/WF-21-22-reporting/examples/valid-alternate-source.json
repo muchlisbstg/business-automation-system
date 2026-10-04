@@ -1,0 +1,8 @@
+{
+  "action": "REPORT_DAILY_BRIEF_CANDIDATE",
+  "request_id": "synthetic-request-002",
+  "candidate_id": "synthetic-report-002",
+  "source": "synthetic://operations-sample",
+  "title": "Synthetic operations summary",
+  "summary": "A different synthetic source label is accepted as text; no provider or source is resolved."
+}

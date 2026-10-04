@@ -21,7 +21,7 @@ The automation platform is organized as deterministic, auditable workflows.
 | WF-18 | [Technical debt (contract proposal)](../workflows/WF-18-technical-debt/README.md) |
 | WF-19 | [Documentation as code (contract proposal)](../workflows/WF-19-docs-as-code/README.md) |
 | WF-20 | [Knowledge base (contract proposal)](../workflows/WF-20-knowledge-base/README.md) |
-| WF-21/22 | Daily brief and reporting |
+| WF-21/22 | [Daily brief and reporting (contract proposal)](../workflows/WF-21-22-reporting/README.md) |
 | WF-23 | Learning loop |
 | WF-24 | Daily engineering metrics |
 
