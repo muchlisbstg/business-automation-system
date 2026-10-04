@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://business-automation-system.local/schemas/wf-06-frontend-qa.json",
+  "title": "WF-06 Frontend QA Request (Proposal)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["action", "request_id", "plan_id", "qa_run_id", "target", "checks"],
+  "properties": {
+    "action": {"const": "REQUEST_FRONTEND_QA"},
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "plan_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "qa_run_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commit_sha", "preview_url", "environment"],
+      "properties": {
+        "commit_sha": {
+          "type": "string",
+          "pattern": "^(?:[a-fA-F0-9]{40}|[a-fA-F0-9]{64})$"
+        },
+        "preview_url": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^https://[^\\s]+$"
+        },
+        "environment": {
+          "type": "string",
+          "enum": ["PREVIEW", "DEVELOPMENT", "STAGING"]
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "ACCESSIBILITY",
+          "PERFORMANCE",
+          "FUNCTIONAL_SMOKE",
+          "RESPONSIVE",
+          "VISUAL_REGRESSION"
+        ]
+      }
+    },
+    "figma_handoff_id": {"type": "string", "minLength": 1, "maxLength": 100}
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": ["checks"],
+        "properties": {
+          "checks": {"contains": {"const": "VISUAL_REGRESSION"}}
+        }
+      },
+      "then": {"required": ["figma_handoff_id"]}
+    },
+    {
+      "if": {"required": ["figma_handoff_id"]},
+      "then": {
+        "properties": {
+          "checks": {"contains": {"const": "VISUAL_REGRESSION"}}
+        }
+      }
+    }
+  ]
+}

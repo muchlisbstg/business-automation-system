@@ -1,0 +1,13 @@
+{
+  "action": "REQUEST_FRONTEND_QA",
+  "request_id": "req-frontend-2026-002",
+  "plan_id": "plan-frontend-2026-002",
+  "qa_run_id": "qa-run-visual-001",
+  "target": {
+    "commit_sha": "abcdefabcdefabcdefabcdefabcdefabcdefabcd",
+    "preview_url": "https://preview.example.test/build/qa-run-visual-001",
+    "environment": "DEVELOPMENT"
+  },
+  "checks": ["VISUAL_REGRESSION", "ACCESSIBILITY"],
+  "figma_handoff_id": "handoff-opaque-001"
+}
