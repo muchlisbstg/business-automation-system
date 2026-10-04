@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://business-automation-system.local/schemas/wf-24-engineering-metrics.json",
+  "title": "WF-24 Engineering Metrics Candidate (Proposal)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "action",
+    "request_id",
+    "candidate_id",
+    "source",
+    "period_label",
+    "metrics"
+  ],
+  "properties": {
+    "action": {"const": "REPORT_ENGINEERING_METRICS_CANDIDATE"},
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "candidate_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "source": {"type": "string", "minLength": 1, "maxLength": 255},
+    "period_label": {"type": "string", "minLength": 1, "maxLength": 100},
+    "metrics": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 25,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["metric_key", "value", "unit"],
+        "properties": {
+          "metric_key": {"type": "string", "minLength": 1, "maxLength": 100},
+          "value": {"type": "number"},
+          "unit": {"type": "string", "minLength": 1, "maxLength": 32}
+        }
+      }
+    }
+  }
+}

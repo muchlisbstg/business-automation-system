@@ -1,0 +1,8 @@
+{
+  "action": "REPORT_ENGINEERING_METRICS_CANDIDATE",
+  "request_id": "synthetic-request-invalid-004",
+  "candidate_id": "synthetic-candidate-invalid-004",
+  "source": "synthetic-source",
+  "period_label": "sample-day (synthetic)",
+  "metrics": []
+}

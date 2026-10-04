@@ -28,3 +28,5 @@ The proposal-only [WF-20 Knowledge Base contract](WF-20-knowledge-base/README.md
 The proposal-only [WF-21/22 Daily brief and reporting contract](WF-21-22-reporting/README.md) defines a candidate-envelope shape only; it does not schedule, read or aggregate data, generate, persist, publish, or deliver reports, or send notifications. Slack and all other notifications are out of scope.
 
 The proposal-only [WF-23 Learning loop contract](WF-23-learning/README.md) defines a candidate-envelope shape only; it does not analyze outcomes, validate lessons, train or update models, change prompts or workflows, persist learning, or send notifications. Slack and all other notifications are out of scope.
+
+The proposal-only [WF-24 Daily engineering metrics contract](WF-24-engineering-metrics/README.md) defines an aggregate-shaped candidate only; it does not access sources, calculate or verify metrics, generate or publish reports, persist data, gate CI, trigger operational decisions, or send notifications. Slack and all other external side effects are out of scope.

@@ -1,0 +1,19 @@
+{
+  "action": "REPORT_ENGINEERING_METRICS_CANDIDATE",
+  "request_id": "synthetic-request-001",
+  "candidate_id": "synthetic-candidate-001",
+  "source": "synthetic-ci-summary",
+  "period_label": "sample-day-01 (synthetic)",
+  "metrics": [
+    {
+      "metric_key": "builds_completed",
+      "value": 8,
+      "unit": "count"
+    },
+    {
+      "metric_key": "pipeline_failure_ratio",
+      "value": 0.125,
+      "unit": "ratio"
+    }
+  ]
+}
