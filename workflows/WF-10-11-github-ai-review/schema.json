@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://business-automation-system.local/schemas/wf-10-11-github-ai-review.json",
+  "title": "WF-10/11 GitHub AI Review Request (Proposal)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "action",
+    "request_id",
+    "plan_id",
+    "review_run_id",
+    "repository",
+    "pull_request_number",
+    "head_sha",
+    "review_focus"
+  ],
+  "properties": {
+    "action": {
+      "const": "REQUEST_GITHUB_AI_REVIEW"
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "plan_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "review_run_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["owner", "name"],
+      "properties": {
+        "owner": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 39,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9-]*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9_.-]+$"
+        }
+      }
+    },
+    "pull_request_number": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "head_sha": {
+      "type": "string",
+      "pattern": "^(?:[a-fA-F0-9]{40}|[a-fA-F0-9]{64})$"
+    },
+    "review_focus": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "CORRECTNESS",
+          "SECURITY",
+          "TEST_COVERAGE",
+          "MAINTAINABILITY",
+          "API_CONTRACT"
+        ]
+      }
+    }
+  }
+}
