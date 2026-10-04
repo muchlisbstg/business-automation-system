@@ -1,0 +1,18 @@
+{
+  "action": "REQUEST_DEPLOYMENT",
+  "request_id": "request-example-003",
+  "plan_id": "plan-example-003",
+  "deployment_id": "deployment-example-003",
+  "source": {
+    "repository": {
+      "owner": "example-org",
+      "name": "example-service"
+    },
+    "commit_sha": "cccccccccccccccccccccccccccccccccccccccc"
+  },
+  "artifact_ref": "artifact-ref-example-003",
+  "target": {
+    "service_id": "example-service",
+    "environment": "production"
+  }
+}

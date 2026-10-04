@@ -11,3 +11,5 @@ The proposal-only [WF-12 Tests and coverage contract](WF-12-tests/README.md) def
 
 
 The proposal-only [WF-13 Security findings contract](WF-13-security-findings/README.md) defines a candidate finding-report shape only; it does not run scanners, verify reports, persist findings, or gate CI.
+
+The proposal-only [WF-14/15 Deployment gates and deployment contract](WF-14-15-deployment/README.md) defines a candidate deployment-request shape only; it does not evaluate gates, validate approval, resolve artifacts or targets, deploy, or send notifications.
