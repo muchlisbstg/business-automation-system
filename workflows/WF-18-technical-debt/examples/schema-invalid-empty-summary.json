@@ -1,0 +1,8 @@
+{
+  "action": "REPORT_TECHNICAL_DEBT_CANDIDATE",
+  "request_id": "req-wf18-invalid-004",
+  "candidate_id": "debt-candidate-invalid-004",
+  "observed_at": "2026-10-04T02:06:00Z",
+  "source": "human-review",
+  "summary": ""
+}

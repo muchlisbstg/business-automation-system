@@ -1,0 +1,8 @@
+{
+  "action": "REPORT_TECHNICAL_DEBT_CANDIDATE",
+  "request_id": "req-wf18-invalid-002",
+  "candidate_id": "debt-candidate-invalid-002",
+  "observed_at": "04/10/2026 02:04",
+  "source": "human-review",
+  "summary": "Timestamp shape is intentionally invalid."
+}

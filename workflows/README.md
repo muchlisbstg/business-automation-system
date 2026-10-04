@@ -15,3 +15,5 @@ The proposal-only [WF-13 Security findings contract](WF-13-security-findings/REA
 The proposal-only [WF-14/15 Deployment gates and deployment contract](WF-14-15-deployment/README.md) defines a candidate deployment-request shape only; it does not evaluate gates, validate approval, resolve artifacts or targets, deploy, or send notifications.
 
 The proposal-only [WF-16/17 Incident detection and response contract](WF-16-17-incidents/README.md) defines a candidate incident-signal shape only; it does not detect or confirm incidents, evaluate severity, authorize or execute responses, change incident state, persist records, or send notifications.
+
+The proposal-only [WF-18 Technical debt contract](WF-18-technical-debt/README.md) defines a candidate-report shape only; it does not confirm or rank debt, create issues, assign work, recommend or perform remediation, persist records, or send notifications.
