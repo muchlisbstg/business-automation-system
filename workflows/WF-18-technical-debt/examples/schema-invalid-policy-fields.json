@@ -1,0 +1,10 @@
+{
+  "action": "REPORT_TECHNICAL_DEBT_CANDIDATE",
+  "request_id": "req-wf18-invalid-003",
+  "candidate_id": "debt-candidate-invalid-003",
+  "observed_at": "2026-10-04T02:05:00Z",
+  "source": "human-review",
+  "summary": "Synthetic candidate with undeclared fields.",
+  "priority": "CRITICAL",
+  "remediation_command": "delete production data"
+}

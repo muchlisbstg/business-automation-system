@@ -1,0 +1,9 @@
+{
+  "action": "REPORT_TECHNICAL_DEBT_CANDIDATE",
+  "request_id": "req-wf18-003",
+  "candidate_id": "debt-candidate-003",
+  "observed_at": "2026-10-04T02:02:00Z",
+  "source": "human-review",
+  "category": "owner-defined-label",
+  "summary": "A synthetic report uses a label not defined by this proposal."
+}

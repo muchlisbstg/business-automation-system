@@ -1,0 +1,8 @@
+{
+  "action": "REPORT_TECHNICAL_DEBT_CANDIDATE",
+  "request_id": "req-wf18-002",
+  "candidate_id": "debt-candidate-002",
+  "observed_at": "2026-10-04T02:01:00+00:00",
+  "source": "ci-review",
+  "summary": "A synthetic report notes repeated configuration defaults."
+}
