@@ -549,6 +549,17 @@ test("rejects a WF-02 source whose persisted planning state is not PLANNED", asy
   assert.deepEqual(result.execution_order, []);
 });
 
+test("accepts the full 128-character WF-01 request ID at the root and WF-02 source", async () => {
+  const requestId = "R".repeat(128);
+  const result = await service().orchestrate(orchestrationInput({
+    request_id: requestId,
+    plan_id: "WF03-long-request-id",
+  }));
+
+  assert.equal(result.state, "ORCHESTRATED");
+  assert.equal(result.request_id, requestId);
+});
+
 test("blocks a production rollback task until human review", async () => {
   const result = await service().orchestrate(orchestrationInput({
     request_id: "REQ-production-rollback",

@@ -12,6 +12,7 @@ WF-02 MUST NOT deploy, mutate production data, approve high-impact actions, or t
 - `requirements`
 
 Each requirement MUST have a stable `requirement_id` and non-empty `description`.
+`request_id` MUST support the full 128-character range accepted by WF-01.
 
 ## Validation rules
 - Missing required fields -> `CLARIFICATION_REQUIRED`.

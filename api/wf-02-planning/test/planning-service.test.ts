@@ -371,3 +371,11 @@ test("flags a production rollback for downstream human review", async () => {
   assert.equal(result.approval_status, "pending_human_review");
   assert.equal(result.execution_permitted, false);
 });
+
+test("accepts the full 128-character WF-01 request ID in planning", async () => {
+  const requestId = "R".repeat(128);
+  const result = await service().plan(planningInput({ request_id: requestId }));
+
+  assert.equal(result.state, "PLANNED");
+  assert.equal(result.request_id, requestId);
+});
