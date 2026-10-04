@@ -23,7 +23,8 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 2048,
-          "pattern": "^https://[^\\s]+$"
+          "pattern": "^https://[^\\s]+$",
+          "not": {"pattern": "^https://[^/?#]*@"}
         },
         "environment": {
           "type": "string",

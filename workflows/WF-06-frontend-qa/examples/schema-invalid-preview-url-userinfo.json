@@ -1,0 +1,12 @@
+{
+  "action": "REQUEST_FRONTEND_QA",
+  "request_id": "req-frontend-2026-002",
+  "plan_id": "plan-frontend-2026-002",
+  "qa_run_id": "qa-run-002",
+  "target": {
+    "commit_sha": "0123456789abcdef0123456789abcdef01234567",
+    "preview_url": "https://user:pass@preview.example.test/build/qa-run-002",
+    "environment": "PREVIEW"
+  },
+  "checks": ["ACCESSIBILITY"]
+}

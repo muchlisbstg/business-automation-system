@@ -15,6 +15,7 @@ A `REQUEST_FRONTEND_QA` event contains:
 - `request_id` and `plan_id`: references to the corresponding WF-02 request and WF-03 plan. The schema checks shape only; a future implementation must verify that the records exist and belong to the same source chain.
 - `qa_run_id`: a caller-supplied run reference. Uniqueness, replay, and retry behavior are not specified.
 - `target`: a 40- or 64-character hexadecimal commit SHA, an HTTPS preview URL, and an environment from `PREVIEW`, `DEVELOPMENT`, or `STAGING`. These fields do not prove that the URL serves that commit or that the target is non-production; future semantic checks must do so.
+- `preview_url` must not embed URL user-info such as `username:password@host`; authentication to private previews remains an explicit security-design decision.
 - `checks`: one or more distinct categories from `ACCESSIBILITY`, `PERFORMANCE`, `FUNCTIONAL_SMOKE`, `RESPONSIVE`, and `VISUAL_REGRESSION`.
 - `figma_handoff_id`: required when `VISUAL_REGRESSION` is selected. It is only an opaque reference to the caller-supplied `handoff_id` proposed by WF-05; it does not establish that a handoff exists, is current, is approved, or belongs to this plan.
 
