@@ -276,6 +276,18 @@ test("rejects tasks that reference unknown requirements and preserves the actual
   assert.deepEqual(result.unmapped_requirements?.map((item) => item.requirement_id), ["R-001"]);
 });
 
+test("flags a two-word production shutdown for downstream human review", async () => {
+  const result = await service().plan(planningInput({
+    request_id: "WF02-production-shut-down",
+    title: "Shut down the production API",
+  }));
+
+  assert.equal(result.state, "PLANNED");
+  assert.equal(result.human_review_required, true);
+  assert.equal(result.approval_status, "pending_human_review");
+  assert.equal(result.execution_permitted, false);
+});
+
 test("flags a production rollback for downstream human review", async () => {
   const result = await service().plan(planningInput({
     request_id: "WF02-production-rollback",

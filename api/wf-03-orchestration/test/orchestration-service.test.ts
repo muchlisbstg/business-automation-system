@@ -320,6 +320,22 @@ test("does not accept caller-supplied approval or completion claims as authority
   assert.deepEqual(result.blocked_task_ids, []);
 });
 
+test("blocks a two-word production shutdown for human review", async () => {
+  const result = await service().orchestrate(orchestrationInput({
+    request_id: "REQ-production-shut-down",
+    plan_id: "WF03-production-shut-down",
+    tasks: [{
+      task_id: "T-001",
+      title: "Shut down the production API",
+      requirement_ids: ["R-001"],
+    }],
+  }));
+
+  assert.equal(result.state, "APPROVAL_REQUIRED");
+  assert.deepEqual(result.execution_order, []);
+  assert.deepEqual(result.blocked_task_ids, ["T-001"]);
+});
+
 test("includes every required result field for success, approval, and clarification outcomes", async () => {
   const success = await service().orchestrate(orchestrationInput({
     request_id: "REQ-contract-success",
