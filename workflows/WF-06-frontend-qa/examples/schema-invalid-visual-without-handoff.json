@@ -1,0 +1,12 @@
+{
+  "action": "REQUEST_FRONTEND_QA",
+  "request_id": "req-frontend-2026-004",
+  "plan_id": "plan-frontend-2026-004",
+  "qa_run_id": "qa-run-no-handoff",
+  "target": {
+    "commit_sha": "0123456789abcdef0123456789abcdef01234567",
+    "preview_url": "https://preview.example.test/build/qa-run-no-handoff",
+    "environment": "PREVIEW"
+  },
+  "checks": ["VISUAL_REGRESSION"]
+}

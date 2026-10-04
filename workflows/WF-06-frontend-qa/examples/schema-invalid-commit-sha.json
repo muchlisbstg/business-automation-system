@@ -1,0 +1,12 @@
+{
+  "action": "REQUEST_FRONTEND_QA",
+  "request_id": "req-frontend-2026-006",
+  "plan_id": "plan-frontend-2026-006",
+  "qa_run_id": "qa-run-bad-sha",
+  "target": {
+    "commit_sha": "not-a-commit-sha",
+    "preview_url": "https://preview.example.test/build/qa-run-bad-sha",
+    "environment": "PREVIEW"
+  },
+  "checks": ["PERFORMANCE"]
+}
