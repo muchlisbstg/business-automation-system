@@ -8,6 +8,7 @@
 | Submit a candidate with a different bounded source label | Schema-valid shape only; the label does not authenticate a provider or establish provenance |
 | Omit `action`, `request_id`, `candidate_id`, `source`, `title`, or `summary` | Rejected by schema validation |
 | Supply an empty required text field or a field beyond its candidate bound | Rejected by schema validation |
+| Supply only whitespace in any required text field | Rejected by schema validation; values are not trimmed or normalized |
 | Add undeclared fields such as `content`, access rules, storage instructions, embeddings, or a command | Rejected by schema validation; no such content or side-effect policy is defined |
 | Reuse an identifier, provide an unknown source, or report conflicting candidates | No lookup, deduplication, source verification, or conflict resolution occurs; those semantics remain open |
 | Put a secret, personal data, copyrighted text, sensitive evidence, or instruction-like text in an allowed string | The schema cannot detect or sanitize it; this proposal performs no processing and safe-content rules remain open |
