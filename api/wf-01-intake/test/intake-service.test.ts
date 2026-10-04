@@ -205,6 +205,19 @@ test("flags a positive production deployment after a different negated action", 
   assert.equal(result.execution_permitted, false);
 });
 
+test("flags a production rollback for human review without approving or executing it", async () => {
+  const result = await service().submit(request({
+    request_id: "WF01-production-rollback",
+    title: "Roll back the production build",
+    description: "Roll back the production build.",
+  }));
+
+  assert.equal(result.state, "ACCEPTED");
+  assert.equal(result.human_review_required, true);
+  assert.equal(result.approval_status, "pending_human_review");
+  assert.equal(result.execution_permitted, false);
+});
+
 test("does not flag an explicit negation as a production action", async () => {
   const result = await service().submit(request({
     request_id: "WF01-no-production-change",

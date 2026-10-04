@@ -371,3 +371,20 @@ test("returns clarification for missing required WF-03 fields", async () => {
   assert.deepEqual(result.execution_order, []);
   assert.deepEqual(result.blocked_task_ids, []);
 });
+
+test("blocks a production rollback task until human review", async () => {
+  const result = await service().orchestrate(orchestrationInput({
+    request_id: "REQ-production-rollback",
+    plan_id: "WF03-production-rollback",
+    tasks: [{
+      task_id: "T-001",
+      title: "Roll back the production build",
+      requirement_ids: ["R-001"],
+    }],
+  }));
+
+  assert.equal(result.state, "APPROVAL_REQUIRED");
+  assert.ok(result.reason_codes.includes("HIGH_IMPACT_REVIEW_REQUIRED"));
+  assert.deepEqual(result.execution_order, []);
+  assert.deepEqual(result.blocked_task_ids, ["T-001"]);
+});
