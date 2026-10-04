@@ -1,0 +1,15 @@
+{
+  "action": "REQUEST_TEST_RUN",
+  "request_id": "req-12-008",
+  "plan_id": "plan-49",
+  "test_run_id": "test-run-008",
+  "target": {
+    "repository": {
+      "owner": "example-org",
+      "name": "example-service"
+    },
+    "commit_sha": "0123456789abcdef0123456789abcdef01234567"
+  },
+  "requested_checks": ["UNIT"],
+  "access_token": "not-a-real-token"
+}

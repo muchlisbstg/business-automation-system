@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://business-automation-system.local/schemas/wf-12-tests.json",
+  "title": "WF-12 Test Run Request (Proposal)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["action", "request_id", "plan_id", "test_run_id", "target", "requested_checks"],
+  "properties": {
+    "action": {"const": "REQUEST_TEST_RUN"},
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "plan_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "test_run_id": {"type": "string", "minLength": 1, "maxLength": 100},
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "commit_sha"],
+      "properties": {
+        "repository": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["owner", "name"],
+          "properties": {
+            "owner": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$"
+            }
+          }
+        },
+        "commit_sha": {
+          "type": "string",
+          "pattern": "^(?:[a-fA-F0-9]{40}|[a-fA-F0-9]{64})$"
+        }
+      }
+    },
+    "requested_checks": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": ["UNIT", "INTEGRATION", "API_CONTRACT", "END_TO_END", "COVERAGE"]
+      }
+    }
+  }
+}
