@@ -263,6 +263,22 @@ test("does not gate an explicitly negated production promotion", async () => {
   assert.deepEqual(result.blocked_task_ids, []);
 });
 
+test("gates a positive production deployment after a different negated action", async () => {
+  const result = await service().orchestrate(orchestrationInput({
+    request_id: "REQ-negation-scope",
+    plan_id: "WF03-negation-scope",
+    tasks: [{
+      task_id: "T-001",
+      title: "Do not update docs but deploy to production",
+      requirement_ids: ["R-001"],
+    }],
+  }));
+
+  assert.equal(result.state, "APPROVAL_REQUIRED");
+  assert.deepEqual(result.execution_order, []);
+  assert.deepEqual(result.blocked_task_ids, ["T-001"]);
+});
+
 test("treats prompt-injection text as data and does not grant approval or completion", async () => {
   const result = await service().orchestrate({
     request_id: "REQ-injection",

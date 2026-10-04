@@ -23,6 +23,7 @@ const DESTRUCTIVE_PATTERN = /^(?:delet(?:e|s|ed|ing|ion)|remov(?:e|es|ed|ing|al)
 const PRODUCTION_PATTERN = /\b(?:prod|production)\b/i;
 const PROMOTION_PATTERN = /\bpromot(?:e|es|ed|ing)\b/gi;
 const NEGATION_AT_END = /\b(?:no|not|never|without|avoid|prevent|prohibit|forbid|do\s+not|don't|mustn't|must\s+not|shouldn't|should\s+not|cannot|can't|will\s+not|won't)\b(?:\s+\w+){0,3}\s*$/i;
+const CONTRASTIVE_CLAUSE_BOUNDARY = /\b(?:but|however|yet|instead)\b/gi;
 
 // Conservative high-confidence generic forms. A scoped target (for example,
 // "Improve checkout API latency") or a concrete action is not rejected merely
@@ -106,7 +107,12 @@ function duplicateValues(values: string[]): string[] {
 
 function isNegatedAction(segment: string, actionIndex: number): boolean {
   const precedingText = segment.slice(Math.max(0, actionIndex - 90), actionIndex);
-  return NEGATION_AT_END.test(precedingText);
+  let clauseStart = 0;
+  // A contrastive clause can introduce a separate positive action.
+  for (const match of precedingText.matchAll(CONTRASTIVE_CLAUSE_BOUNDARY)) {
+    clauseStart = (match.index ?? 0) + match[0].length;
+  }
+  return NEGATION_AT_END.test(precedingText.slice(clauseStart));
 }
 
 function hasHighImpactIntent(input: PlanningInput & { tasks: PlanningTask[] }): boolean {

@@ -238,6 +238,18 @@ test("does not flag an explicitly negated production promotion", async () => {
   assert.equal(result.approval_status, "not_required");
 });
 
+test("flags a positive production deployment after a different negated action", async () => {
+  const result = await service().plan(planningInput({
+    request_id: "WF02-negation-scope",
+    title: "Do not update docs but deploy to production",
+  }));
+
+  assert.equal(result.state, "PLANNED");
+  assert.equal(result.human_review_required, true);
+  assert.equal(result.approval_status, "pending_human_review");
+  assert.equal(result.execution_permitted, false);
+});
+
 test("rejects tasks that reference unknown requirements and preserves the actual unmapped requirement", async () => {
   const result = await service().plan(planningInput({
     request_id: "WF02-unknown-reference",
