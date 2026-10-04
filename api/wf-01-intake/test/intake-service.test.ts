@@ -171,6 +171,18 @@ test("flags a destructive removal request for human review", async () => {
   assert.equal(result.execution_permitted, false);
 });
 
+test("flags a two-word production shutdown for human review", async () => {
+  const result = await service().submit(request({
+    request_id: "WF01-production-shut-down",
+    title: "Shut down the production API",
+  }));
+
+  assert.equal(result.state, "ACCEPTED");
+  assert.equal(result.human_review_required, true);
+  assert.equal(result.approval_status, "pending_human_review");
+  assert.equal(result.execution_permitted, false);
+});
+
 test("does not flag an explicitly negated removal action", async () => {
   const result = await service().submit(request({
     request_id: "WF01-no-remove-production-data",

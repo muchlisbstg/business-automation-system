@@ -14,7 +14,7 @@ import type {
 
 const REQUIRED_FIELDS = ["request_id", "title", "requester", "description"] as const;
 const REVIEW_REASON = "HIGH_IMPACT_REVIEW_REQUIRED";
-const ACTION_PATTERN = /\b(deploy(?:s|ed|ing|ment)?|release(?:s|d)?|roll(?:s|ed|ing)\s?out|rollback(?:s|ed|ing)?|roll(?:s|ed|ing)?[\s-]+back|migrat(?:e|es|ed|ing|ion)|restart(?:s|ed|ing)?|shutdown|scale(?:s|d|ing)?|modif(?:y|ies|ied|ying)|chang(?:e|es|ed|ing)|mutat(?:e|es|ed|ing|ion)|updat(?:e|es|ed|ing)|delet(?:e|es|ed|ing|ion)|remov(?:e|es|ed|ing|al)|drop(?:s|ped|ping)?|truncat(?:e|es|ed|ing)|eras(?:e|es|ed|ing|ure)|wip(?:e|es|ed|ing)|destroy(?:s|ed|ing)|purge(?:s|d|ing)|overwrit(?:e|es|ing|ten)|destructive)\b/gi;
+const ACTION_PATTERN = /\b(deploy(?:s|ed|ing|ment)?|release(?:s|d)?|roll(?:s|ed|ing)\s?out|rollback(?:s|ed|ing)?|roll(?:s|ed|ing)?[\s-]+back|migrat(?:e|es|ed|ing|ion)|restart(?:s|ed|ing)?|shut(?:[ -]+)?down|scale(?:s|d|ing)?|modif(?:y|ies|ied|ying)|chang(?:e|es|ed|ing)|mutat(?:e|es|ed|ing|ion)|updat(?:e|es|ed|ing)|delet(?:e|es|ed|ing|ion)|remov(?:e|es|ed|ing|al)|drop(?:s|ped|ping)?|truncat(?:e|es|ed|ing)|eras(?:e|es|ed|ing|ure)|wip(?:e|es|ed|ing)|destroy(?:s|ed|ing)|purge(?:s|d|ing)|overwrit(?:e|es|ing|ten)|destructive)\b/gi;
 const DESTRUCTIVE_PATTERN = /^(?:delet(?:e|es|ed|ing|ion)|remov(?:e|es|ed|ing|al)|drop(?:s|ped|ping)?|truncat(?:e|es|ed|ing)|eras(?:e|es|ed|ing|ure)|wip(?:e|es|ed|ing)|destroy(?:s|ed|ing)|purge(?:s|d|ing)|destructive)$/i;
 const PRODUCTION_PATTERN = /\b(?:prod|production)\b/i;
 const PROMOTION_PATTERN = /\bpromot(?:e|es|ed|ing)\b/gi;
