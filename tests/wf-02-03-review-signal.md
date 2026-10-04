@@ -20,3 +20,4 @@
 | Review remains pending | WF-03 returns `APPROVAL_REQUIRED`; it does not claim approval, execute work, or mark tasks complete. |
 | Review signal changes for a previously used `plan_id` | The changed canonical payload returns `CONFLICT`; the original record is not overwritten. |
 | A signal is absent, false, or true | WF-03 does not send Slack or other external notifications. |
+| The bridge schema is maintained separately from the active WF-03 schema | CI rejects contract drift while allowing distinct `$id` and `title` metadata. |
