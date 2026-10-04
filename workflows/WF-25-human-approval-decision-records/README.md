@@ -1,6 +1,6 @@
 # WF-25 — Human Approval Decision Records (Proposal)
 
-> **Current candidate: Revised Version (Version 2), proposal only.** Version 1 is preserved below as the initial broad iteration and is superseded for current review. Neither version is an approved contract, roadmap commitment, implementation instruction, or authorization to change workflow behavior.
+> **Proposed preferred direction (Version 3), proposal only—not settled policy.** Version 1 is preserved as the initial broad lifecycle exploration, and Version 2 is preserved as the prior narrow task-level decision-record candidate. Neither is an approved contract, roadmap commitment, implementation instruction, or authorization to change workflow behavior.
 >
 > This proposal adds documentation only. It does not change runtime code, schemas, validator behavior, approval authority, stored data, or workflow side effects.
 
@@ -29,7 +29,7 @@ These were exploration topics, not selected semantics. Version 1 did not establi
 
 Version 1 is retained to show how the proposal began. It is not the current candidate and should not be read as an active broad WF-25 scope.
 
-## Revised Version — Narrow decision-record candidate (current)
+## Version 2 — Narrow decision-record candidate (historical; prior candidate)
 
 ### Candidate purpose and boundary
 
@@ -76,6 +76,34 @@ The narrow candidate leaves these decisions open rather than silently resolving 
 8. Duplicate/replay semantics, idempotency, ordering, and handling of repeated or conflicting decisions for the same task.
 9. Whether any future workflow may consume these records and, if so, its separate authority and exact behavior. No consumption or gate change is authorized here.
 
-## Review boundary
+## Version 2 review boundary (historical)
 
-The revised version is the only current candidate in this proposal. It is a narrow description of one task-level decision record, not an approved human-approval policy. Any implementation, persistence, authority verification, lifecycle, notification, or workflow effect requires separately settled decisions and a future authorized change. The two proposal iterations are preserved here so the revision is visible without leaving the broad Version 1 scope as an active candidate.
+Version 2 was a narrow description of one task-level decision record, not an approved human-approval policy. Its candidate fields and explicit non-effects are retained as proposal history; the two earlier iterations remain visible without treating Version 1's broader lifecycle as current scope.
+
+## Version 3 — Proposed preferred direction: task-scoped approval and conditional release
+
+### Proposed direction (not settled policy)
+
+The proposed preferred direction for further review is that, under a future policy and separately authorized implementation, a valid approval by an authorized human for one specifically selected task in a WF-03 result could permit that task—and only dependents deemed eligible by a separately defined rule—to be released from the approval block. The approval would be scoped to that selected task, not unrelated blocked tasks; it would not mark work complete or execute it. What makes an approval valid, who is authorized to give it, and which dependents are eligible remain unsettled.
+
+This direction preserves the distinction between plan/result-level `APPROVAL_REQUIRED` and task-level `blocked_task_ids`: the state describes the WF-03 result, while the list identifies blocked task IDs. A task-level approval would not mean the entire result is approved, and Version 3 does not add an `APPROVED` result state or change current WF-03 behavior.
+
+### Partial release and result semantics remain unresolved
+
+Before any runtime work, a future design must specify how a decision about one task affects `blocked_task_ids` when other tasks remain blocked, what result state is returned, and whether a changed result is recomputed or recorded separately. It must also define the eligibility rule for direct or transitive dependents, how outstanding dependencies affect release, and what `execution_order` means after a partial release. Version 3 selects none of those mechanics; until they are defined, the result state and task list keep their current meanings and behavior.
+
+### Decisions that block runtime work
+
+The following remain open and must be resolved before any runtime, schema, identity, or workflow change:
+
+1. **Trusted identity and authentication:** Which trusted source establishes a human's identity and authority, and how authentication and authorization are verified.
+2. **Reviewer eligibility and separation of duties:** Who may review, whether self-approval is allowed, and how conflicts are handled.
+3. **Quorum and aggregation:** Whether one approval is sufficient, how multiple or conflicting decisions combine, and whether a decision may be conditional or partial.
+4. **Expiry and revocation:** Whether an approval expires, who may revoke or supersede it, and how those actions affect already-unblocked tasks or dependents.
+5. **Evidence and rationale:** Whether evidence or rationale is required, how it is validated, and its provenance, privacy, and access rules.
+6. **Persistence, audit, and retention:** Whether decisions are persisted, the system of record, audit and access controls, correction/deletion behavior, and retention period.
+7. **Partial-unblocking semantics:** The exact task/dependent eligibility rule and the effect on result state, `blocked_task_ids`, and `execution_order`.
+
+### Proposal-only boundary
+
+Version 3 records a preferred direction for review, not settled policy. It introduces no runtime behavior, schema, database, persistence path, identity verification, validator rule, state transition, unblocking operation, execution, or notification. The existing WF-03 contract remains unchanged; any future implementation requires the blocking decisions above to be settled and a separately authorized change.
