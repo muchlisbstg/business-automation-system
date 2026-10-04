@@ -138,7 +138,9 @@ export class IntakeService {
     const normalized = normalizeValue(input) as Record<string, unknown>;
     const requestId = requestIdOf(normalized);
     const missingFields = REQUIRED_FIELDS.filter((field) =>
-      !(field in normalized) || (typeof normalized[field] === "string" && normalized[field].length === 0),
+      !(field in normalized) ||
+      normalized[field] === null ||
+      (typeof normalized[field] === "string" && normalized[field].length === 0),
     );
 
     if (missingFields.length > 0) {
