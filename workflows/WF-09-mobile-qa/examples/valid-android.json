@@ -1,0 +1,13 @@
+{
+  "action": "REQUEST_MOBILE_QA",
+  "request_id": "req-mobile-102",
+  "plan_id": "plan-mobile-205",
+  "qa_run_id": "qa-mobile-android-302",
+  "target": {
+    "commit_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "app_ref": "shop-android-staging",
+    "platform": "ANDROID",
+    "environment": "STAGING"
+  },
+  "checks": ["NETWORK_RESILIENCE", "PERFORMANCE"]
+}

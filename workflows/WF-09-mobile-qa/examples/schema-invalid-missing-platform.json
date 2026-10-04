@@ -1,0 +1,12 @@
+{
+  "action": "REQUEST_MOBILE_QA",
+  "request_id": "req-mobile-invalid-101",
+  "plan_id": "plan-mobile-204",
+  "qa_run_id": "qa-mobile-303",
+  "target": {
+    "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "app_ref": "shop-ios-development",
+    "environment": "DEVELOPMENT"
+  },
+  "checks": ["FUNCTIONAL_SMOKE"]
+}

@@ -1,0 +1,13 @@
+{
+  "action": "REQUEST_MOBILE_QA",
+  "request_id": "req-mobile-invalid-104",
+  "plan_id": "plan-mobile-204",
+  "qa_run_id": "qa-mobile-306",
+  "target": {
+    "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "app_ref": "https://apps.example.invalid/mobile.apk",
+    "platform": "ANDROID",
+    "environment": "DEVELOPMENT"
+  },
+  "checks": ["INSTALL_LAUNCH"]
+}
