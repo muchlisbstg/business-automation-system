@@ -1,0 +1,13 @@
+{
+  "action": "REQUEST_TEST_RUN",
+  "request_id": "req-12-003",
+  "plan_id": "plan-44",
+  "test_run_id": "test-run-003",
+  "target": {
+    "repository": {
+      "owner": "example-org",
+      "name": "example-service"
+    }
+  },
+  "requested_checks": ["UNIT"]
+}
