@@ -8,6 +8,7 @@
 | Provide a different bounded source label | Schema-valid shape only; the label does not authenticate a source or establish provenance |
 | Omit `action`, `request_id`, `candidate_id`, `source`, `title`, or `summary` | Rejected by schema validation |
 | Supply an empty required text field or a value beyond its candidate bound | Rejected by schema validation |
+| Supply whitespace-only `request_id`, `candidate_id`, `source`, `title`, or `summary` | Rejected by schema validation; values are not trimmed or normalized |
 | Add undeclared outcome, evidence, confidence, evaluation, model, prompt, approval, or command fields | Rejected by schema validation; their meanings and behavior are not defined |
 | Reuse an identifier, name an unknown source, or submit conflicting candidates | No lookup, authentication, deduplication, replay handling, or conflict resolution occurs; those semantics remain open |
 | Put a secret, personal data, sensitive information, false claim, copyrighted content, or instruction-like text in an allowed string | The schema cannot detect or sanitize it; this proposal performs no processing and content-safety rules remain open |

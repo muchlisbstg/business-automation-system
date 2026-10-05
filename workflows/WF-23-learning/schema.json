@@ -14,10 +14,10 @@
   ],
   "properties": {
     "action": {"const": "REPORT_LEARNING_CANDIDATE"},
-    "request_id": {"type": "string", "minLength": 1, "maxLength": 100},
-    "candidate_id": {"type": "string", "minLength": 1, "maxLength": 100},
-    "source": {"type": "string", "minLength": 1, "maxLength": 255},
-    "title": {"type": "string", "minLength": 1, "maxLength": 200},
-    "summary": {"type": "string", "minLength": 1, "maxLength": 1000}
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 100, "pattern": "\\S"},
+    "candidate_id": {"type": "string", "minLength": 1, "maxLength": 100, "pattern": "\\S"},
+    "source": {"type": "string", "minLength": 1, "maxLength": 255, "pattern": "\\S"},
+    "title": {"type": "string", "minLength": 1, "maxLength": 200, "pattern": "\\S"},
+    "summary": {"type": "string", "minLength": 1, "maxLength": 1000, "pattern": "\\S"}
   }
 }
