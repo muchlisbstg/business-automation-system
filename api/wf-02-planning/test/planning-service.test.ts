@@ -174,6 +174,17 @@ test("maps request-level high-impact intent to every requirement conservatively"
   assert.deepEqual(result.review_requirement_ids, ["R-001", "R-002"]);
 });
 
+test("maps plural production deployments in the plan title to every requirement", async () => {
+  const result = await service().plan(planningInput({
+    request_id: "WF02-production-deployments",
+    title: "Schedule production deployments",
+  }));
+
+  assert.equal(result.human_review_required, true);
+  assert.equal(result.approval_status, "pending_human_review");
+  assert.deepEqual(result.review_requirement_ids, ["R-001", "R-002"]);
+});
+
 test("attributes task-local high-impact intent through validated requirement links", async () => {
   const result = await service().plan(planningInput({
     request_id: "WF02-task-review-map",
