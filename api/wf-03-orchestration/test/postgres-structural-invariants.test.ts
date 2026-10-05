@@ -17,6 +17,11 @@ const identityMigrationPaths = [
   new URL("../../../database/migrations/006_wf_02_source_identity.sql", import.meta.url),
   new URL("../../../database/migrations/007_wf_03_source_identity.sql", import.meta.url),
 ];
+const identityPreflightPaths = [
+  new URL("../../../database/diagnostics/wf01_payload_identity_preflight.sql", import.meta.url),
+  new URL("../../../database/diagnostics/wf02_source_identity_preflight.sql", import.meta.url),
+  new URL("../../../database/diagnostics/wf03_source_identity_preflight.sql", import.meta.url),
+];
 
 async function expectCheckViolation(operation: Promise<unknown>): Promise<void> {
   await assert.rejects(operation, (error: unknown) => {
@@ -25,7 +30,7 @@ async function expectCheckViolation(operation: Promise<unknown>): Promise<void> 
   });
 }
 
-test("PostgreSQL identity migrations preserve legacy rows and reject inconsistent canonical/source IDs", {
+test("PostgreSQL identity checks preserve legacy rows, report preflight findings, and reject new inconsistencies", {
   skip: !connectionString,
 }, async () => {
   const client = new Client({ connectionString });
@@ -53,6 +58,12 @@ test("PostgreSQL identity migrations preserve legacy rows and reject inconsisten
       }), "a".repeat(64)],
     );
     await client.query(
+      `INSERT INTO wf01_intake_requests
+         (request_id, canonical_payload, payload_hash, human_review_required, approval_status)
+       VALUES ('legacy-wf01-missing-payload-id', $1::jsonb, $2, false, 'not_required')`,
+      [JSON.stringify({ title: "Legacy row without a payload request ID" }), "0".repeat(64)],
+    );
+    await client.query(
       `INSERT INTO wf02_planning_requests
          (request_id, canonical_payload, payload_hash, state, human_review_required, approval_status)
        VALUES ('legacy-wf02', $1::jsonb, $2, 'PLANNED', false, 'not_required')`,
@@ -61,6 +72,16 @@ test("PostgreSQL identity migrations preserve legacy rows and reject inconsisten
         source: { workflow: "WF-01", request_id: "legacy-wf02-other-source", intake_state: "ACCEPTED" },
         requirements: [{ requirement_id: "R-1", description: "Legacy requirement" }],
       }), "b".repeat(64)],
+    );
+    await client.query(
+      `INSERT INTO wf02_planning_requests
+         (request_id, canonical_payload, payload_hash, state, human_review_required, approval_status)
+       VALUES ('legacy-wf02-missing-intake-state', $1::jsonb, $2, 'PLANNED', false, 'not_required')`,
+      [JSON.stringify({
+        request_id: "legacy-wf02-missing-intake-state",
+        source: { workflow: "WF-01", request_id: "legacy-wf02-missing-intake-state" },
+        requirements: [{ requirement_id: "R-2", description: "Legacy requirement" }],
+      }), "5".repeat(64)],
     );
     await client.query(
       `INSERT INTO wf03_orchestrations
@@ -72,6 +93,17 @@ test("PostgreSQL identity migrations preserve legacy rows and reject inconsisten
         source: { workflow: "WF-02", request_id: "legacy-wf03-other-source", planning_state: "PLANNED" },
         tasks: [{ task_id: "T-1", title: "Legacy task", requirement_ids: ["R-1"] }],
       }), "c".repeat(64)],
+    );
+    await client.query(
+      `INSERT INTO wf03_orchestrations
+         (plan_id, request_id, canonical_payload, payload_hash, state)
+       VALUES ('legacy-wf03-missing-planning-state-plan', 'legacy-wf03-missing-planning-state', $1::jsonb, $2, 'ORCHESTRATED')`,
+      [JSON.stringify({
+        request_id: "legacy-wf03-missing-planning-state",
+        plan_id: "legacy-wf03-missing-planning-state-plan",
+        source: { workflow: "WF-02", request_id: "legacy-wf03-missing-planning-state" },
+        tasks: [{ task_id: "T-2", title: "Legacy task", requirement_ids: ["R-2"] }],
+      }), "6".repeat(64)],
     );
 
     const identityMigrations = await Promise.all(
@@ -88,11 +120,11 @@ test("PostgreSQL identity migrations preserve legacy rows and reject inconsisten
       wf03: string;
     }>(
       `SELECT
-         (SELECT count(*)::text FROM wf01_intake_requests WHERE request_id = 'legacy-wf01') AS wf01,
-         (SELECT count(*)::text FROM wf02_planning_requests WHERE request_id = 'legacy-wf02') AS wf02,
-         (SELECT count(*)::text FROM wf03_orchestrations WHERE plan_id = 'legacy-wf03-plan') AS wf03`,
+         (SELECT count(*)::text FROM wf01_intake_requests WHERE request_id LIKE 'legacy-wf01%') AS wf01,
+         (SELECT count(*)::text FROM wf02_planning_requests WHERE request_id LIKE 'legacy-wf02%') AS wf02,
+         (SELECT count(*)::text FROM wf03_orchestrations WHERE plan_id LIKE 'legacy-wf03%') AS wf03`,
     );
-    assert.deepEqual(legacyCounts.rows[0], { wf01: "1", wf02: "1", wf03: "1" });
+    assert.deepEqual(legacyCounts.rows[0], { wf01: "2", wf02: "2", wf03: "2" });
 
     await client.query(
       `INSERT INTO wf01_intake_requests
@@ -126,6 +158,77 @@ test("PostgreSQL identity migrations preserve legacy rows and reject inconsisten
         tasks: [{ task_id: "T-1", title: "Valid task", requirement_ids: ["R-1"] }],
       }), "f".repeat(64)],
     );
+
+    await client.query("BEGIN READ ONLY");
+    try {
+      const diagnostics = [];
+      for (const path of identityPreflightPaths) {
+        const sql = await readFile(fileURLToPath(path), "utf8");
+        const executableSql = sql.replace(/--[^\n]*/g, "").trim();
+        assert.match(executableSql, /^SELECT\b/i, "preflight file must be a SELECT");
+        assert.equal(executableSql.replace(/;$/, "").includes(";"), false, "preflight file must contain one statement");
+        diagnostics.push((await client.query(sql)).rows);
+      }
+
+      assert.deepEqual(diagnostics, [
+        [
+          {
+            table_name: "wf01_intake_requests",
+            constraint_name: "wf01_intake_requests_payload_request_id_check",
+            row_key: "legacy-wf01",
+          },
+          {
+            table_name: "wf01_intake_requests",
+            constraint_name: "wf01_intake_requests_payload_request_id_check",
+            row_key: "legacy-wf01-missing-payload-id",
+          },
+        ],
+        [
+          {
+            table_name: "wf02_planning_requests",
+            constraint_name: "wf02_planning_requests_source_identity_check",
+            row_key: "legacy-wf02",
+          },
+          {
+            table_name: "wf02_planning_requests",
+            constraint_name: "wf02_planning_requests_source_identity_check",
+            row_key: "legacy-wf02-missing-intake-state",
+          },
+        ],
+        [
+          {
+            table_name: "wf03_orchestrations",
+            constraint_name: "wf03_orchestrations_source_identity_check",
+            row_key: "legacy-wf03-missing-planning-state-plan",
+          },
+          {
+            table_name: "wf03_orchestrations",
+            constraint_name: "wf03_orchestrations_source_identity_check",
+            row_key: "legacy-wf03-plan",
+          },
+        ],
+      ]);
+
+      const constraintState = await client.query<{ conname: string; convalidated: boolean }>(
+        `SELECT conname, convalidated
+         FROM pg_constraint
+         WHERE conrelid IN (
+           'wf01_intake_requests'::regclass,
+           'wf02_planning_requests'::regclass,
+           'wf03_orchestrations'::regclass
+         )
+           AND conname IN (
+             'wf01_intake_requests_payload_request_id_check',
+             'wf02_planning_requests_source_identity_check',
+             'wf03_orchestrations_source_identity_check'
+           )
+         ORDER BY conname`,
+      );
+      assert.equal(constraintState.rows.length, 3);
+      assert.ok(constraintState.rows.every(({ convalidated }) => !convalidated));
+    } finally {
+      await client.query("ROLLBACK");
+    }
 
     await expectCheckViolation(client.query(
       `INSERT INTO wf01_intake_requests

@@ -26,4 +26,8 @@ PostgreSQL is the primary transactional data store.
 
 The WF-01, WF-02, and WF-03 migrators also apply migrations 005, 006, and 007. These add row-local checks that the canonical payload's request/plan IDs match their indexed columns and that WF-02/WF-03 source request IDs match the root request ID, with the declared upstream workflow/state. Each check is added `NOT VALID`: existing rows are not rewritten or scanned during rollout, while new rows and updates must satisfy the check. Existing rows can be audited and the constraint validated separately before requiring a fully validated constraint.
 
+### Read-only identity preflight
+
+The workflow services use separate PostgreSQL databases. Run the matching SQL file against the WF-01, WF-02, or WF-03 database: `diagnostics/wf01_payload_identity_preflight.sql`, `diagnostics/wf02_source_identity_preflight.sql`, or `diagnostics/wf03_source_identity_preflight.sql`. Each file is a single `SELECT` that returns the table, constraint name, and primary key for rows that do not satisfy the corresponding migration check; it does not return payload contents, inspect or validate constraint state, or modify data. Each query reads its whole target table and may require a full scan. These results are diagnostic only and prescribe no cleanup.
+
 No cross-workflow foreign keys are added. The workflow service jobs use separate PostgreSQL databases, and the service contracts retain a trusted-caller boundary without authoritative upstream-record lookup; the checks enforce only internal payload identity, not upstream record existence or authentication.
