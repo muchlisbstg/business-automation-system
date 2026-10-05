@@ -45,6 +45,18 @@
       "text": "Customer data erasures are scheduled"
     },
     {
+      "name": "production-modifications",
+      "text": "Schedule production modifications"
+    },
+    {
+      "name": "destructive-truncations",
+      "text": "Customer data truncations are scheduled"
+    },
+    {
+      "name": "destruction-of-production-records",
+      "text": "Planned destruction of production records"
+    },
+    {
       "name": "contrastive-release-gerund",
       "text": "Do not update the runbook, but we are releasing version 4 to production"
     }
