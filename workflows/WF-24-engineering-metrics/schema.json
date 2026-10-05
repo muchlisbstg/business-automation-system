@@ -14,10 +14,10 @@
   ],
   "properties": {
     "action": {"const": "REPORT_ENGINEERING_METRICS_CANDIDATE"},
-    "request_id": {"type": "string", "minLength": 1, "maxLength": 100},
-    "candidate_id": {"type": "string", "minLength": 1, "maxLength": 100},
-    "source": {"type": "string", "minLength": 1, "maxLength": 255},
-    "period_label": {"type": "string", "minLength": 1, "maxLength": 100},
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 100, "pattern": "\\S"},
+    "candidate_id": {"type": "string", "minLength": 1, "maxLength": 100, "pattern": "\\S"},
+    "source": {"type": "string", "minLength": 1, "maxLength": 255, "pattern": "\\S"},
+    "period_label": {"type": "string", "minLength": 1, "maxLength": 100, "pattern": "\\S"},
     "metrics": {
       "type": "array",
       "minItems": 1,
@@ -27,9 +27,9 @@
         "additionalProperties": false,
         "required": ["metric_key", "value", "unit"],
         "properties": {
-          "metric_key": {"type": "string", "minLength": 1, "maxLength": 100},
+          "metric_key": {"type": "string", "minLength": 1, "maxLength": 100, "pattern": "\\S"},
           "value": {"type": "number"},
-          "unit": {"type": "string", "minLength": 1, "maxLength": 32}
+          "unit": {"type": "string", "minLength": 1, "maxLength": 32, "pattern": "\\S"}
         }
       }
     }

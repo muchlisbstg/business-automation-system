@@ -7,7 +7,7 @@
 | Validate `examples/valid.json` with its synthetic source label, period label, and aggregate metric entries | Schema-valid shape only; no metric, value, or reporting period is verified |
 | Validate `examples/valid-alternate-source.json` | Schema-valid shape only; source and period labels remain unverified caller text |
 | Omit a required field, including `period_label` | Rejected by schema validation |
-| Use an empty required string, empty `metrics`, or a value beyond a declared bound | Rejected by schema validation |
+| Use an empty or whitespace-only required string, empty `metrics`, or a value beyond a declared bound | Rejected by schema validation; surrounding whitespace around content remains unchanged |
 | Use a string, object, or null for a numeric `value` | Rejected by schema validation |
 | Provide more than 25 metric entries | Rejected by schema validation |
 | Add an undeclared root-level property such as `person_dimensions` | Rejected by schema validation; no person-level breakdown is part of this candidate shape |
