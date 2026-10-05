@@ -17,6 +17,7 @@ The envelope contains:
 - `metrics`: one to 25 entries, each with a bounded `metric_key`, numeric `value`, and bounded `unit`. These are unverified claims only; the schema does not define metric meaning, formula, aggregation, precision, or comparability.
 
 The candidate shape contains no raw events, person identifiers, or dimension/breakdown fields. Undeclared properties are rejected. This is not a guarantee that allowed strings are safe: the schema cannot detect secrets, personal or sensitive data, false claims, or instruction-like text. Do not use real or sensitive data in fixtures or candidate strings.
+Each required text field must contain at least one non-whitespace character. Surrounding whitespace is accepted and preserved; this rejects whitespace-only shape values without trimming, normalizing, or interpreting any string.
 
 ## Safety boundaries
 
