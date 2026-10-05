@@ -295,6 +295,22 @@ test("requires review for a production promotion and blocks dependent work", asy
   assert.deepEqual(result.blocked_task_ids, ["T-002", "T-003"]);
 });
 
+test("blocks plural production deployments and all dependent work for human review", async () => {
+  const result = await service().orchestrate(orchestrationInput({
+    request_id: "REQ-production-deployments",
+    plan_id: "WF03-production-deployments",
+    tasks: [
+      { task_id: "T-001", title: "Schedule production deployments", requirement_ids: ["R-001"] },
+      { task_id: "T-002", title: "Verify deployment health", requirement_ids: ["R-001"], depends_on: ["T-001"] },
+      { task_id: "T-003", title: "Update unrelated notes", requirement_ids: ["R-002"] },
+    ],
+  }));
+
+  assert.equal(result.state, "APPROVAL_REQUIRED");
+  assert.deepEqual(result.execution_order, ["T-003"]);
+  assert.deepEqual(result.blocked_task_ids, ["T-001", "T-002"]);
+});
+
 test("blocks a destructive removal task for human review", async () => {
   const result = await service().orchestrate(orchestrationInput({
     request_id: "REQ-remove-production-data",

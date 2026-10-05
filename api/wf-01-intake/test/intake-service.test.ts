@@ -166,6 +166,18 @@ test("flags a production promotion for human review", async () => {
   assert.equal(result.execution_permitted, false);
 });
 
+test("flags plural production deployments for human review", async () => {
+  const result = await service().submit(request({
+    request_id: "WF01-production-deployments",
+    title: "Schedule production deployments",
+  }));
+
+  assert.equal(result.state, "ACCEPTED");
+  assert.equal(result.human_review_required, true);
+  assert.equal(result.approval_status, "pending_human_review");
+  assert.equal(result.execution_permitted, false);
+});
+
 test("flags a destructive removal request for human review", async () => {
   const result = await service().submit(request({
     request_id: "WF01-remove-production-data",
