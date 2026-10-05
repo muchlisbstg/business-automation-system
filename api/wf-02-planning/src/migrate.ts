@@ -13,9 +13,13 @@ const baseMigrationPath = fileURLToPath(
 const reviewSignalMigrationPath = fileURLToPath(
   new URL("../../../database/migrations/004_wf_02_review_requirement_ids.sql", import.meta.url),
 );
+const sourceIdentityMigrationPath = fileURLToPath(
+  new URL("../../../database/migrations/006_wf_02_source_identity.sql", import.meta.url),
+);
 const migrations = await Promise.all([
   readFile(baseMigrationPath, "utf8"),
   readFile(reviewSignalMigrationPath, "utf8"),
+  readFile(sourceIdentityMigrationPath, "utf8"),
 ]);
 const pool = new Pool({ connectionString });
 
