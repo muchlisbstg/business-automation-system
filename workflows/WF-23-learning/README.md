@@ -15,6 +15,8 @@ The candidate envelope contains:
 - `source`: a bounded caller-supplied label, not an authenticated source, verified reference, or proof of provenance.
 - `title` and `summary`: bounded text for synthetic candidate metadata, not a verified observation, outcome, evidence record, or lesson.
 
+Each required caller-supplied text field must contain at least one non-whitespace character. Values are not trimmed or normalized; this is shape validation only.
+
 The schema rejects undeclared fields, including outcome, evidence, confidence, evaluation, model, prompt, workflow-change, approval, and command fields. It cannot detect or sanitize secrets, personal or sensitive data, false claims, copyrighted material, or instruction-like text inside an allowed string. Fixtures contain synthetic data only.
 
 ## Safety boundaries
