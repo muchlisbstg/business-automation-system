@@ -8,7 +8,7 @@
 | Request visual regression with a WF-05 handoff reference | Schema-valid request; existence, revision, and source-chain checks remain semantic |
 | Omit `request_id`, `plan_id`, `qa_run_id`, target, or checks | Rejected by schema validation |
 | Use a non-HTTPS preview URL or malformed commit SHA | Rejected by schema validation |
-| Use an HTTPS preview URL with no authority/host (for example, `https://?x` or `https://#x`) | Rejected by schema validation |
+| Use an HTTPS preview URL with no host (for example, `https://?x`, `https://#x`, or `https://:443`) | Rejected by schema validation |
 | Embed username/password URL user-info in `preview_url` | Rejected by schema validation; the request cannot carry preview credentials |
 | Select an unsupported or duplicate check category | Rejected by schema validation |
 | Select `VISUAL_REGRESSION` without `figma_handoff_id` | Rejected by schema validation |
