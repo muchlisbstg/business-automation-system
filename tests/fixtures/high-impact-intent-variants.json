@@ -1,0 +1,86 @@
+{
+  "review_required": [
+    {
+      "name": "release-gerund-to-production",
+      "text": "We are releasing version 4 to production"
+    },
+    {
+      "name": "production-rollouts",
+      "text": "Schedule production rollouts"
+    },
+    {
+      "name": "production-migrations",
+      "text": "Schedule production migrations"
+    },
+    {
+      "name": "shutdown-gerund",
+      "text": "We are shutting down the production API"
+    },
+    {
+      "name": "production-shutdowns",
+      "text": "Schedule production shutdowns"
+    },
+    {
+      "name": "production-promotions",
+      "text": "Schedule production promotions"
+    },
+    {
+      "name": "production-mutations",
+      "text": "Schedule production mutations"
+    },
+    {
+      "name": "overwrite-simple-past",
+      "text": "The maintenance job overwrote production configuration"
+    },
+    {
+      "name": "destructive-deletions",
+      "text": "Customer data deletions are scheduled"
+    },
+    {
+      "name": "destructive-removals",
+      "text": "Customer data removals are scheduled"
+    },
+    {
+      "name": "destructive-erasures",
+      "text": "Customer data erasures are scheduled"
+    },
+    {
+      "name": "production-modifications",
+      "text": "Schedule production modifications"
+    },
+    {
+      "name": "destructive-truncations",
+      "text": "Customer data truncations are scheduled"
+    },
+    {
+      "name": "destruction-of-production-records",
+      "text": "Planned destruction of production records"
+    },
+    {
+      "name": "contrastive-release-gerund",
+      "text": "Do not update the runbook, but we are releasing version 4 to production"
+    }
+  ],
+  "review_not_required": [
+    {
+      "name": "negated-release-gerund",
+      "text": "Do not keep releasing version 4 to production"
+    },
+    {
+      "name": "negated-shutdown-gerund",
+      "text": "Do not keep shutting down production"
+    },
+    {
+      "name": "negated-production-rollouts",
+      "text": "No production rollouts are scheduled"
+    },
+    {
+      "name": "negated-production-promotions",
+      "text": "Do not schedule production promotions"
+    },
+    {
+      "name": "negated-destructive-plural",
+      "text": "No customer data removals are scheduled"
+    }
+  ]
+}

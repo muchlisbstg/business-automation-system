@@ -17,10 +17,10 @@ import type {
 
 const REQUIRED_FIELDS = ["request_id", "plan_id", "tasks"] as const;
 const REVIEW_REASON = "HIGH_IMPACT_REVIEW_REQUIRED";
-const ACTION_PATTERN = /\b(deploy(?:s|ed|ing|ments?)?|release(?:s|d)?|roll(?:s|ed|ing)\s?out|rollback(?:s|ed|ing)?|roll(?:s|ed|ing)?[\s-]+back|migrat(?:e|es|ed|ing|ion)|restart(?:s|ed|ing)?|shut(?:[ -]+)?down|scale(?:s|d|ing)?|modif(?:y|ies|ied|ying)|chang(?:e|es|ed|ing)|mutat(?:e|es|ed|ing|ion)|updat(?:e|es|ed|ing)|delet(?:e|es|ed|ing|ion)|remov(?:e|es|ed|ing|al)|drop(?:s|ped|ping)?|truncat(?:e|es|ed|ing)|eras(?:e|es|ed|ing|ure)|wip(?:e|es|ed|ing)|destroy(?:s|ed|ing)|purge(?:s|d|ing)|overwrit(?:e|es|ing|ten)|destructive)\b/gi;
-const DESTRUCTIVE_PATTERN = /^(?:delet(?:e|es|ed|ing|ion)|remov(?:e|es|ed|ing|al)|drop(?:s|ped|ping)?|truncat(?:e|es|ed|ing)|eras(?:e|es|ed|ing|ure)|wip(?:e|es|ed|ing)|destroy(?:s|ed|ing)|purge(?:s|d|ing)|destructive)$/i;
+const ACTION_PATTERN = /\b(deploy(?:s|ed|ing|ments?)?|releas(?:e|es|ed|ing)|roll(?:s|ed|ing)\s?out|rollouts?|rollback(?:s|ed|ing)?|roll(?:s|ed|ing)?[\s-]+back|migrat(?:e|es|ed|ing|ion(?:s)?)|restart(?:s|ed|ing)?|shut(?:s|ting)?(?:[ -]+)?down(?:s)?|scale(?:s|d|ing)?|modif(?:y|ies|ied|ying|ication(?:s)?)|chang(?:e|es|ed|ing)|mutat(?:e|es|ed|ing|ion(?:s)?)|updat(?:e|es|ed|ing)|delet(?:e|es|ed|ing|ion(?:s)?)|remov(?:e|es|ed|ing|al(?:s)?)|drop(?:s|ped|ping)?|truncat(?:e|es|ed|ing|ion(?:s)?)|eras(?:e|es|ed|ing|ure(?:s)?)|wip(?:e|es|ed|ing)|destroy(?:s|ed|ing)|destruction(?:s)?|purge(?:s|d|ing)|overwrit(?:e|es|ing|ten)|overwrote|destructive)\b/gi;
+const DESTRUCTIVE_PATTERN = /^(?:delet(?:e|es|ed|ing|ion(?:s)?)|remov(?:e|es|ed|ing|al(?:s)?)|drop(?:s|ped|ping)?|truncat(?:e|es|ed|ing|ion(?:s)?)|eras(?:e|es|ed|ing|ure(?:s)?)|wip(?:e|es|ed|ing)|destroy(?:s|ed|ing)|destruction(?:s)?|purge(?:s|d|ing)|destructive)$/i;
 const PRODUCTION_PATTERN = /\b(?:prod|production)\b/i;
-const PROMOTION_PATTERN = /\bpromot(?:e|es|ed|ing)\b/gi;
+const PROMOTION_PATTERN = /\bpromot(?:e|es|ed|ing|ion(?:s)?)\b/gi;
 const NEGATION_AT_END = /\b(?:no|not|never|without|avoid|prevent|prohibit|forbid|do\s+not|don't|mustn't|must\s+not|shouldn't|should\s+not|cannot|can't|will\s+not|won't)\b(?:\s+\w+){0,3}\s*$/i;
 const CONTRASTIVE_CLAUSE_BOUNDARY = /\b(?:but|however|yet|instead)\b/gi;
 

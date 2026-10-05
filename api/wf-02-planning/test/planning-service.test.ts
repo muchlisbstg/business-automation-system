@@ -11,6 +11,15 @@ const fixturePath = fileURLToPath(
 );
 const fixture = JSON.parse(readFileSync(fixturePath, "utf8")) as PlanningInput;
 const fixedClock = () => new Date("2026-06-01T12:00:00.000Z");
+const highImpactIntentVariants = JSON.parse(
+  readFileSync(
+    fileURLToPath(new URL("../../../tests/fixtures/high-impact-intent-variants.json", import.meta.url)),
+    "utf8",
+  ),
+) as {
+  review_required: Array<{ name: string; text: string }>;
+  review_not_required: Array<{ name: string; text: string }>;
+};
 
 function service(repository = new MemoryPlanningRepository()): PlanningService {
   return new PlanningService(repository, {
@@ -471,6 +480,33 @@ test("flags a positive production deployment after a different negated action", 
   assert.equal(result.human_review_required, true);
   assert.equal(result.approval_status, "pending_human_review");
   assert.equal(result.execution_permitted, false);
+});
+
+test("maps shared grammatical high-impact variants to every requirement", async () => {
+  for (const variant of highImpactIntentVariants.review_required) {
+    const result = await service().plan(planningInput({
+      request_id: `WF02-${variant.name}`,
+      title: variant.text,
+    }));
+
+    assert.equal(result.human_review_required, true, variant.name);
+    assert.equal(result.approval_status, "pending_human_review", variant.name);
+    assert.deepEqual(result.review_requirement_ids, ["R-001", "R-002"], variant.name);
+    assert.equal(result.execution_permitted, false, variant.name);
+  }
+});
+
+test("does not flag shared explicitly negated grammatical variants", async () => {
+  for (const variant of highImpactIntentVariants.review_not_required) {
+    const result = await service().plan(planningInput({
+      request_id: `WF02-${variant.name}`,
+      title: variant.text,
+    }));
+
+    assert.equal(result.human_review_required, false, variant.name);
+    assert.equal(result.approval_status, "not_required", variant.name);
+    assert.deepEqual(result.review_requirement_ids, [], variant.name);
+  }
 });
 
 test("rejects tasks that reference unknown requirements and preserves the actual unmapped requirement", async () => {
