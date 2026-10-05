@@ -83,6 +83,11 @@ jobs:
         working-directory: api/wf-03-orchestration
         run: npm ci
 
+      - name: Install WF-01 and WF-02 dependencies for cross-workflow tests
+        run: |
+          npm ci --prefix api/wf-01-intake
+          npm ci --prefix api/wf-02-planning
+
       - name: Typecheck WF-03
         working-directory: api/wf-03-orchestration
         run: npm run typecheck
