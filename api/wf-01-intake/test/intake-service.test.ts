@@ -11,6 +11,15 @@ const validFixturePath = fileURLToPath(
 );
 const fixture = JSON.parse(readFileSync(validFixturePath, "utf8")) as IntakeRequest;
 const fixedClock = () => new Date("2026-06-01T12:00:00.000Z");
+const highImpactIntentVariants = JSON.parse(
+  readFileSync(
+    fileURLToPath(new URL("../../../tests/fixtures/high-impact-intent-variants.json", import.meta.url)),
+    "utf8",
+  ),
+) as {
+  review_required: Array<{ name: string; text: string }>;
+  review_not_required: Array<{ name: string; text: string }>;
+};
 
 function service(repository = new MemoryIntakeRepository()): IntakeService {
   return new IntakeService(repository, {
@@ -176,6 +185,32 @@ test("flags plural production deployments for human review", async () => {
   assert.equal(result.human_review_required, true);
   assert.equal(result.approval_status, "pending_human_review");
   assert.equal(result.execution_permitted, false);
+});
+
+test("flags shared grammatical high-impact variants for human review", async () => {
+  for (const variant of highImpactIntentVariants.review_required) {
+    const result = await service().submit(request({
+      request_id: `WF01-${variant.name}`,
+      title: variant.text,
+    }));
+
+    assert.equal(result.state, "ACCEPTED", variant.name);
+    assert.equal(result.human_review_required, true, variant.name);
+    assert.equal(result.approval_status, "pending_human_review", variant.name);
+    assert.equal(result.execution_permitted, false, variant.name);
+  }
+});
+
+test("does not flag shared explicitly negated grammatical variants", async () => {
+  for (const variant of highImpactIntentVariants.review_not_required) {
+    const result = await service().submit(request({
+      request_id: `WF01-${variant.name}`,
+      title: variant.text,
+    }));
+
+    assert.equal(result.human_review_required, false, variant.name);
+    assert.equal(result.approval_status, "not_required", variant.name);
+  }
 });
 
 test("flags a destructive removal request for human review", async () => {

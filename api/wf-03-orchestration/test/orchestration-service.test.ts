@@ -17,6 +17,15 @@ const invalidDependencyFixture = JSON.parse(
   readFileSync(invalidDependencyFixturePath, "utf8"),
 ) as OrchestrationInput;
 const fixedClock = () => new Date("2026-06-01T12:00:00.000Z");
+const highImpactIntentVariants = JSON.parse(
+  readFileSync(
+    fileURLToPath(new URL("../../../tests/fixtures/high-impact-intent-variants.json", import.meta.url)),
+    "utf8",
+  ),
+) as {
+  review_required: Array<{ name: string; text: string }>;
+  review_not_required: Array<{ name: string; text: string }>;
+};
 
 function service(repository = new MemoryOrchestrationRepository()): OrchestrationService {
   return new OrchestrationService(repository, {
@@ -374,6 +383,37 @@ test("gates a positive production deployment after a different negated action", 
   assert.equal(result.state, "APPROVAL_REQUIRED");
   assert.deepEqual(result.execution_order, []);
   assert.deepEqual(result.blocked_task_ids, ["T-001"]);
+});
+
+test("blocks shared grammatical high-impact variants and all dependent work", async () => {
+  for (const variant of highImpactIntentVariants.review_required) {
+    const result = await service().orchestrate(orchestrationInput({
+      request_id: `REQ-${variant.name}`,
+      plan_id: `WF03-${variant.name}`,
+      tasks: [
+        { task_id: "T-001", title: variant.text, requirement_ids: ["R-001"] },
+        { task_id: "T-002", title: "Verify the result", requirement_ids: ["R-001"], depends_on: ["T-001"] },
+        { task_id: "T-003", title: "Update unrelated notes", requirement_ids: ["R-002"] },
+      ],
+    }));
+
+    assert.equal(result.state, "APPROVAL_REQUIRED", variant.name);
+    assert.deepEqual(result.blocked_task_ids, ["T-001", "T-002"], variant.name);
+    assert.deepEqual(result.execution_order, ["T-003"], variant.name);
+  }
+});
+
+test("does not gate shared explicitly negated grammatical variants", async () => {
+  for (const variant of highImpactIntentVariants.review_not_required) {
+    const result = await service().orchestrate(orchestrationInput({
+      request_id: `REQ-${variant.name}`,
+      plan_id: `WF03-${variant.name}`,
+      tasks: [{ task_id: "T-001", title: variant.text, requirement_ids: ["R-001"] }],
+    }));
+
+    assert.equal(result.state, "ORCHESTRATED", variant.name);
+    assert.deepEqual(result.blocked_task_ids, [], variant.name);
+  }
 });
 
 test("treats prompt-injection text as data and does not grant approval or completion", async () => {
