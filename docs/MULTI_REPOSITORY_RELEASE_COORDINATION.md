@@ -43,9 +43,11 @@ For every cross-repository change, capture:
 - Human approver for production or destructive changes
 - Portfolio evidence link and remaining limitations
 
-## Current security dependency
+## Current security milestone
 
-The export platform has an accepted design record for OIDC and authorization boundaries: [ADR-004](https://github.com/muchlisbstg/enterprise-export-platform-usa/blob/main/docs/ADR-004-OIDC-AUTHORIZATION-BOUNDARY.md). This is a design-only artifact. The platform still uses a shared bearer token and configured organization scope; therefore, do not represent the API as having per-user OIDC authentication or route-level RBAC until those are implemented and tested.
+The export platform has moved beyond the design-only stage. The OIDC verifier and tenant principal resolver were merged in [PR #12](https://github.com/muchlisbstg/enterprise-export-platform-usa/pull/12); the system role/permission catalog was added in [PR #13](https://github.com/muchlisbstg/enterprise-export-platform-usa/pull/13); transactional order lifecycle routes and PostgreSQL integration tests were merged in [PR #14](https://github.com/muchlisbstg/enterprise-export-platform-usa/pull/14). The design boundary remains documented in [ADR-004](https://github.com/muchlisbstg/enterprise-export-platform-usa/blob/main/docs/ADR-004-OIDC-AUTHORIZATION-BOUNDARY.md).
+
+The API now requires configured OIDC issuer and audience at startup, resolves issuer+subject to an active organization membership, and enforces route permissions. System role templates do not automatically grant roles to users. Provider configuration, identity onboarding, an audited admin role-management path, production deployment, and independent security review remain outstanding. A separate cryptographic JWT regression suite is in [PR #15](https://github.com/muchlisbstg/enterprise-export-platform-usa/pull/15) and must not be reported as merged until its checks pass.
 
 ## Safe automation contract
 
