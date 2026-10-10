@@ -43,6 +43,10 @@ For every cross-repository change, capture:
 - Human approver for production or destructive changes
 - Portfolio evidence link and remaining limitations
 
+## Current security dependency
+
+The export platform has an accepted design record for OIDC and authorization boundaries: [ADR-004](https://github.com/muchlisbstg/enterprise-export-platform-usa/blob/main/docs/ADR-004-OIDC-AUTHORIZATION-BOUNDARY.md). This is a design-only artifact. The platform still uses a shared bearer token and configured organization scope; therefore, do not represent the API as having per-user OIDC authentication or route-level RBAC until those are implemented and tested.
+
 ## Safe automation contract
 
 An automation may prepare branches, validate files, run tests, and open pull requests only within its granted permissions. It must stop on failed, missing, or pending required checks. AI output is advisory, not a source of authorization. Production deployment, deletion, irreversible data changes, and privilege grants require an explicit authorized human approval.
