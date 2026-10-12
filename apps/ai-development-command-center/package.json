@@ -1,6 +1,6 @@
 {
   "name": "ai-development-command-center",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,11 +8,13 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "node --test"
+    "migrate": "tsx scripts/migrate.ts",
+    "test": "tsx --test tests/*.test.ts tests/*.test.mjs"
   },
   "dependencies": {
     "@octokit/rest": "^21.1.1",
     "next": "^15.5.4",
+    "next-auth": "^5.0.0-beta.30",
     "pg": "^8.16.3",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
@@ -24,6 +26,7 @@
     "@types/react-dom": "^19.1.9",
     "eslint": "^9.36.0",
     "eslint-config-next": "^15.5.4",
+    "tsx": "^4.20.5",
     "typescript": "^5.9.2"
   }
 }
