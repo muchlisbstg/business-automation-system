@@ -34,7 +34,7 @@ export async function decideApproval(input: {
       if (!approval) return { status: 404, body: { error: "Approval not found." } };
       if (approval.status !== "pending") return { status: 409, body: { error: "Approval is no longer pending." } };
       if (approval.expires_at && approval.expires_at.getTime() <= Date.now()) {
-        await client.query("UPDATE approvals SET status = 'expired' WHERE id = $1", [approval.id]);
+        await client.query("UPDATE approvals SET status = 'expired', decided_by = 'system:expiry', decided_at = now(), decision_reason = 'Expired automatically' WHERE id = $1", [approval.id]);
         await writeAudit(client, input, approval.team_id, "approval.expired", "failure", { approvalId: approval.id });
         return { status: 409, body: { error: "Approval has expired." } };
       }
@@ -80,7 +80,6 @@ export async function decideApproval(input: {
       return { status: 200, body: { approvalId: approval.id, status: row.status, decidedBy: row.decided_by, decidedAt: row.decided_at.toISOString() } };
     });
   } catch {
-    // Database details are logged only by infrastructure; never returned to the client.
     return { status: 503, body: { error: "Approval service temporarily unavailable." } };
   }
 }
