@@ -31,6 +31,8 @@ jobs:
           cache-dependency-path: apps/ai-development-command-center/package.json
       - name: Install dependencies
         run: npm install --no-audit --no-fund
+      - name: Test approval policy
+        run: npm test
       - name: Typecheck
         run: npm run typecheck
       - name: Production build
