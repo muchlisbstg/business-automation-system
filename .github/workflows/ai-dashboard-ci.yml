@@ -1,0 +1,39 @@
+name: AI Dashboard CI
+
+on:
+  pull_request:
+    paths:
+      - 'apps/ai-development-command-center/**'
+      - '.github/workflows/ai-dashboard-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'apps/ai-development-command-center/**'
+      - '.github/workflows/ai-dashboard-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/ai-development-command-center
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/ai-development-command-center/package.json
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Test approval policy
+        run: npm test
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Production build
+        run: npm run build
