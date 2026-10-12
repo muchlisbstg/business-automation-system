@@ -1,9 +1,8 @@
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { Pool } from "pg";
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../database/migrations");
+const root = path.resolve(process.cwd(), "database/migrations");
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) throw new Error("DATABASE_URL is required to run migrations.");
 const pool = new Pool({ connectionString, max: 2, connectionTimeoutMillis: 5000, ssl: process.env.DATABASE_SSL === "true" ? { rejectUnauthorized: true } : undefined });
