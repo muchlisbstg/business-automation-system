@@ -35,7 +35,7 @@ export async function decideApproval(input: {
       if (approval.status !== "pending") return { status: 409, body: { error: "Approval is no longer pending." } };
       if (approval.expires_at && approval.expires_at.getTime() <= Date.now()) {
         await client.query("UPDATE approvals SET status = 'expired', decided_by = 'system:expiry', decided_at = now(), decision_reason = 'Expired automatically' WHERE id = $1", [approval.id]);
-        await writeAudit(client, input, approval.team_id, "approval.expired", "failure", { approvalId: approval.id });
+        await writeAudit(client, { ...input, actorId: "system:expiry", actorType: "system" }, approval.team_id, "approval.expired", "failure", { approvalId: approval.id });
         return { status: 409, body: { error: "Approval has expired." } };
       }
       if (approval.requested_by === input.actorId) {
@@ -86,7 +86,7 @@ export async function decideApproval(input: {
 
 async function writeAudit(
   client: PoolClient,
-  input: { actorId: string; requestId: string },
+  input: { actorId: string; actorType?: "human" | "system"; requestId: string },
   teamId: string,
   action: string,
   outcome: "success" | "denied" | "failure" | "pending",
@@ -94,7 +94,7 @@ async function writeAudit(
 ) {
   await client.query(
     `INSERT INTO audit_logs (actor_type, actor_id, team_id, action, resource_type, resource_ref, correlation_id, outcome, metadata)
-     VALUES ('human', $1, $2, $3, 'approval', $4, $5::uuid, $6, $7::jsonb)`,
-    [input.actorId, teamId, action, String(metadata.approvalId ?? ""), input.requestId, outcome, JSON.stringify(metadata)],
+     VALUES ($1, $2, $3, $4, 'approval', $5, $6::uuid, $7, $8::jsonb)`,
+    [input.actorType ?? "human", input.actorId, teamId, action, String(metadata.approvalId ?? ""), input.requestId, outcome, JSON.stringify(metadata)],
   );
 }
