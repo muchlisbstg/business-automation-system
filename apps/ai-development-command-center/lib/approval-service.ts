@@ -51,10 +51,10 @@ export async function decideApproval(input: {
         `SELECT COALESCE(rm.role, tm.role) AS role
          FROM repositories r
          JOIN projects p ON p.id = r.project_id
-         JOIN team_members tm ON tm.team_id = p.team_id AND tm.user_subject = $1
+         LEFT JOIN team_members tm ON tm.team_id = p.team_id AND tm.user_subject = $1
          LEFT JOIN repository_members rm ON rm.repository_id = r.id AND rm.user_subject = $1
          WHERE r.id = $2 AND p.team_id = $3
-           AND (rm.user_subject IS NOT NULL OR tm.role IN ('owner','admin','engineering_lead','developer','reviewer','auditor'))
+           AND (rm.user_subject IS NOT NULL OR tm.user_subject IS NOT NULL)
          LIMIT 1`,
         [input.actorId, approval.repository_id, approval.team_id],
       );
