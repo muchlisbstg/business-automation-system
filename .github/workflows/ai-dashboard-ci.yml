@@ -17,6 +17,26 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: nexus
+          POSTGRES_PASSWORD: nexus-test-only
+          POSTGRES_DB: nexus_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U nexus -d nexus_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://nexus:nexus-test-only@localhost:5432/nexus_test
+      AUTH_SECRET: ci-only-secret-not-for-production-please-change
+      AUTH_OIDC_ISSUER: https://sso.example.invalid
+      AUTH_OIDC_CLIENT_ID: ci-test
+      AUTH_OIDC_CLIENT_SECRET: ci-only
     defaults:
       run:
         working-directory: apps/ai-development-command-center
@@ -27,11 +47,11 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: apps/ai-development-command-center/package.json
       - name: Install dependencies
         run: npm install --no-audit --no-fund
-      - name: Test approval policy
+      - name: Apply versioned migrations
+        run: npm run migrate
+      - name: Unit and PostgreSQL integration tests
         run: npm test
       - name: Typecheck
         run: npm run typecheck

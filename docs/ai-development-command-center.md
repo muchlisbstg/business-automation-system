@@ -1,35 +1,31 @@
 # AI Development Command Center — Implementation Plan
 
-## Current implementation slice
+## Implemented in the security branch
 
-- Editable Figma design-system page with local dark tokens and reusable button, badge, KPI card, navigation, and agent-status components.
-- Next.js App Router + TypeScript dashboard shell with responsive dark UI.
-- Server-only GitHub client and explicit repository allowlist endpoint.
-- PostgreSQL schema baseline for teams, team memberships, projects, repositories, approvals, audit logs, and agent runs.
-- Health/configuration endpoint that reports whether required integration variables are present.
-- GitHub Actions workflow for TypeScript validation and production build.
+- OIDC SSO entry point using Auth.js and server-side session validation.
+- PostgreSQL-backed team membership and repository-specific role overrides.
+- Versioned migrations with advisory locking.
+- Transactional approval decisions with row-level locking, independent human approver, expiry, required rejection reason, persisted approver identity, and audit event.
+- CI workflow with PostgreSQL 16 service, migration execution, unit/integration tests, typecheck and production build.
 
-## Not yet production-ready
+## Explicitly not production-ready
 
-- No authentication/SSO, session management, or enforced application RBAC.
-- No live PostgreSQL connection, migration runner, repository sync persistence, or audit writes.
-- No approval decision endpoint or action executor. The dashboard is intentionally read-only.
-- No AI provider/agent runtime, queue, n8n workflows, or live CI run ingestion.
-- No end-to-end tests, dependency/security scanning, deployment workflow, or environment-specific secrets configured.
+- Real OIDC tenant, client credentials, session-secret management, and account lifecycle are not configured by code alone.
+- No admin UI or API for safely provisioning team/repository memberships.
+- Existing dashboard metrics are illustrative; GitHub integration still requires real server-side credentials and access validation.
+- Approval decisions record a decision only; no GitHub mutation, deploy, or other high-impact action executor is exposed.
+- CI must be observed as passing on the final commit before this implementation slice can be called verified.
+- Production database privileges, TLS, backup/restore evidence, SAST/dependency/secret scans, SBOM, branch protection, staging and deployment approvals remain outstanding.
 
-## Target architecture
+## Architecture
 
-Browser → Next.js UI → server-side API layer → PostgreSQL and read-only GitHub API adapter.
+Browser → Auth.js OIDC session → scoped API authorization → PostgreSQL. Roles are resolved from team_members and repository_members; IdP-provided role claims are not authoritative. Approval decision → transaction → SELECT FOR UPDATE → expiry / self-approval / repository-role checks → conditional state update → audit event → commit. No action executes as a side effect of approval.
 
-High-impact action proposal → persisted approval request → independent authorized human decision → deterministic policy validation → separately authenticated executor → immutable audit event. The requester cannot approve their own request. AI identities are never valid approvers.
+## Required release gates
 
-## Release gates
-
-1. Implement SSO/OIDC and server-side session validation.
-2. Enforce team/project/repository-scoped RBAC on every API route.
-3. Add SQL migrations, connection pooling, transactions, least-privilege DB role, and backup/restore tests.
-4. Add signed webhook verification and idempotent GitHub event processing.
-5. Implement approval state machine with optimistic locking, expiry, independent approver, reason, and audit persistence.
-6. Add unit/integration/E2E tests, SAST, dependency scanning, secret scanning, and SBOM.
-7. Configure branch protection and required CI checks; keep production deploy behind a protected environment with required reviewers.
-8. Validate in staging before any production rollout.
+1. Verify OIDC login, logout, session expiry, and deprovisioning against the actual corporate identity provider.
+2. Verify the full team/repository role matrix and deny-by-default behavior.
+3. Run migrations and transactional integration tests on PostgreSQL in GitHub Actions; all jobs must pass on the final head commit.
+4. Configure least-privilege production DB roles, TLS, backups and restore tests.
+5. Add security scanning, branch protection and protected environments.
+6. Validate in staging and obtain explicit human approval before production deployment.
