@@ -33,7 +33,7 @@ jobs:
           --health-retries 10
     env:
       DATABASE_URL: postgresql://nexus:nexus-test-only@localhost:5432/nexus_test
-      AUTH_SECRET: ci-only-not-a-production-secret
+      AUTH_SECRET: ci-only-secret-not-for-production-please-change
       AUTH_OIDC_ISSUER: https://sso.example.invalid
       AUTH_OIDC_CLIENT_ID: ci-test
       AUTH_OIDC_CLIENT_SECRET: ci-only
