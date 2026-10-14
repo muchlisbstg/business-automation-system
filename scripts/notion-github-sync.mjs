@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { pathToFileURL } from "node:url";
 
 const NOTION_API = "https://api.notion.com/v1";
 const NOTION_VERSION = "2025-09-03";
@@ -151,7 +152,7 @@ async function main() {
   console.log(JSON.stringify({ eventName, repository, syncKey: record.syncKey, action: result.action, pageId: result.pageId }));
 }
 
-if (process.env.NOTION_SYNC_TEST_MODE !== "1") {
+if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
   main().catch(error => {
     console.error(error.message);
     process.exitCode = 1;
