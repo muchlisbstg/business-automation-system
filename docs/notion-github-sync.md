@@ -31,7 +31,7 @@ A stable Sync Key is derived from repository + item type + GitHub item/run ID. T
 - [ ] Add `NOTION_API_KEY` as a GitHub Actions secret.
 - [ ] Add `NOTION_DATABASE_ID` as a repository variable with the data source ID.
 - [ ] Share the Notion database with the integration.
-- [ ] Confirm all property names and select options match the database schema.
+- [ ] Confirm all property names and select options match the data source schema; GitHub event links should be embedded in the Name title.
 - [ ] Review the pull request and wait for CI checks.
 - [ ] After merge approval, trigger a low-risk issue edit and confirm a single row is created/updated.
 - [ ] Confirm the workflow run URL and SHA are correct.
