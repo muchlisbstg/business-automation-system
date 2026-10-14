@@ -1,7 +1,11 @@
 name: Notion GitHub Sync
 
 on:
+  # Tests run against the PR branch without Notion secrets.
   pull_request:
+    types: [opened, reopened, synchronize, ready_for_review, converted_to_draft, closed]
+  # Safe privileged events: the workflow checks out the default branch, never PR code.
+  pull_request_target:
     types: [opened, reopened, synchronize, ready_for_review, converted_to_draft, closed]
   issues:
     types: [opened, edited, reopened, closed]
@@ -12,6 +16,8 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
+  issues: read
 
 concurrency:
   group: notion-github-sync-${{ github.event_name }}-${{ github.event.pull_request.number || github.event.issue.number || github.event.workflow_run.id || github.run_id }}
@@ -19,9 +25,10 @@ concurrency:
 
 jobs:
   test:
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout proposed code without credentials
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
@@ -33,36 +40,31 @@ jobs:
         run: node --test tests/notion-github-sync.test.mjs
 
   sync:
-    needs: test
-    if: >-
-      github.event_name != 'workflow_dispatch' &&
-      secrets.NOTION_API_KEY != '' &&
-      vars.NOTION_DATABASE_ID != ''
+    if: github.event_name == 'pull_request_target' || github.event_name == 'issues' || github.event_name == 'workflow_run'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Checkout
+      # pull_request_target and workflow_run are privileged events: always use default-branch code.
+      - name: Checkout trusted default branch
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          ref: ${{ github.event.repository.default_branch }}
           persist-credentials: false
       - name: Setup Node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
       - name: Upsert event in Notion
+        if: env.NOTION_API_KEY != '' && env.NOTION_DATABASE_ID != ''
         env:
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
           NOTION_DATABASE_ID: ${{ vars.NOTION_DATABASE_ID }}
         run: node scripts/notion-github-sync.mjs
-
-  configuration-notice:
-    needs: test
-    if: >-
-      github.event_name != 'workflow_dispatch' &&
-      (secrets.NOTION_API_KEY == '' || vars.NOTION_DATABASE_ID == '')
-    runs-on: ubuntu-latest
-    steps:
       - name: Explain skipped live sync
+        if: env.NOTION_API_KEY == '' || env.NOTION_DATABASE_ID == ''
+        env:
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          NOTION_DATABASE_ID: ${{ vars.NOTION_DATABASE_ID }}
         run: |
           echo "::notice::Notion sync was skipped because NOTION_API_KEY and/or NOTION_DATABASE_ID is not configured."
-          echo "Unit tests passed; live Notion synchronization has not been verified."
+          echo "No live Notion synchronization was verified."
