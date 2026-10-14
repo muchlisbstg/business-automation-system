@@ -56,11 +56,17 @@ async function latestCommit(repo, { githubToken, fetchImpl = fetch }) {
 }
 
 async function latestWorkflow(repo, { githubToken, fetchImpl = fetch }) {
-  const result = await requestJson(`${GH_API}/repos/${repo.full_name}/actions/runs?per_page=1`, {
-    fetchImpl,
-    headers: { Authorization: `Bearer ${githubToken}`, "X-GitHub-Api-Version": "2022-11-28" }
-  });
-  return result.workflow_runs?.[0] || null;
+  try {
+    const result = await requestJson(`${GH_API}/repos/${repo.full_name}/actions/runs?per_page=1`, {
+      fetchImpl,
+      headers: { Authorization: `Bearer ${githubToken}`, "X-GitHub-Api-Version": "2022-11-28" }
+    });
+    return result.workflow_runs?.[0] || null;
+  } catch (error) {
+    // Repositories without Actions enabled may return 404; keep repository sync useful and mark CI Unknown.
+    if (/HTTP 404/.test(String(error.message))) return null;
+    throw error;
+  }
 }
 
 function richText(value) {
