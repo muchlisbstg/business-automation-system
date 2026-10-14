@@ -1,0 +1,49 @@
+name: Notion Repository Registry Sync
+
+on:
+  schedule:
+    - cron: "17,47 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: notion-repository-registry-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GITHUB_OWNER: muchlisbstg
+      GH_REPO_READ_TOKEN: ${{ secrets.GH_REPO_READ_TOKEN }}
+      NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+      NOTION_DATABASE_ID: ${{ vars.NOTION_DATABASE_ID }}
+    steps:
+      - name: Checkout trusted default branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+      - name: Validate required configuration without exposing values
+        shell: bash
+        run: |
+          missing=0
+          for name in GH_REPO_READ_TOKEN NOTION_API_KEY NOTION_DATABASE_ID; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Required GitHub Actions configuration is unavailable: $name"
+              missing=1
+            else
+              echo "::notice::$name is present"
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+      - name: Sync all owned, non-archived repositories to Notion
+        run: node scripts/notion-repository-registry-sync.mjs
