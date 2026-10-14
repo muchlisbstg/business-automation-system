@@ -1,0 +1,68 @@
+name: Notion GitHub Sync
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review, converted_to_draft, closed]
+  issues:
+    types: [opened, edited, reopened, closed]
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: notion-github-sync-${{ github.event_name }}-${{ github.event.pull_request.number || github.event.issue.number || github.event.workflow_run.id || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+      - name: Test sync mapper and API behavior
+        run: node --test tests/notion-github-sync.test.mjs
+
+  sync:
+    needs: test
+    if: >-
+      github.event_name != 'workflow_dispatch' &&
+      secrets.NOTION_API_KEY != '' &&
+      vars.NOTION_DATABASE_ID != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+      - name: Upsert event in Notion
+        env:
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          NOTION_DATABASE_ID: ${{ vars.NOTION_DATABASE_ID }}
+        run: node scripts/notion-github-sync.mjs
+
+  configuration-notice:
+    needs: test
+    if: >-
+      github.event_name != 'workflow_dispatch' &&
+      (secrets.NOTION_API_KEY == '' || vars.NOTION_DATABASE_ID == '')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Explain skipped live sync
+        run: |
+          echo "::notice::Notion sync was skipped because NOTION_API_KEY and/or NOTION_DATABASE_ID is not configured."
+          echo "Unit tests passed; live Notion synchronization has not been verified."
