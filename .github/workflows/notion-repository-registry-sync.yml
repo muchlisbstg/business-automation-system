@@ -13,6 +13,21 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  test:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout proposed code without credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+      - name: Test repository registry sync mapper and API behavior
+        run: node --test tests/notion-repository-registry-sync.test.mjs
+
   sync:
     runs-on: ubuntu-latest
     timeout-minutes: 15
