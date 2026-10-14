@@ -77,11 +77,10 @@ function text(value) {
 
 export function notionProperties(record) {
   const properties = {
-    Name: { title: [{ text: { content: record.title.slice(0, 2000) } }] },
+    Name: { title: [{ text: { content: record.title.slice(0, 2000), link: { url: record.githubUrl } } }] },
     Repository: { url: record.repositoryUrl },
     "Item Type": { select: { name: record.itemType } },
     Status: { select: { name: record.status } },
-    "GitHub URL": { url: record.githubUrl },
     Branch: text(record.branch),
     "Commit SHA": text(record.sha),
     "CI Status": { select: { name: record.ciStatus } },

@@ -52,8 +52,14 @@ test("builds valid Notion database property shapes and truncates text", () => {
   } }, repo, now);
   const properties = notionProperties(record);
   assert.equal(properties.Name.title[0].text.content.length, 2000);
+  assert.equal(properties.Name.title[0].text.link.url, record.githubUrl);
   assert.equal(properties["Sync Key"].rich_text[0].text.content, record.syncKey);
   assert.equal(properties["Last Synced"].date.start, now.toISOString());
+  assert.equal(Object.hasOwn(properties, "GitHub URL"), false);
+  assert.deepEqual(Object.keys(properties).sort(), [
+    "CI Status", "Branch", "Commit SHA", "Item Type", "Last Synced",
+    "Name", "Repository", "Status", "Sync Key"
+  ].sort());
 });
 
 test("upsert creates page when no matching sync key exists", async () => {
@@ -123,4 +129,13 @@ test("run composes event mapping with Notion upsert", async () => {
   });
   assert.equal(result.result.action, "created");
   assert.equal(result.record.syncKey, `${repo}:issue:7`);
+});
+
+test("maps GitHub event URL into the linked title without requiring an extra URL column", () => {
+  const record = buildRecord("issues", { issue: {
+    number: 8, title: "Linked issue", html_url: "https://github.com/x/y/issues/8", state: "open"
+  } }, repo, now);
+  const properties = notionProperties(record);
+  assert.equal(properties.Name.title[0].text.link.url, "https://github.com/x/y/issues/8");
+  assert.equal(properties.Repository.url, `https://github.com/${repo}`);
 });
