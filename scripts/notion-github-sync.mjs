@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 
 const NOTION_API = "https://api.notion.com/v1";
-const NOTION_VERSION = "2022-06-28";
+const NOTION_VERSION = "2025-09-03";
 
 export function buildRecord(eventName, payload, repository, now = new Date()) {
   const repoUrl = `https://github.com/${repository}`;
