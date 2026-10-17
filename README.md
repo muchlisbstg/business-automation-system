@@ -70,4 +70,4 @@ WF-01 Intake → WF-02 Planning → [WF-02→WF-03 requirement-level human-revie
 
 CI validates the repository baseline. Future gates should cover tests, coverage, API contracts, authorization, database safety, accessibility/performance, mobile behavior, security findings, deployment health, and auditability. AI-generated recommendations cannot bypass deterministic gates or human approval requirements.
 
-See `docs/architecture.md`, `docs/security.md`, and `docs/workflows.md` for the engineering baseline. For Notion repository-registry sync configuration and safe recovery, see `docs/operations/notion-repository-registry-sync.md`.
+See `docs/architecture.md`, `docs/security.md`, and `docs/workflows.md` for the engineering baseline.
