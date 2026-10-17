@@ -48,7 +48,7 @@ The following 20 repositories form the sector portfolio. A successful CI run is 
 | [africa-cashew-export](https://github.com/muchlisbstg/africa-cashew-export) | Raw/in-shell vs processed forms and route evidence. |
 | [africa-cut-flowers-export](https://github.com/muchlisbstg/africa-cut-flowers-export) | Fresh-cut scope, plant-health controls, and source freshness. |
 | [canada-pulse-crops-export](https://github.com/muchlisbstg/canada-pulse-crops-export) | Revalidate sources and prepare a dedicated platform screening slice before enabling screening. |
-| [mexico-avocados-export](https://github.com/muchlisbstg/mexico-avocados-export) | Review two registry rows due 2026-10-17; dedicated platform screening slice remains pending. |
+| [mexico-avocados-export](https://github.com/muchlisbstg/mexico-avocados-export) | [PR #4](https://github.com/muchlisbstg/mexico-avocados-export/pull/4) revalidates the two CLA rows due 2026-10-17 and adds the 2026-10-07 STPS bulletin; dedicated platform screening slice remains pending. |
 
 ## Cross-repository acceptance gates
 
