@@ -70,4 +70,4 @@ WF-01 Intake → WF-02 Planning → [WF-02→WF-03 requirement-level human-revie
 
 CI validates the repository baseline. Future gates should cover tests, coverage, API contracts, authorization, database safety, accessibility/performance, mobile behavior, security findings, deployment health, and auditability. AI-generated recommendations cannot bypass deterministic gates or human approval requirements.
 
-See `docs/architecture.md`, `docs/security.md`, and `docs/workflows.md` for the engineering baseline.
+See `docs/architecture.md`, `docs/security.md`, and `docs/workflows.md` for the engineering baseline. The cross-repository work queue is tracked in `docs/operations/github-portfolio-remediation-tracker.md`.
