@@ -23,6 +23,9 @@ test("registry sync upserts a repository using stable Sync Key and current GitHu
     if (String(url).endsWith("/commits/main")) {
       return response({ sha: "abc123" });
     }
+    if (String(url).endsWith("/databases/db-123")) {
+      return response({ id: "db-123", data_sources: [{ id: "ds-123", name: "GitHub Sync Register" }] });
+    }
     if (String(url).includes("/actions/runs?")) {
       return response({ workflow_runs: [{ status: "completed", conclusion: "success", html_url: "https://github.com/muchlisbstg/africa-coffee-export/actions/runs/7" }] });
     }
@@ -39,7 +42,7 @@ test("registry sync upserts a repository using stable Sync Key and current GitHu
     owner: "muchlisbstg",
     githubToken: "test-gh-token",
     notionToken: "test-notion-token",
-    dataSourceId: "ds-123",
+    dataSourceId: "db-123",
     fetchImpl,
     now: () => new Date("2026-10-14T00:00:00.000Z")
   });
