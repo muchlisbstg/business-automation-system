@@ -34,6 +34,35 @@ async function notionRequest(path, { token, method = "GET", body, fetchImpl }) {
   });
 }
 
+// Accept either a Notion database ID (the usual value copied from a database page)
+// or a Data Source ID. With API version 2025-09-03, database objects expose
+// their data source IDs through the `data_sources` array.
+async function resolveDataSourceId(configuredId, { token, fetchImpl = fetch }) {
+  try {
+    const database = await notionRequest(`/databases/${encodeURIComponent(configuredId)}`, { token, fetchImpl });
+    const sources = Array.isArray(database.data_sources) ? database.data_sources : [];
+    if (sources.length === 1 && sources[0]?.id) return sources[0].id;
+    if (sources.length > 1) {
+      throw new Error(`Notion database has ${sources.length} data sources; configure a specific Data Source ID in NOTION_DATABASE_ID`);
+    }
+    throw new Error("Notion database was found, but it did not return a usable data source ID");
+  } catch (error) {
+    // A directly supplied Data Source ID is also supported. Only try this
+    // fallback for a 404 from the database endpoint.
+    if (!/HTTP 404/.test(String(error.message))) throw error;
+  }
+
+  try {
+    const source = await notionRequest(`/data_sources/${encodeURIComponent(configuredId)}`, { token, fetchImpl });
+    if (source.id) return source.id;
+  } catch (error) {
+    throw new Error(
+      `Could not resolve NOTION_DATABASE_ID as a database or data source ( ${String(error.message || error).slice(0, 120)} ). Check the ID and ensure the Notion connection has access to GitHub Sync Register.`
+    );
+  }
+  throw new Error("Could not resolve NOTION_DATABASE_ID to a Notion Data Source ID");
+}
+
 async function listOwnedRepos({ owner, githubToken, fetchImpl = fetch }) {
   const repos = [];
   for (let page = 1; page <= 10; page++) {
@@ -127,6 +156,7 @@ export async function syncRepositories({ owner, githubToken, notionToken, dataSo
   requireValue(notionToken, "NOTION_API_KEY");
   requireValue(dataSourceId, "NOTION_DATABASE_ID");
 
+  const resolvedDataSourceId = await resolveDataSourceId(dataSourceId, { token: notionToken, fetchImpl });
   const repos = (await listOwnedRepos({ owner, githubToken, fetchImpl }))
     .filter(repo => repo.owner?.login?.toLowerCase() === owner.toLowerCase() && !repo.archived)
     .sort((a, b) => a.full_name.localeCompare(b.full_name));
@@ -137,7 +167,7 @@ export async function syncRepositories({ owner, githubToken, notionToken, dataSo
     try {
       const commit = await latestCommit(repo, { githubToken, fetchImpl });
       const run = await latestWorkflow(repo, { githubToken, fetchImpl });
-      const action = await upsertRepo(repo, commit, run, { token: notionToken, dataSourceId, fetchImpl, now: now() });
+      const action = await upsertRepo(repo, commit, run, { token: notionToken, dataSourceId: resolvedDataSourceId, fetchImpl, now: now() });
       summary[action]++;
     } catch (error) {
       summary.failed++;
