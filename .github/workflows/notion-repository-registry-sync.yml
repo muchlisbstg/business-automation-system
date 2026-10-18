@@ -47,5 +47,44 @@ jobs:
           if [ "$missing" -ne 0 ]; then
             exit 1
           fi
+      - name: Diagnose Notion database and data source ID (temporary)
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          const base = 'https://api.notion.com/v1';
+          const headers = {
+            Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
+            'Notion-Version': '2025-09-03'
+          };
+          const id = process.env.NOTION_DATABASE_ID;
+          const databaseResponse = await fetch(`${base}/databases/${id}`, { headers });
+          const database = await databaseResponse.json().catch(() => ({}));
+          if (databaseResponse.ok) {
+            const title = (database.title || []).map(item => item.plain_text || '').join('');
+            console.log('Database lookup: success');
+            console.log('Database title:', title || '(untitled)');
+            const sources = database.data_sources || [];
+            console.log('Data source count:', sources.length);
+            for (const source of sources) {
+              console.log(JSON.stringify({ name: source.name || '(unnamed)', id: source.id }));
+            }
+          } else {
+            console.log('Database lookup: failed');
+            console.log('HTTP status:', databaseResponse.status);
+            console.log('Notion error code:', database.code || '(none)');
+            console.log('Notion message:', database.message || '(none)');
+            const pageResponse = await fetch(`${base}/pages/${id}`, { headers });
+            const page = await pageResponse.json().catch(() => ({}));
+            console.log('Page lookup HTTP status:', pageResponse.status);
+            if (pageResponse.ok) {
+              console.log('Page lookup: success; parent type:', page.parent?.type || '(unknown)');
+              console.log('Page title:', (page.properties?.title?.title || page.properties?.Name?.title || []).map(item => item.plain_text || '').join('') || '(title not found)');
+            } else {
+              console.log('Page lookup error code:', page.code || '(none)');
+              console.log('Page lookup message:', page.message || '(none)');
+            }
+            process.exitCode = 1;
+          }
+          NODE
       - name: Sync all owned, non-archived repositories to Notion
         run: node scripts/notion-repository-registry-sync.mjs
