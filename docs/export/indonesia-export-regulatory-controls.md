@@ -61,12 +61,21 @@ A shipment or payment must remain on hold when any applicable mandatory license,
 - Tenant-isolation, role authorization, dual approval, audit integrity, secret scanning and recovery tests pass.
 - Tests use synthetic data and mock providers; no live bank, customs or logistics action occurs in CI.
 
-## 6. Official source register
+## 6. Official source register and implementation rules
 
-Revalidate these sources at implementation time:
-- Bank Indonesia, PBI No. 5 of 2026 on DHE/DPI: https://www.bi.go.id/id/publikasi/peraturan/pages/pbi_052026.aspx
-- Bank Indonesia, PBI No. 3 of 2025 on DHE/DPI: https://www.bi.go.id/id/publikasi/peraturan/Pages/PBI_032025.aspx
-- Directorate General of Customs and Excise, export procedures and legal basis: https://www.beacukai.go.id/tata-laksana-ekspor
-- BPJPH JDIH, Regulation No. 4 of 2026 on foreign halal product conformity entering Indonesia: https://jdih.halal.go.id/jdih/dokumen/3458fb8c-5f45-42a5-9fdf-72c0e65a3ba3
+Revalidate these sources before each relevant release and whenever an authority publishes an amendment or implementing rule:
+
+- **Customs export procedure:** Directorate General of Customs and Excise, https://www.beacukai.go.id/tata-laksana-ekspor. The workflow must track the applicable export customs declaration (PEB), supporting documents, document review/physical inspection when directed, loading and departure evidence, and any cancellation/reporting process applicable to the case. Do not treat an uploaded invoice or packing list alone as customs clearance.
+- **Export policy and HS-specific restrictions:** Permendag No. 5 of 2026, amending Permendag No. 23 of 2023 on export policy and regulation; effective 1 April 2026. Official metadata and status: https://peraturan.bpk.go.id/Details/347106/permendag-no-5-tahun-2026. Kemendag announcement: https://www.kemendag.go.id/berita/siaran-pers/kemendag-terbitkan-permendag-5-dan-6-tahun-2026-pangkas-hambatan-dan-perizinan-ekspor. Apply the regulation together with relevant amendments, annexes and HS/commodity-specific requirements; do not infer a permit requirement from the regulation title alone.
+- **Prohibited exports:** also verify Permendag No. 6 of 2026, which amends Permendag No. 22 of 2023 on goods prohibited for export, effective 1 April 2026, against the actual commodity and current official lists.
+- **DHE/DPI:** Bank Indonesia, PBI No. 5 of 2026 amending PBI No. 7 of 2023, effective 1 June 2026: https://www.bi.go.id/id/publikasi/peraturan/pages/pbi_052026.aspx. Read with the applicable PP DHE SDA and implementing PADG, including current amendments and transitional provisions. The rule engine must first determine whether the export is within DHE SDA or another applicable reporting/receipt regime; do not apply SDA-specific placement, bank, percentage or use rules indiscriminately to every export.
+- **Previous DHE/DPI regulation for change history:** Bank Indonesia, PBI No. 3 of 2025: https://www.bi.go.id/id/publikasi/peraturan/Pages/PBI_032025.aspx.
+- **Halal assurance (scope-specific):** BPJPH JDIH, Regulation No. 4 of 2026 on foreign halal product conformity entering Indonesia: https://jdih.halal.go.id/jdih/dokumen/3458fb8c-5f45-42a5-9fdf-72c0e65a3ba3. This is not a blanket export-market rule; verify the destination's requirements separately.
+
+### Required configuration and evidence model
+
+For every rule store: jurisdiction/authority, regulation identifier and article/annex where applicable, official source URL, commodity/HS scope, destination or sector scope, effective-from/effective-to dates, version/hash of the source snapshot, reviewer, verification timestamp and approval status. A transaction must retain the exact rule version and evidence used for its decision.
+
+**Fail-closed release gate:** if HS classification is missing or disputed, the applicable rule set is stale/unverified, a mandatory permit/document is missing, a prohibition match is unresolved, or DHE applicability cannot be established, hold the shipment/payment workflow and create a compliance case for an authorized reviewer. AI may extract candidate data but must not determine final legal classification or clear a hold.
 
 This source register is a starting point, not an exhaustive list. Legal/compliance owners must confirm current amendments, implementing rules, destination-country law, sector-specific restrictions and applicability to the actual goods and contracts.
