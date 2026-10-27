@@ -69,7 +69,7 @@ test("registry sync refuses to run when a required token is absent", async () =>
 
 test("registry sync records per-repository failures and fails the overall run", async () => {
   const fetchImpl = async (url) => {
-    if (String(url).endsWith("/databases/ds")) return response({ message: "Not Found" }, 404);
+    if (String(url).endsWith("/databases/ds")) return response({ id: "ds", data_sources: [{ id: "resolved-ds", name: "GitHub Sync Register" }] });
     if (String(url).endsWith("/data_sources/ds")) return response({ message: "Not Found" }, 404);
     if (String(url).includes("/users/muchlisbstg/repos?")) {
       return response([{
