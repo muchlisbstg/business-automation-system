@@ -74,3 +74,55 @@ test("reduced motion preference disables sidebar transitions", async ({ page }) 
   const duration = await page.locator("aside.sidebar").evaluate(element => getComputedStyle(element).transitionDuration);
   expect(duration.split(",").every(value => Number.parseFloat(value) === 0)).toBeTruthy();
 });
+
+test("light and dark theme core text and status colors meet WCAG AA contrast", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/");
+  const measure = async () => page.evaluate(() => {
+    const root = document.querySelector(".app-shell");
+    if (!root) throw new Error("App shell not found");
+    const parse = (value: string) => {
+      const match = value.match(/[\\d.]+/g);
+      if (!match || match.length < 3) throw new Error("Unsupported color: " + value);
+      return match.slice(0, 3).map(Number);
+    };
+    const luminance = (color: string) => {
+      const channels = parse(color).map(channel => {
+        const value = channel / 255;
+        return value <= 0.04045 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
+      });
+      return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+    };
+    const ratio = (foreground: string, background: string) => {
+      const values = [luminance(foreground), luminance(background)].sort((a, b) => b - a);
+      return (values[0] + 0.05) / (values[1] + 0.05);
+    };
+    const style = getComputedStyle(root);
+    const background = style.getPropertyValue("--bg").trim();
+    const muted = style.getPropertyValue("--muted").trim();
+    const accent = style.getPropertyValue("--accent").trim();
+    const accentSoft = style.getPropertyValue("--accent-soft").trim();
+    const checks = [
+      { name: "muted text on app background", value: ratio(muted, background) },
+      { name: "accent text on accent-soft surface", value: ratio(accent, accentSoft) },
+    ];
+    const button = document.querySelector(".button-primary");
+    if (button) {
+      const buttonStyle = getComputedStyle(button);
+      checks.push({ name: "primary button text", value: ratio(buttonStyle.color, buttonStyle.backgroundColor) });
+    }
+    document.querySelectorAll(".status-pill").forEach((element, index) => {
+      const statusStyle = getComputedStyle(element);
+      checks.push({ name: "status pill " + index, value: ratio(statusStyle.color, statusStyle.backgroundColor) });
+    });
+    return checks;
+  });
+  for (const theme of ["light", "dark"] as const) {
+    if (theme === "dark") await page.getByRole("button", { name: "◐ Dark" }).click();
+    const checks = await measure();
+    for (const check of checks) {
+      expect(check.value, theme + " theme: " + check.name + " contrast " + check.value.toFixed(2)).toBeGreaterThanOrEqual(4.5);
+    }
+    if (theme === "dark") await page.getByRole("button", { name: "☼ Light" }).click();
+  }
+});
