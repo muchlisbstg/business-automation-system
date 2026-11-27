@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { EmptyState, MetricCard, Panel, SectionHeading, StatusPill } from "@/components/ui";
 
 type View = "overview" | "operations" | "approvals" | "inventory";
@@ -32,6 +32,26 @@ export default function BusinessOperationsPage() {
   const [query, setQuery] = useState("");
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [mobileNav, setMobileNav] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const sidebarRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!mobileNav) return;
+    closeButtonRef.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { setMobileNav(false); menuButtonRef.current?.focus(); }
+      if (event.key === "Tab") {
+        const focusable = sidebarRef.current?.querySelectorAll<HTMLElement>("button:not([disabled]), a[href], input:not([disabled]), [tabindex]:not([tabindex='-1'])");
+        if (!focusable?.length) return;
+        const first = focusable[0], last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    document.body.style.overflow = "hidden";
+    return () => { document.removeEventListener("keydown", onKeyDown); document.body.style.overflow = ""; };
+  }, [mobileNav]);
   const visibleItems = useMemo(() => workItems.filter(item => (view !== "approvals" || item.status !== "Verified") && [item.id, item.name, item.owner, item.status].join(" ").toLowerCase().includes(query.toLowerCase())), [query, view]);
   const visibleInventory = useMemo(() => inventorySignals.filter(item => [item.id, item.label, item.value, item.status].join(" ").toLowerCase().includes(query.toLowerCase())), [query]);
   const title = view === "overview" ? "Executive overview" : view === "operations" ? "Operations workspace" : view === "approvals" ? "Approval center" : "Inventory overview";
@@ -39,8 +59,8 @@ export default function BusinessOperationsPage() {
 
   return <div className="app-shell" data-theme={theme}>
     <a className="skip-link" href="#main-content">Skip to main content</a>
-    <aside className={`sidebar ${mobileNav ? "open" : ""}`}>
-      <div className="brand"><div className="brand-mark">A</div><div><strong>AUTRAVA</strong><small>BUSINESS OPERATIONS</small></div><button className="mobile-close" onClick={() => setMobileNav(false)} aria-label="Close navigation">×</button></div>
+    <aside ref={sidebarRef} className={`sidebar ${mobileNav ? "open" : ""}`} role={mobileNav ? "dialog" : undefined} aria-modal={mobileNav ? true : undefined} aria-label={mobileNav ? "Mobile navigation" : undefined}>
+      <div className="brand"><div className="brand-mark">A</div><div><strong>AUTRAVA</strong><small>BUSINESS OPERATIONS</small></div><button ref={closeButtonRef} className="mobile-close" onClick={() => { setMobileNav(false); menuButtonRef.current?.focus(); }} aria-label="Close navigation">×</button></div>
       <div className="workspace-label">ENTERPRISE WORKSPACE</div>
       <nav id="primary-navigation" aria-label="Primary navigation">
       {navGroups.map(group => <div className="nav-group" key={group.label}><div className="nav-label">{group.label}</div>{group.items.map(item => <button key={item.id} className={`nav-item ${view === item.id ? "active" : ""}`} aria-current={view === item.id ? "page" : undefined} onClick={() => { setView(item.id); setMobileNav(false); }}><span className="nav-icon">{item.icon}</span><span>{item.label}</span>{item.count && <span className="nav-count">{item.count}</span>}</button>)}</div>)}
@@ -49,9 +69,9 @@ export default function BusinessOperationsPage() {
       </nav>
       <div className="sidebar-bottom"><div className="environment"><span className="live-dot"/><span>Preview environment</span><StatusPill tone="warning">DEMO</StatusPill></div><div className="profile"><div className="profile-avatar">MB</div><div><strong>Workspace Admin</strong><small>Demo profile · no live access</small></div><span className="profile-menu">•••</span></div></div>
     </aside>
-    {mobileNav && <button className="scrim" onClick={() => setMobileNav(false)} aria-label="Close navigation overlay"/>}
+    {mobileNav && <button className="scrim" onClick={() => { setMobileNav(false); menuButtonRef.current?.focus(); }} aria-label="Close navigation overlay"/>}
     <main className="main" id="main-content" tabIndex={-1}>
-      <header className="topbar"><button className="menu-button" onClick={() => setMobileNav(true)} aria-label="Open navigation" aria-controls="primary-navigation" aria-expanded={mobileNav}>☰</button><div className="breadcrumbs">Workspace <span>/</span> {title}</div><div className="topbar-actions"><label className="search-box"><span>⌕</span><input aria-label="Search records" placeholder="Search records..." value={query} onChange={e => setQuery(e.target.value)}/><kbd>⌘ K</kbd></label><button className="icon-button" aria-label="Notifications">♧<i/></button><button className="theme-button" onClick={() => setTheme(theme === "light" ? "dark" : "light")}>{theme === "light" ? "◐ Dark" : "☼ Light"}</button></div></header>
+      <header className="topbar"><button ref={menuButtonRef} className="menu-button" onClick={() => setMobileNav(true)} aria-label="Open navigation" aria-controls="primary-navigation" aria-expanded={mobileNav}>☰</button><div className="breadcrumbs">Workspace <span>/</span> {title}</div><div className="topbar-actions"><label className="search-box"><span>⌕</span><input aria-label="Search records" placeholder="Search records..." value={query} onChange={e => setQuery(e.target.value)}/><kbd>⌘ K</kbd></label><button className="icon-button" aria-label="Notifications">♧<i/></button><button className="theme-button" onClick={() => setTheme(theme === "light" ? "dark" : "light")}>{theme === "light" ? "◐ Dark" : "☼ Light"}</button></div></header>
       <div className="page-content">
         <SectionHeading eyebrow="BUSINESS INTELLIGENCE / OPERATIONS" title={title} description={description} action={<><span className="snapshot-label">DEMO SNAPSHOT</span><button className="button-primary" onClick={() => setView("operations")}>View request register</button></>}/>
         <div className="demo-notice"><span>DEMO DATA</span> All figures and records shown are illustrative. No live business systems or financial accounts are connected.</div>
