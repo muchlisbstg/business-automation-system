@@ -88,9 +88,15 @@ test("light and dark theme core text and status colors meet WCAG AA contrast", a
         if (!/^[0-9a-fA-F]{6}$/.test(normalized)) throw new Error("Unsupported color: " + value);
         return [0, 2, 4].map(index => Number.parseInt(normalized.slice(index, index + 2), 16));
       }
-      const match = value.match(/[\\d.]+/g);
-      if (!match || match.length < 3) throw new Error("Unsupported color: " + value);
-      return match.slice(0, 3).map(Number);
+      if (value.startsWith("rgb")) {
+        const body = value.slice(value.indexOf("(") + 1, value.lastIndexOf(")"));
+        const channels = body.split(",").slice(0, 3).map(channel => Number(channel.trim()));
+        if (channels.length !== 3 || channels.some(channel => !Number.isFinite(channel))) {
+          throw new Error("Unsupported color: " + value);
+        }
+        return channels;
+      }
+      throw new Error("Unsupported color: " + value);
     };
     const luminance = (color: string) => {
       const channels = parse(color).map(channel => {
