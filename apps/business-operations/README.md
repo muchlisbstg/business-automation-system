@@ -8,9 +8,10 @@ A separate internal operations frontend. It is intentionally isolated from the N
 - Stage 6: Operations workspace, approvals and inventory overview interaction patterns.
 - Stage 7: Shared UI primitives, responsive shell, light/dark theme.
 - Stage 8: Keyboard skip link and focus-visible styling; semantic primary navigation and table metadata; consistent approval filtering and inventory search/count behavior; mobile drawer Escape handling, focus containment/restoration, and background scroll lock.
-- CI evidence at `b3be99581221465b547852bda46fba05a1b1fd4d`: TypeScript check and Next.js production build completed successfully. Subsequent Stage 8 commits require a fresh CI run before they can be considered validated.
-- Browser/device testing, automated accessibility scanning, device-level testing, automated accessibility scanning, and screen-reader verification remain outstanding. Mobile drawer keyboard behavior is implemented but still requires browser verification.
+- Latest verified UI CI evidence at commit `2ab6d893f9c293a3aa274f5ad8180b799fef1db4`, run `46009453194`: dependency installation, TypeScript check and Next.js production build completed successfully.
+- Browser/device testing, automated accessibility scanning, and screen-reader verification remain outstanding. Mobile drawer keyboard behavior is implemented but still requires browser verification.
 - Data is illustrative only. No live API, identity provider, database, finance, supplier or logistics integration is connected.
+- Stage 9 integration audit: `docs/business-operations/STAGE-9-INTEGRATION-QUALITY-GATE.md`. Current decision: BLOCKED; the UI remains demo-only until identity, server-side authorization, tenant isolation, API contracts, approval authority and audit persistence are implemented and independently reviewed.
 - No transaction, approval, shipment release, payment, compliance clearance or Sharia decision can be executed from this UI.
 
 ## Stack
