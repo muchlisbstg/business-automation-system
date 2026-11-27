@@ -3,7 +3,8 @@
 **Status:** PARTIALLY VERIFIED — Chromium and Firefox automated suites passed; manual accessibility and full device validation remain pending  
 **Date:** 2026-11-27  
 **Branch:** `feat/business-operations-ui-stage-5-7`  
-**Verified commit:** `905f6d614bae2653aeea21c99378c2ca493c03df`  
+**Verified PR head commit:** `cef7099c7dfc1767f3afb0a80bcd1854a93170e2`  
+**CI checkout merge SHA:** `6e9ef3827502e74a4e91e12be9114a8262f45ccb`  
 **Scope:** `apps/business-operations` only
 
 ## 1. Objective
@@ -32,16 +33,18 @@ This document is not a WCAG conformance claim, accessibility certification, or s
 
 ## 4. CI and browser automation evidence
 
-Business Operations UI CI for commit `905f6d614bae2653aeea21c99378c2ca493c03df`:
+Business Operations UI CI for PR head `cef7099c7dfc1767f3afb0a80bcd1854a93170e2` (workflow checked out PR merge SHA `6e9ef3827502e74a4e91e12be9114a8262f45ccb`):
 
-- Run: [46013409046](https://github.com/muchlisbstg/business-automation-system/actions/runs/46013409046)
+- Run: [46018948614](https://github.com/muchlisbstg/business-automation-system/actions/runs/46018948614)
 - Dependency installation: success
 - TypeScript check: success
 - Next.js production build: success
 - Chromium installation: success
 - Firefox installation: success
-- Playwright: **12 passed, 0 failed** (6 Chromium + 6 Firefox)
-- Job: `verify`, conclusion: success
+- Playwright: **14 passed, 0 failed** (7 Chromium + 7 Firefox)
+- Job `verify`: completed, conclusion `success`
+
+The two added browser assertions exposed a dark-theme warning badge contrast defect in the prior run. The warning foreground was updated to `#F2B27A` against `#3b2b1d`; calculated contrast is **7.37:1**. The subsequent CI run passed the contrast assertion in both Chromium and Firefox.
 
 Automated browser tests executed in both Chromium and Firefox:
 
@@ -100,7 +103,7 @@ Initial token-level WCAG contrast calculations after the CSS adjustment (sRGB re
 | Violet status `#b09ad8` / `#282c31` | 5.66:1 | Meets 4.5:1 |
 | Red status `#e88780` / `#3d2524` | 5.51:1 | Meets 4.5:1 |
 
-These are calculations for identified design-token and status-color pairs, not a complete rendered-page WCAG audit. A Playwright assertion has been added to evaluate key text/status pairs in both themes; its CI execution is pending. Focus indicators, hover/disabled states, all component combinations, and screen-reader behavior remain outside this measured set. Do not mark BQA-009 complete until the new browser assertion passes and remaining rendered states are reviewed.
+Dark warning status text `#F2B27A` on `#3b2b1d`: **7.37:1**, meets 4.5:1 for normal text. This value was confirmed by the passing browser contrast assertion in the latest run. These are calculations for identified design-token and status-color pairs, not a complete rendered-page WCAG audit. A Playwright assertion evaluates key text/status pairs and primary button text in both themes; it passed in Chromium and Firefox in run `46018948614`. Focus indicators, hover/disabled states, all component combinations, and screen-reader behavior remain outside this measured set. Do not mark BQA-009 complete until the new browser assertion passes and remaining rendered states are reviewed.
 | BQA-010 | Empty/search states | Search results, zero-result feedback, table overflow and readable labels | Automated Chromium + Firefox interaction checks passed; broader content review pending |
 
 ## 6. Acceptance criteria
@@ -117,10 +120,10 @@ Stage 8 may be marked complete only after:
 
 ## 7. Release implications
 
-- Stage 8 is **not complete**; it is partially verified with passing automated Chromium and Firefox suites.
+- Stage 8 is **not complete**; automated Chromium and Firefox coverage (14/14) is green, while manual screen-reader, physical-device, and full rendered-state checks remain pending.
 - A successful CI build and browser automation do not constitute full accessibility QA.
 - Stage 9 integration/security gates remain separate.
 - External independent Security and Database reviews remain deferred until budget is approved.
 - Vercel Preview remains pending explicit owner approval after required pre-preview checks.
 
-**Decision:** Continue controlled UI-only QA. Automated Chromium and Firefox suites are green (12/12), but do not claim WCAG compliance or release readiness until the remaining screen-reader, contrast, and manual device evidence is recorded.
+**Decision:** Continue controlled UI-only QA. Automated Chromium and Firefox suites are green (14/14), but do not claim WCAG compliance or release readiness until the remaining screen-reader, contrast, and manual device evidence is recorded.
