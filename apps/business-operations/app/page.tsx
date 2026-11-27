@@ -59,8 +59,8 @@ export default function BusinessOperationsPage() {
 
   return <div className="app-shell" data-theme={theme}>
     <a className="skip-link" href="#main-content">Skip to main content</a>
-    <aside ref={sidebarRef} className={`sidebar ${mobileNav ? "open" : ""}`} role={mobileNav ? "dialog" : undefined} aria-modal={mobileNav ? true : undefined} aria-label={mobileNav ? "Mobile navigation" : undefined}>
-      <div className="brand"><div className="brand-mark">A</div><div><strong>AUTRAVA</strong><small>BUSINESS OPERATIONS</small></div><button ref={closeButtonRef} className="mobile-close" onClick={() => { setMobileNav(false); menuButtonRef.current?.focus(); }} aria-label="Close navigation">×</button></div>
+    <aside ref={sidebarRef} className={`sidebar ${mobileNav ? "open" : ""}`} role={mobileNav ? "dialog" : undefined} aria-modal={mobileNav ? true : undefined} aria-label={mobileNav ? "Mobile navigation" : undefined} aria-labelledby={mobileNav ? "mobile-navigation-title" : undefined}>
+      <div className="brand"><div className="brand-mark">A</div><div><strong id="mobile-navigation-title">AUTRAVA</strong><small>BUSINESS OPERATIONS</small></div><button ref={closeButtonRef} className="mobile-close" onClick={() => { setMobileNav(false); menuButtonRef.current?.focus(); }} aria-label="Close navigation">×</button></div>
       <div className="workspace-label">ENTERPRISE WORKSPACE</div>
       <nav id="primary-navigation" aria-label="Primary navigation">
       {navGroups.map(group => <div className="nav-group" key={group.label}><div className="nav-label">{group.label}</div>{group.items.map(item => <button key={item.id} className={`nav-item ${view === item.id ? "active" : ""}`} aria-current={view === item.id ? "page" : undefined} onClick={() => { setView(item.id); setMobileNav(false); menuButtonRef.current?.focus(); }}><span className="nav-icon">{item.icon}</span><span>{item.label}</span>{item.count && <span className="nav-count">{item.count}</span>}</button>)}</div>)}
