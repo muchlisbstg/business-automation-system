@@ -7,9 +7,9 @@ A separate internal operations frontend. It is intentionally isolated from the N
 - Stage 5: Executive dashboard UI scaffold.
 - Stage 6: Operations workspace, approvals and inventory overview interaction patterns.
 - Stage 7: Shared UI primitives, responsive shell, light/dark theme.
-- Stage 8: Keyboard skip link and focus-visible styling; semantic primary navigation and table metadata; consistent approval filtering and inventory search/count behavior.
+- Stage 8: Keyboard skip link and focus-visible styling; semantic primary navigation and table metadata; consistent approval filtering and inventory search/count behavior; mobile drawer Escape handling, focus containment/restoration, and background scroll lock.
 - CI evidence at `b3be99581221465b547852bda46fba05a1b1fd4d`: TypeScript check and Next.js production build completed successfully. Subsequent Stage 8 commits require a fresh CI run before they can be considered validated.
-- Browser/device testing, automated accessibility scanning, mobile focus-trap/Escape behavior and screen-reader verification remain outstanding.
+- Browser/device testing, automated accessibility scanning, device-level testing, automated accessibility scanning, and screen-reader verification remain outstanding. Mobile drawer keyboard behavior is implemented but still requires browser verification.
 - Data is illustrative only. No live API, identity provider, database, finance, supplier or logistics integration is connected.
 - No transaction, approval, shipment release, payment, compliance clearance or Sharia decision can be executed from this UI.
 
