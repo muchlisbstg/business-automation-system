@@ -50,8 +50,8 @@ test("responsive layouts stay within viewport at tablet and mobile widths", asyn
       document: document.documentElement.scrollWidth,
       body: document.body.scrollWidth,
     }));
-    expect(dimensions.document, \`document overflow at \${width}px\`).toBeLessThanOrEqual(dimensions.viewport);
-    expect(dimensions.body, \`body overflow at \${width}px\`).toBeLessThanOrEqual(dimensions.viewport);
+    expect(dimensions.document, "document overflow at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
+    expect(dimensions.body, "body overflow at " + width + "px").toBeLessThanOrEqual(dimensions.viewport);
   }
 });
 
