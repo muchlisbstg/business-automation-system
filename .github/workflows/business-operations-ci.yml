@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: apps/business-operations
@@ -40,9 +40,6 @@ jobs:
 
       - name: Next.js production build
         run: npm run build
-
-      - name: Install Playwright test runner
-        run: npm install --no-save --no-package-lock --no-audit --no-fund @playwright/test@1.56.1
 
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
