@@ -77,7 +77,30 @@ Source inspection identified color pairs that must be measured before acceptance
 - Primary action button: white text on `#e97827`.
 - Warning/status text and its light/dark surfaces.
 
-These are candidate risk pairs, not measured WCAG results. No contrast ratio or WCAG 2.2 AA pass is claimed. Measure rendered foreground/background pairs for normal text (4.5:1), large text (3:1), and non-text UI indicators (3:1), including hover/focus/disabled states, in both themes. Record exact measured values and remediation before marking BQA-009 complete.
+Initial token-level WCAG contrast calculations after the CSS adjustment (sRGB relative luminance; ratio rounded to two decimals):
+
+| Pair | Light ratio | Result for normal text |
+|---|---:|---|
+| Muted text `#626970` / app background `#f3f4f5` | 5.05:1 | Meets 4.5:1 |
+| Accent `#A94B0C` / accent-soft `#FCE7D8` | 4.75:1 | Meets 4.5:1 |
+| White / primary button `#A94B0C` | 5.68:1 | Meets 4.5:1 |
+| Warning `#8A4515` / `#FFF1E3` | 6.44:1 | Meets 4.5:1 |
+| Blue status `#2E659F` / `#eaf1f8` | 5.30:1 | Meets 4.5:1 |
+| Green status `#216B4C` / `#e9f4ee` | 5.70:1 | Meets 4.5:1 |
+| Violet status `#70549E` / `#f0edf6` | 5.26:1 | Meets 4.5:1 |
+| Red status `#A83F39` / `#fbeceb` | 5.33:1 | Meets 4.5:1 |
+
+| Pair | Dark ratio | Result for normal text |
+|---|---:|---|
+| Muted text `#a3a9b0` / app background `#17191c` | 7.43:1 | Meets 4.5:1 |
+| Accent `#f07824` / accent-soft `#382619` | 5.08:1 | Meets 4.5:1 |
+| Dark primary button text `#17191c` / `#f07824` | 6.22:1 | Meets 4.5:1 |
+| Blue status `#75a9df` / `#253447` | 5.12:1 | Meets 4.5:1 |
+| Green status `#67bd91` / `#20392e` | 5.49:1 | Meets 4.5:1 |
+| Violet status `#b09ad8` / `#282c31` | 5.66:1 | Meets 4.5:1 |
+| Red status `#e88780` / `#3d2524` | 5.51:1 | Meets 4.5:1 |
+
+These are calculations for identified design-token and status-color pairs, not a complete rendered-page WCAG audit. A Playwright assertion has been added to evaluate key text/status pairs in both themes; its CI execution is pending. Focus indicators, hover/disabled states, all component combinations, and screen-reader behavior remain outside this measured set. Do not mark BQA-009 complete until the new browser assertion passes and remaining rendered states are reviewed.
 | BQA-010 | Empty/search states | Search results, zero-result feedback, table overflow and readable labels | Automated Chromium + Firefox interaction checks passed; broader content review pending |
 
 ## 6. Acceptance criteria
