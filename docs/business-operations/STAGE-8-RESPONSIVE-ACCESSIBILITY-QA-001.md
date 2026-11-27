@@ -67,6 +67,17 @@ The workflow also completed TypeScript and production build checks before browse
 | BQA-007 | Reduced motion | Sidebar and transitions respect reduced-motion preference | Automated Chromium + Firefox passed |
 | BQA-008 | Screen reader smoke test | Navigation dialog name/state, headings, tables, search label, status text | Pending |
 | BQA-009 | Light/dark themes | Contrast and legibility for text, badges, controls, focus indicators | Partial — theme toggle interaction passed; WCAG contrast measurement pending |
+
+### Preliminary contrast review — NOT A PASS
+
+Source inspection identified color pairs that must be measured before acceptance:
+
+- Muted text token against light background: `#737981` on `#f3f4f5`.
+- Accent navigation text against accent-soft surface: `#e97827` on `#fff0e5`.
+- Primary action button: white text on `#e97827`.
+- Warning/status text and its light/dark surfaces.
+
+These are candidate risk pairs, not measured WCAG results. No contrast ratio or WCAG 2.2 AA pass is claimed. Measure rendered foreground/background pairs for normal text (4.5:1), large text (3:1), and non-text UI indicators (3:1), including hover/focus/disabled states, in both themes. Record exact measured values and remediation before marking BQA-009 complete.
 | BQA-010 | Empty/search states | Search results, zero-result feedback, table overflow and readable labels | Automated Chromium + Firefox interaction checks passed; broader content review pending |
 
 ## 6. Acceptance criteria
